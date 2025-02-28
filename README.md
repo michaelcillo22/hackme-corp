@@ -1,6 +1,6 @@
-Hackme Corp.
+# Hackme Corp.
 
-# Introduction
+## Introduction
     - This is a seller-center where businesses can sell and promote their products.
 
 ## Target user/demographic
