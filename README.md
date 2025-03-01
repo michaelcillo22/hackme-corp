@@ -1,19 +1,18 @@
-# Hackme Corp.
+# Hackme Corp
 
 ## Introduction
-    - This is a seller-center where businesses can sell and promote their products.
+- A seller-center where businesses can sell and promote their products.
 
-## Target user/demographic
+## Target User/Demographic
 - Vendors
 
-## Value proposition
-- More cost-effective way of selling their product.
-- Analytics Features - vendors are able to understand who their customers are.
-- Wider customer-base size
+## Value Proposition
+- Cost-effective selling.
+- Analytics to understand customers.
+- Wider customer base.
 
-## Why is this project worthwhile to take on?
-- US Market for video games US$ 58.7 Billion in 2024.
-
+## Why This Project?
+- US video game market projected to reach $58.7 billion in 2024.
 
 ## Competitors
 - Amazon
@@ -24,41 +23,38 @@
 - NewEgg
 - Microcenter
 
-# Core Features
-
-1. (core) Landing Page - HTML
-2. (core) Product Page - HTML
-3. (core) Inventory/Product List - getAllPerVendor
-4. (core) Top products in a category
-    - Top 3 videogames
-    - Top 3 Consoles
-    - Top CPUs, Memory Cards, GPUs
-5. (core) Top vendors for a product/category
-    - General Categories (Videogames, Consoles, Controllers, PC Parts, etc)
-6. (Core) Cart & checkout
-7. (Core) Search/advanced search & filtering
-8. Trends over time (month over month)
-    - What's Hot last month? 
-9.
-10. Category/vendor/product pages
-12. Security/verification
+## Core Features
+1. Landing Page (HTML)
+2. Product Page (HTML)
+3. Inventory/Product List (getAllPerVendor)
+4. Top Products in a Category
+    - Top 3 video games
+    - Top 3 consoles
+    - Top CPUs, memory cards, GPUs
+5. Top Vendors for a Product/Category
+    - General categories (video games, consoles, controllers, PC parts, etc.)
+6. Cart & Checkout
+7. Search/Advanced Search & Filtering
+8. Trends Over Time (month over month)
+    - What's hot last month?
+9. Category/Vendor/Product Pages
+10. Security/Verification
     - Is vendor legit?
+11. Product/Vendor Reviews
+12. Discount/Promotion Codes (extra feature)
 
-13. Product/vendor reviews
-14. Discount/promotion codes (could be an extra feature)
+## Extra Features
+1. Deals of the Day
 
-# Extra Features
-1. Deals of the day
+## Future Development
+1. Min/Max Price of Product per Category
 
-# Future Development
-1. Min/Max of price of product per category
-
-# Required Features
+## Required Features
 - Login (MFA)
-- AJAX form submission & error checking
-- Daa-related code organized in modules
+- AJAX Form Submission & Error Checking
+- Data-related Code Organized in Modules
 - MongoDB
-- XSS Defense 
-- clien side JS
-- All error handling
-- Validate user input in 3 places (client, routes, DB functions)
+- XSS Defense
+- Client-side JS
+- Comprehensive Error Handling
+- Validate User Input (client, routes, DB functions)
