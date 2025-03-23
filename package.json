@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "CS546 Final Project (Group 2) - Hackmazon, an e-commerce vendor platform",
   "main": "app.js",
+  "type": "module",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michael Cillo, Christen Diwen De Ocampo, Richard Devitt, Kayla Hartland, Rita Ruggieri",
