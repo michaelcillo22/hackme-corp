@@ -20,3 +20,5 @@ const ordersExample = [
 // TODO: updateOrder()
 
 // TODO:
+
+export default exportedMethods;
