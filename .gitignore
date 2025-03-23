@@ -1,0 +1,16 @@
+# Ignore large files that are unnecessary to commit to the main branch
+
+node_modules
+package-lock.json
+
+# Standard stuff to exclude
+.DS_Store
+.env
+dist/
+build/
+coverage/
+*.log
+*.tmp
+.idea/
+.vscode/
+*.swp
