@@ -20,4 +20,4 @@ NOTE: YOU WILL NEED TO CHANGE THE CODE BELOW TO HAVE THE COLLECTION(S) REQUIRED 
 // TODO: Add collections here.
 
 export const ordersData = getCollectionFn('orders');
-export const productData = getCollectionFn('products');
+export const productsData = getCollectionFn('products');
