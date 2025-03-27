@@ -1,4 +1,3 @@
-// seedOrders.js
 import { MongoClient } from 'mongodb';
 
 async function seedDatabase() {
