@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
+//import ./data/product
 
-import { find } from '../models/product';
 
 // GET the Hackmazon Landing Page
 router.get('/', async function getMainPage(req, res, next) {
