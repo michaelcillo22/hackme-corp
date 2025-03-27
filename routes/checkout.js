@@ -1,9 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-
-import Order from '../models/order';
-import Cart from '../models/cart';
-import { stripeSecretKey } from '../config/env';
+//import ./data/order.js
+//import ./data/product.js
+//import ./data/user.js
 
 router.get('/checkout', isLoggedIn, function (req, res, next) {
   if (!req.session.cart) {
