@@ -5,8 +5,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
+    
   },
   "author": "Michael Cillo, Christen Diwen De Ocampo, Richard Devitt, Kayla Hartland, Rita Ruggieri",
   "license": "ISC",
