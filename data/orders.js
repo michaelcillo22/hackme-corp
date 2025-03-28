@@ -69,9 +69,46 @@ const exportedMethods = {
         return orders;
     },
 
-// TODO: removeOrder()
+    async removeOrder(orderId) {
+        if (!orderId) throw new Error("You must provide an order ID");
+        if (typeof orderId !== 'string') throw new Error("Order ID must be a string");
+        if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID format");
 
-// TODO: updateOrder()
+        const ordersCollection = await ordersData();
+        const deletionInfo = await ordersCollection.deleteOne({ _id: new ObjectId(orderId) });
+
+        if (deletionInfo.deletedCount === 0) {
+            throw new Error(`Failed to delete order with ID: ${orderId}. Order may not exist.`);
+        }
+
+        return { deleted: true, orderId };
+    },
+
+    async updateOrder(orderId, updatedFields) {
+        if (!orderId) throw new Error("You must provide an order ID");
+        if (typeof orderId !== 'string') throw new Error("Order ID must be a string");
+        if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID format");
+
+        if (!updatedFields || typeof updatedFields !== 'object' || Array.isArray(updatedFields)) {
+            throw new Error("You must provide an object with fields to update");
+        }
+
+        const ordersCollection = await ordersData();
+        const updateInfo = await ordersCollection.updateOne(
+            { _id: new ObjectId(orderId) },
+            { $set: updatedFields }
+        );
+
+        if (updateInfo.matchedCount === 0) {
+            throw new Error(`No order found with ID: ${orderId}`);
+        }
+
+        if (updateInfo.modifiedCount === 0) {
+            throw new Error(`Failed to update order with ID: ${orderId}. No changes were made.`);
+        }
+
+        return await this.getOrderById(orderId);
+    },
 
 // TODO:
 }
