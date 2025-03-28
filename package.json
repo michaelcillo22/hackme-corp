@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:orders": "node tasks/seedOrders.js"
   },
   "author": "Michael Cillo, Christen Diwen De Ocampo, Richard Devitt, Kayla Hartland, Rita Ruggieri",
   "license": "ISC",
