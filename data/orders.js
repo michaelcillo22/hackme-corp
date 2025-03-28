@@ -1,12 +1,12 @@
 import { ordersData } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 
-const ordersExample = [
-    {},
-    {},
-    {},
-    // ... other orders
-];
+// const ordersExample = [
+//     {},
+//     {},
+//     {},
+//     // ... other orders
+// ];
 
 const exportedMethods = {
     async getOrderById(orderId) {
@@ -45,7 +45,29 @@ const exportedMethods = {
         return order;
     },
 
-// TODO: getAllOrdersByVendor(vendorId)
+    async getAllOrdersByUser(user, userType) {
+        if (!user || typeof user !== 'object') throw new Error("User must be a valid object");
+        if (!user.userId || typeof user.userId !== 'string') throw new Error("User must have a valid userId");
+        if (!userType || typeof userType !== 'string') throw new Error("UserType must be a valid string");
+
+        const ordersCollection = await ordersData();
+
+        let query;
+        if (userType === "buyer") {
+            query = { buyerId: user.userId };
+        } else if (userType === "vendor") {
+            query = { "items.vendorId": user.userId }; // Assuming items have a vendorId field
+        } else {
+            throw new Error("Unsupported userType. Only 'buyer' and 'vendor' are allowed.");
+        }
+
+        const orders = await ordersCollection.find(query).toArray();
+        if (!orders || orders.length === 0) {
+            throw new Error(`No orders found for user with ID: ${user.userId}`);
+        }
+
+        return orders;
+    },
 
 // TODO: removeOrder()
 
