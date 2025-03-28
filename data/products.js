@@ -1,31 +1,89 @@
 // Export the following functions using ES6 Syntax
-import * as helpers from "../helpers.js";
+import helpers from "../helpers.js";
 import {products} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
+import { stat } from "fs";
 
 // Listing a product
 export const createProduct = async (
-  category,
-  vendor,
-  name,
-  description,
-  pricing,
-  photos,
-  condition,
-  status
+  category,     // String
+  vendor,       // String
+  name,         // Allow string and num
+  description,  // String
+  price,        // Must be positive number
+  photos,       // An array
+  condition,    // String
+  status,       // String
 ) => {
   
-  // Maybe just use helpers file for validation checks
-  if ( !category
-    || !vendor
-    || !name
-    || !description
-    || !pricing
-    || !photos
-    || !condition
-    || !status) {
-    throw "Oh no! One or more of the input fields are not provided :(";
+  // Validation checks
+  category = helpers.checkString(category, "Category");
+  vendor = helpers.checkString(vendor, "Vendor");
+  description = helpers.checkString(description, "Description");
+  condition = helpers.checkString(condition, "Condition");
+  status = helpers.checkString(status, "Status");
+  photos = helpers.checkStringArray(photos, "Photos");
+
+  // Other checks if input is provided
+  if ( !name || !price || !photos) {
+    throw "Oh no! The name, price, and/or photo UR is not provided :(";
   }
+
+  // Check if photos is an array and there is at least one photo
+  if (!Array.isArray(photos)) {
+    throw "Oh no! Photos is not an array :(";
+  }
+
+  if (photos.length < 1) {
+    throw "Oh no! Photos must have at least one URL :(";
+  }
+
+  // Check for valid category, condition, and status values
+  let validCategories = []; // TO DO: Obtain from Categories collection
+  let validConditions = ["New", "Used"];
+  let validStatus = ["In stock", "Out of stock"];
+
+  if (!validCategories.includes(category)) {
+    throw "Oh no! The category must be valid :(";
+  };
+
+  if (!validConditions.includes(condition)) {
+    throw "Oh no! The condition must be valid :(";
+  };
+
+  if (!validStatus.includes(status)) {
+    throw "Oh no! The status must be valid :(";
+  };
+
+  // Check if price is pos and valid
+  if (price < 0 || isNaN(price) || typeof price !== "number") {
+    throw "Oh no! Price must be a positive number :(";
+  }
+
+  // Set current date of when product is posted
+  let dateNow = new Date();
+  let monthNow = dateNow.getMonth() + 1;
+  let dayNow = dateNow.getDate();
+  let yearNow = dateNow.getFullYear();
+
+  // Set format correctly
+  if (monthNow < 10) {
+    monthNow = "0" + monthNow;
+  }
+
+  if (dayNow < 10) {
+    dayNow = "0" + dayNow;
+  }
+
+  let productListedDate = `${monthNow}/${dayNow}/${yearNow}`;
+  productListedDate = productListedDate.toString();
+
+  // Initialize our reviews array to be empty and Overall Rating to be 0
+  let reviewsArray = [];
+
+
+
+
 };
 
 // Populate all of our products from inventory
@@ -52,16 +110,50 @@ export const getAllProducts = async () => {
 };
 
 // Get Product ID
-export const getProductById = async (movieId) => {
+export const getProductById = async (productId) => {
 
+  // Validate id
+  productId = helpers.checkId(productId);
+
+  // Get our product collection ready
+  const productCollection = await products();
+
+  // Ensure to convert string to ObjectID form for MongoDB
+  const currentProduct = await productCollection.findOne({_id: new ObjectId(productId)});
+
+  // Check if no product exists with that id
+  if (!currentProduct) {
+    throw "Oh no! There is no product with the ID mentioned :(";
+  }
+
+  currentProduct._id = currentMovicurrentProducte._id.toString();
+  return currentProduct;
 };
 
 // Remove product from inventory
-export const removeProduct = async (movieId) => {
+export const removeProduct = async (productId) => {
+  
+  // Validate id
+  productId = helpers.checkId(productId);
 
+  // Get our product collection ready
+  const productCollection = await products();
+
+  // Initialize our product product info
+  const productDeletionInfo = await productCollection.findOneAndDelete({
+    _id: new ObjectId(productId)
+  });
+
+  // Check if the product cannot be removed (does not exist)
+  if (!productDeletionInfo) {
+    throw `Oh no! The product with id of ${productId} does not exist, so it cannot be deleted :(`;
+  }
+
+  // Return exactly as formatted
+  return `${productDeletionInfo.name} has been successfully deleted!`;
 };
 
-// Update product listing
+// TO DO: Update product listing
 export const updateProduct = async (
     productId,
     category,
@@ -75,7 +167,3 @@ export const updateProduct = async (
 ) => {
   
 };
-
-// export const renameProduct = async (id, newName) => {
- 
-// };
