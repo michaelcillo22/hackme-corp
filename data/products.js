@@ -22,7 +22,8 @@ export const createProduct = async (
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
   status = helpers.checkString(status, "Status");
-  photos = helpers.checkStringArray(photos, "Photos");
+  photos = helpers.checkStringArray(photos, "Photo URL");
+  photos = helpers.checkValidURL(photos, "Photo URl")
 
   // Other checks if input is provided
   if ( !name || !price || !photos) {
@@ -80,10 +81,36 @@ export const createProduct = async (
 
   // Initialize our reviews array to be empty and Overall Rating to be 0
   let reviewsArray = [];
+  let overallRatingValue = 0;
 
+  let newProduct = {
+    category: category,  
+    vendor: vendor,      
+    name: name,       
+    description: description,
+    price: price,
+    photos: photos,
+    condition: condition,  
+    status: status,    
+    reviews: reviewsArray,
+    overallRating: overallRatingValue  
+  };
 
+  // Establish connection
+  const productCollection = await products();
 
+  // Execute the query
+  const insertProductInfo = await productCollection.insertOne(newProduct);
 
+  // Check if the insert was successful
+  if (!insertProductInfo.acknowledged || !insertProductInfo.insertedId)
+    throw "Oh no! Product could not be added";
+
+  // Return the result
+  const newProductID = insertProductInfo.insertedId.toString();
+
+  const theProduct = await getProductById(newProductID);
+  return theProduct;
 };
 
 // Populate all of our products from inventory
@@ -155,15 +182,118 @@ export const removeProduct = async (productId) => {
 
 // TO DO: Update product listing
 export const updateProduct = async (
-    productId,
+  productId,
+  category,
+  vendor,
+  name,
+  description,
+  price,
+  photos,
+  condition,
+  status
+) => {
+
+  // Validation checks
+  productId = helpers.checkId(productId, "Product ID:");
+  category = helpers.checkString(category, "Category");
+  vendor = helpers.checkString(vendor, "Vendor");
+  description = helpers.checkString(description, "Description");
+  condition = helpers.checkString(condition, "Condition");
+  status = helpers.checkString(status, "Status");
+  photos = helpers.checkStringArray(photos, "Photo URL");
+  photos = helpers.checkValidURL(photos, "Photo URl")
+
+  // Other checks if input is provided
+  if ( !name || !price || !photos) {
+    throw "Oh no! The name, price, and/or photo UR is not provided :(";
+  }
+
+  // Check if photos is an array and there is at least one photo
+  if (!Array.isArray(photos)) {
+    throw "Oh no! Photos is not an array :(";
+  }
+
+  if (photos.length < 1) {
+    throw "Oh no! Photos must have at least one URL :(";
+  }
+
+  // Check for valid category, condition, and status values
+  let validCategories = []; // TO DO: Obtain from Categories collection
+  let validConditions = ["New", "Used"];
+  let validStatus = ["In stock", "Out of stock"];
+
+  if (!validCategories.includes(category)) {
+    throw "Oh no! The category must be valid :(";
+  };
+
+  if (!validConditions.includes(condition)) {
+    throw "Oh no! The condition must be valid :(";
+  };
+
+  if (!validStatus.includes(status)) {
+    throw "Oh no! The status must be valid :(";
+  };
+
+  // Check if price is pos and valid
+  if (price < 0 || isNaN(price) || typeof price !== "number") {
+    throw "Oh no! Price must be a positive number :(";
+  }
+
+  // Set current date of when product is posted
+  let dateNow = new Date();
+  let monthNow = dateNow.getMonth() + 1;
+  let dayNow = dateNow.getDate();
+  let yearNow = dateNow.getFullYear();
+
+  // Set format correctly
+  if (monthNow < 10) {
+    monthNow = "0" + monthNow;
+  }
+
+  if (dayNow < 10) {
+    dayNow = "0" + dayNow;
+  }
+
+  let productListedDate = `${monthNow}/${dayNow}/${yearNow}`;
+  productListedDate = productListedDate.toString();
+
+  // Let's update our product data
+  let updatedProduct = {
     category,
     vendor,
     name,
     description,
-    pricing,
+    price,
     photos,
     condition,
     status
-) => {
+  }
+
+  // const productID = new ObjectId(trimmedMovieId);
+  // const movieCollection = await movies();
+
+  // // Figure out which movie has this id
+  // const currentMovie = await movieCollection.findOne({ _id: movieID });
+  
+  // // Check if the movie exists in the first place
+  // if (!currentMovie) {
+  //   throw `Oh no! The current movie with id: ${trimmedMovieId} is not found :(`;
+  // }
+
+  // // Perform our update method as utilized in lecture 4
+  // const movieUpdatedInfo = await movieCollection.findOneAndUpdate(
+  //   {_id: movieID},
+  //   {$set: updatedMovie},
+  //   {returnDocument: "after"}
+  // );
+
+  // // Check if the movie does not exist
+  // if (!movieUpdatedInfo) {
+  //   throw "Oh no! The movie does not exist, hence cannot be updated :(";
+  // }
+
+  // movieUpdatedInfo._id = movieUpdatedInfo._id.toString();
+  // return movieUpdatedInfo;
+
   
 };
