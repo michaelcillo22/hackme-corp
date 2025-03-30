@@ -259,41 +259,39 @@ export const updateProduct = async (
 
   // Let's update our product data
   let updatedProduct = {
-    category,
-    vendor,
-    name,
-    description,
-    price,
-    photos,
-    condition,
-    status
+    category: category,
+    vendor: vendor,
+    name: name,
+    description: description,
+    price: price,
+    photos: photos,
+    condition: condition,
+    status: status
   }
 
-  // const productID = new ObjectId(trimmedMovieId);
-  // const movieCollection = await movies();
+  const theProductId = new ObjectId(productId);
+  const productCollection = await movies();
 
-  // // Figure out which movie has this id
-  // const currentMovie = await movieCollection.findOne({ _id: movieID });
+  // Figure out which product has this id
+  const currentProduct = await productCollection.findOne({ _id: theProductId });
   
-  // // Check if the movie exists in the first place
-  // if (!currentMovie) {
-  //   throw `Oh no! The current movie with id: ${trimmedMovieId} is not found :(`;
-  // }
+  // Check if the product exists in the first place
+  if (!currentProduct) {
+    throw `Oh no! The current product with id: ${productId} is not found :(`;
+  }
 
-  // // Perform our update method as utilized in lecture 4
-  // const movieUpdatedInfo = await movieCollection.findOneAndUpdate(
-  //   {_id: movieID},
-  //   {$set: updatedMovie},
-  //   {returnDocument: "after"}
-  // );
+  // Perform our update method as utilized in lecture 4
+  const productUpdatedInfo = await productCollection.findOneAndUpdate(
+    {_id: theProductId},
+    {$set: updatedProduct},
+    {returnDocument: "after"}
+  );
 
-  // // Check if the movie does not exist
-  // if (!movieUpdatedInfo) {
-  //   throw "Oh no! The movie does not exist, hence cannot be updated :(";
-  // }
+  // Check if the product does not exist
+  if (!productUpdatedInfo) {
+    throw "Oh no! The product does not exist, hence cannot be updated :(";
+  }
 
-  // movieUpdatedInfo._id = movieUpdatedInfo._id.toString();
-  // return movieUpdatedInfo;
-
-  
+  productUpdatedInfo._id = productUpdatedInfo._id.toString();
+  return productUpdatedInfo;
 };
