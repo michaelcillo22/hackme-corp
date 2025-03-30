@@ -1,17 +1,21 @@
 {
-  "name": "shopping_cart",
+  "name": "group2_finalproject",
   "version": "1.0.0",
-  "description": "cs546WN_FinalProject_Group2_Hackmazon",
+  "description": "",
   "license": "ISC",
-  "author": "ruggieri_rita_20026936",
+  "author": "ruggieri_rita",
   "type": "module",
-  "main": "app.js",
+  "main": "node app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
   "dependencies": {
+    "compression": "^1.8.0",
     "express": "^4.21.2",
-    "mongodb": "^6.15.0"
+    "flash": "^1.1.0",
+    "helmet": "^8.1.0",
+    "mongodb": "^6.15.0",
+    "path": "^0.12.7"
   }
 }
