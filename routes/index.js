@@ -1,20 +1,39 @@
-import { Router } from 'express';
-const router = Router();
-//import ./data/product
+import express from 'express';
+import session from 'express-session';
+import flash from 'connect-flash';
+import path from 'path';
+import router from './router';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware config
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
+app.use(session({
+  secret: 'your-session-secret',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(flash());
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Template engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// routes
+app.use('/', router);
 
 
-// GET the Hackmazon Landing Page
-router.get('/', async function getMainPage(req, res, next) {
-  const successMgs = req.flash('success')[0];
-
-  const products = await find().lean();
-
-  res.render('shop/index', {
-    title: 'Shopping cart',
-    products,
-    successMgs: successMgs,
-    noMessage: !successMgs,
-  });
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
 });
 
-export default router;
+// Start the Server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:5000`);
+});
