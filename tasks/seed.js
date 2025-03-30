@@ -1,70 +1,56 @@
-import { MongoClient } from 'mongodb';
+import { ordersData } from "../config/mongoCollection";
+import { ObjectId } from "mongodb";
 
-async function seedDatabase() {
-    const dbName = 'CS546_FinalProject_Group2_Hackmazon';
-    const collectionName = 'Orders';
-    const orders = [
-        {
-            orderId: "ORD001",
-            orderStatus: "Pending",
-            firstName: "Alex",
-            lastName: "Tribec",
-            buyerEmail: "alex.tribec@example.com",
-            buyerId: "BUY123",
-            city: "New York",
-            contactNumber: "123-456-7890",
-            items: [
-                { product_id: "PROD001", name: "Gaming Console", quantity: 1, price: 499.99 },
-                { product_id: "PROD002", name: "Wireless Controller", quantity: 2, price: 59.99 }
-            ],
-            purchaseDate: new Date("2025-03-20"),
-            ShippingAddress: "123 Gaming Street, NY 10001"
-        },
-        {
-            orderId: "ORD002",
-            orderStatus: "Shipped",
-            firstName: "Steve",
-            lastName: "Harvey",
-            buyerEmail: "steve.harvey@example.com",
-            buyerId: "BUY124",
-            city: "Los Angeles",
-            contactNumber: "987-654-3210",
-            items: [
-                { product_id: "PROD003", name: "Gaming Headset", quantity: 1, price: 79.99 },
-                { product_id: "PROD004", name: "Keyboard", quantity: 1, price: 129.99 }
-            ],
-            purchaseDate: new Date("2025-03-22"),
-            ShippingAddress: "456 Gaming Ave, CA 90001"
-        },
-        {
-            orderId: "ORD003",
-            orderStatus: "Delivered",
-            firstName: "Pat",
-            lastName: "Sajak",
-            buyerEmail: "pat.sajak@example.com",
-            buyerId: "BUY125",
-            city: "Culver City",
-            contactNumber: "555-666-7777",
-            items: [
-                { product_id: "PROD005", name: "Gaming Chair", quantity: 1, price: 199.99 }
-            ],
-            purchaseDate: new Date("2025-03-23"),
-            ShippingAddress: "789 Gamer Lane, CA 90232"
-        }
-    ];
+const seedDatabase = async () => {
+    const ordersCollection = await ordersData();
+    const db = ordersCollection.s.db;
 
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
-
-        const result = await collection.insertMany(orders);
-        console.log(`${result.insertedCount} orders inserted!`);
-    } catch (error) {
-        console.error("Error seeding database:", error);
-    } finally {
-        await client.close();
-    }
+    await db.dropDatabase();
 }
 
-seedDatabase();
+const sampleOrders = [
+    {
+        orderId: "ORD123456",
+        orderStatus: "Shipped",
+        firstName: "Alex",
+        lastname: "Tribec",
+        buyerEmail: "alextribec@example.com",
+        buyerId: "c0000001",
+        shippingAddress: "222 Gamerway, New York, New York 10038",
+        contactNumber: "123-456-7890",
+        items: [
+            { productId: "p001", productName: "Widget A", quantity: 2, vendorId: "v0001" },
+            { productId: "p002", productName: "Widget B", quantity: 1, vendorId: "v0002" }
+        ],
+        purchaseDate: "01012023"
+    },
+    {
+        orderId: "ORD123457",
+        orderStatus: "Processing",
+        firstName: "Pat",
+        lastname: "Sajack",
+        buyerEmail: "patsajack@example.com",
+        buyerId: "c0000002",
+        shippingAddress: "123 Gamer Street, Los Angeles, CA 90001",
+        contactNumber: "987-654-3210",
+        items: [
+            { productId: "p003", productName: "Gadget X", quantity: 3, vendorId: "v0003" }
+        ],
+        purchaseDate: "02012023"
+    }
+];
+
+// Insert sample orders
+const insertResult = await ordersCollection.insertMany(sampleOrders);
+if (insertResult.acknowledged) {
+    console.log(`${insertResult.insertedCount} orders seeded successfully.`);
+} else {
+    console.error("Failed to seed orders.");
+};
+
+// Execute seeding
+seedOrders().catch((error) => {
+console.error("Error seeding orders:", error);
+}).finally(() => {
+process.exit();
+});
