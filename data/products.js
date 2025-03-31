@@ -23,7 +23,7 @@ export const createProduct = async (
   condition = helpers.checkString(condition, "Condition");
   status = helpers.checkString(status, "Status");
   photos = helpers.checkStringArray(photos, "Photo URL");
-  photos = helpers.checkValidURL(photos, "Photo URl")
+  photos = helpers.checkValidURL(photos, "Photo URL")
 
   // Other checks if input is provided
   if ( !name || !price || !photos) {
@@ -93,7 +93,8 @@ export const createProduct = async (
     condition: condition,  
     status: status,    
     reviews: reviewsArray,
-    overallRating: overallRatingValue  
+    overallRating: overallRatingValue,
+    productListedDate: productListedDate  
   };
 
   // Establish connection
@@ -153,7 +154,7 @@ export const getProductById = async (productId) => {
     throw "Oh no! There is no product with the ID mentioned :(";
   }
 
-  currentProduct._id = currentMovicurrentProducte._id.toString();
+  currentProduct._id = currentProduct._id.toString();
   return currentProduct;
 };
 
@@ -201,7 +202,7 @@ export const updateProduct = async (
   condition = helpers.checkString(condition, "Condition");
   status = helpers.checkString(status, "Status");
   photos = helpers.checkStringArray(photos, "Photo URL");
-  photos = helpers.checkValidURL(photos, "Photo URl")
+  photos = helpers.checkValidURL(photos, "Photo URL")
 
   // Other checks if input is provided
   if ( !name || !price || !photos) {
@@ -270,7 +271,7 @@ export const updateProduct = async (
   }
 
   const theProductId = new ObjectId(productId);
-  const productCollection = await movies();
+  const productCollection = await products();
 
   // Figure out which product has this id
   const currentProduct = await productCollection.findOne({ _id: theProductId });
