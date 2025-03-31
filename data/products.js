@@ -1,5 +1,5 @@
 // Export the following functions using ES6 Syntax
-import helpers from "../helpers.js";
+import helpers from "../helpers_CD.js";
 import {products} from "../config/mongoCollections.js";
 import {categories} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
