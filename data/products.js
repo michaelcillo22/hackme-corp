@@ -1,8 +1,8 @@
 // Export the following functions using ES6 Syntax
 import helpers from "../helpers.js";
 import {products} from "../config/mongoCollections.js";
+import {categories} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
-import { stat } from "fs";
 
 // Listing a product
 export const createProduct = async (
@@ -40,7 +40,15 @@ export const createProduct = async (
   }
 
   // Check for valid category, condition, and status values
-  let validCategories = []; // TO DO: Obtain from Categories collection
+  // Obtain categories' names dynamically from categories collection
+  let categoryCollection = await categories();
+  let categoryArray = await categoryCollection.find({}).toArray();
+
+  // Utilize a map to obtain names of categories
+  let validCategories = categoryArray.map(currentCategory =>
+    currentCategory.categoryName
+  );
+
   let validConditions = ["New", "Used"];
   let validStatus = ["In stock", "Out of stock"];
 
