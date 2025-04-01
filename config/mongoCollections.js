@@ -21,4 +21,5 @@ NOTE: YOU WILL NEED TO CHANGE THE CODE BELOW TO HAVE THE COLLECTION(S) REQUIRED 
 
 export const users = getCollectionFn('users');
 export const ordersData = getCollectionFn('orders');
+export const categories = getCollectionFn('categories');
 
