@@ -20,4 +20,5 @@ NOTE: YOU WILL NEED TO CHANGE THE CODE BELOW TO HAVE THE COLLECTION(S) REQUIRED 
 // TODO: Add collections here.
 
 export const categories = getCollectionFn('categories');
+export const users = getCollectionFn('users);
 
