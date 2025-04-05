@@ -19,6 +19,6 @@ const getCollectionFn = (collection) => {
 NOTE: YOU WILL NEED TO CHANGE THE CODE BELOW TO HAVE THE COLLECTION(S) REQUIRED BY THE ASSIGNMENT */
 // TODO: Add collections here.
 
-export const ordersData = getCollectionFn('orders');
-export const reviewsData = getCollectionFn('reviews');
-
+// export const users = getCollectionFn('users');
+// export const ordersData = getCollectionFn('orders');
+export const products = getCollectionFn('products');
