@@ -1,5 +1,5 @@
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
-import userMethods from './data/users.js';
+import userMethods from './hackme-corp/hackme-corp/data/users.js';
 
 
 export async function seedDB() {
@@ -77,7 +77,7 @@ export async function seedDB() {
       } catch (e) {
         console.error('Error seeding the database:', e);
       } finally {
-        await closeConnection();
+        console.log('Seeding is complete.');
       }
       }
     
