@@ -2,7 +2,7 @@
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
 
 import express from 'express';
-import { seedDB } from './seed.js';
+import { seedDB } from './RDCatseed.js';
 const app = express();
 // import configRoutes from './routes/index.js';
 

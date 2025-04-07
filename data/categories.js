@@ -1,6 +1,6 @@
 import { ObjectId, } from 'mongodb';
 import { categories } from '../config/mongoCollections.js';
-import { checkId, validateString} from '../helpers.js';
+import { checkId, validateString} from '../RDCathelpers.js';
 
 
 const createCategory = async (
