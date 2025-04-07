@@ -1,0 +1,107 @@
+/*This file should have 10 CSS rulesets */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    background-color: black;
+    color: antiquewhite;
+}
+
+/* For body */
+html, body {
+    font-size: 18pt;
+}
+
+/* For main */
+main {
+    max-width: 75%;
+    margin: auto;
+}
+
+/* For h1 headers */
+h1 {
+    color: green;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* For paragraphs */
+p {
+    font-size: 1rem;
+    line-height: 1;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* For input boxes */
+input {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+/* For input submit */
+input[type=submit] {
+    background-color: darkgreen;
+    color: white;
+    font-size: 1rem;
+}
+
+/* For hovering */
+input[type=submit]:hover {
+    background-color: black;
+    color: white;
+    font-size: 1rem;
+}
+
+/* For text label*/
+input[type=text] {
+    font-size: 1rem;
+}
+
+/* For the image */
+.searchResultImage {
+    width: 75px;
+    height: 117px;
+    padding-bottom: 25px;
+}
+
+/* For error messages*/
+.not-found {
+    color: red;
+}
+
+/* For product links */
+.productLink {
+    font-size: 1rem;
+    color: greenyellow;
+}
+
+/* For h3 headers*/
+.h3Color {
+    color: darkred;
+}
+
+/* For h4 headers*/
+.h4Color {
+    color: darkred;
+}
+
+/* For table */
+.my_coolratings_table, th, td {
+    border-collapse: collapse;
+    border: 2px solid rgb(140 140 140);
+    letter-spacing: 1px;
+    padding: 10px;
+}
+
+/* For dt list */
+dt {
+    font-weight: bold;
+}
+
+/* For dd output */
+dd {
+    padding-bottom: 25px;
+}
