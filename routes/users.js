@@ -44,7 +44,7 @@ router
     try {
       
       const postedUser = await usersData.createUser(usersPostData);
-      return res.status(200).json(postedUser);
+      return res.status(201).json(postedUser);
 
     } catch (e) {
       return res.status(500).json({ error: e.message });
@@ -52,16 +52,18 @@ router
   });
 
   router
-  .route('/:userId')
+  .route('/:id')
   
     .get(async (req, res) => {
+
+      
       try {
-          req.params.userId = helpers.checkId(req.params.userId);
+          req.params.id = helpers.checkId(req.params.id);
       } catch (e) {
           return res.status(400).json({ error: e})
       }
       try {
-          const user = await usersData.getUserById(req.params.userId);
+          const user = await usersData.getUserById(req.params.id);
           return res.json(user);
       } catch (e) {
           return res.status(404).json({ error: "User Not Found!"});
@@ -70,13 +72,13 @@ router
   .delete(async (req, res) => {
     //code here for DELETE
     try {
-      req.params.userId = helpers.checkId(req.params.userId);
+      req.params.id = helpers.checkId(req.params.id);
     } catch (e) {
       return res.status(400).json({ error: e });
     }
 
     try {
-      const result = await usersData.removeUser(req.params.userId);
+      const result = await usersData.removeUser(req.params.id);
       return res.status(200).json(result);
     } catch (e) {
       return res.status(404).json({error: e});
@@ -94,7 +96,7 @@ router
     }
 
     try {
-      req.params.userId = helpers.checkId(req.params.userId);
+      req.params.id = helpers.checkId(req.params.id);
       updatedUserData.userName = helpers.validateString(updatedUserData.userName, 'userName', 12);
       updatedUserData.password = helpers.validatePassword(updatedUserData.password, 'password', 12);
       updatedUserData.userType = helpers.validateString(updatedUserData.userType, 'userType');
@@ -107,7 +109,7 @@ router
 
     try {
       const updatedUser = await usersData.updateUser(
-        req.params.userId,
+        req.params.id,
         updatedUserData);
         return res.json(updatedUser);
 
