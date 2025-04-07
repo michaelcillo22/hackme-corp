@@ -4,7 +4,6 @@ const productForm = document.getElementById("createProductForm");
 if (productForm) {
 
   // Store references to our elements as stated in assignment
-  const divOutput = document.getElementById("productResult");
   const errOutput = document.getElementById("err_output");
 
   // Add our event listener
@@ -33,7 +32,7 @@ if (productForm) {
 
     try {
 
-      // Send POST to server route for createProduct
+      // AJAX: Send POST to server route for createProduct
       const productResponse = await fetch('/products/createproduct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -48,15 +47,18 @@ if (productForm) {
       
       // If product could not be created, throw error
       if (!productResponse.ok) {
-        resultDiv.innerText = "Error: " + productResult.productError;
+        resultDiv.innerText = "Error: " + productResult.error;
       } else {
-        resultDiv.innerText = "Woohoo! Product created successfully :D\n" + JSON.stringify(productResult, null, 2);
+
+        // Redirect to home product page
+        window.location.href = "/products";
 
         // Ensure to reset form upon analysis completion
         productForm.reset();
       }
 
     } catch (error) {
+      console.error("AJAX Error:", error);
       errOutput.innerHTML += `<p>${error}</p>`;
       
       // Ensure to reset form upon analysis completion

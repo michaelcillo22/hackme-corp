@@ -98,96 +98,106 @@ router.route('/searchproducts').post(async (req, res) => {
   }
 });
 
+// Create our product route
+router
+    .route('/createproduct')
+
+    // Show our create product page handlebar
+    .get(async (req, res) => {
+        try {
+            res.render("createProduct", { title: "List a New Product" });
+        } catch (e) {
+            return res.status(400).render("productError", { errorMsg: e.toString() });
+        }
+    })
+    .post(async (req, res) => {
+        try {
+
+        // Declare the variables we will be adding as input
+        const {
+            category,
+            vendor,
+            name,
+            description,
+            price,
+            photos,
+            condition,
+            status
+        } = req.body;
+
+        // Call our createProduct method to create method in DB
+        const createNewProduct = await productInfo.createProduct(
+            category,
+            vendor,
+            name,
+            description,
+            parseFloat(price),                          // Ensure price is a number, not string
+            Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
+            condition,
+            status
+        );
+        
+        // Ensure to send new product to JSON, status 201 meaning a new resource, aka product, was successfully created
+        res.status(201).json(createNewProduct);
+        } catch (e) {
+            return res.status(400).json({ error: e.toString() });
+        }
+    });
+
 router.route('/:id').get(async (req, res) => {
-  // code here for GET a single product
-  // try catch for checking product data first
-  let productData;
-  try {
+    // code here for GET a single product
+    // try catch for checking product data first
+    let productData;
+    try {
+        
+        // Check id first
+        productData = helpers.checkId(req.params.id, "Product ID");
     
-    // Check id first
-    productData = helpers.checkId(req.params.id, "Product ID");
-
-  } catch (e) {
-    return res.status(400).render("productError", {errorMsg: "There are no fields in the request body."});
-  }
-
-  // Check the movie results
-  let productResults;
-  try {
-
-    // Now call searchMovieById method from movies.js
-    productResults = await productInfo.searchProductById(productData);
-
-    // Check if matches were found, then render
-    if (!productResults || productResults.Response === "False" || !productResults.name || productResults.name === "N/A") {
-      return res.status(404).render("productError", {
-        errorMsg: `We're sorry, but no results were found for ${productData}`
-      })
+    } catch (e) {
+        return res.status(400).render("productError", {errorMsg: "There are no fields in the request body."});
     }
-  
-  } catch (e) {
-
-    // Use our custom code from axios
-    if (e.code === "PRODUCT_NOT_FOUND") {
-      return res.status(404).render("productError", {
-        errorMsg: `We're sorry, but no results were found for ${productData}`
-      })
+    
+    // Check the movie results
+    let productResults;
+    try {
+    
+        // Now call searchMovieById method from movies.js
+        productResults = await productInfo.searchProductById(productData);
+    
+        // Check if matches were found, then render
+        if (!productResults || productResults.Response === "False" || !productResults.name || productResults.name === "N/A") {
+        return res.status(404).render("productError", {
+            errorMsg: `We're sorry, but no results were found for ${productData}`
+        })
+        }
+    
+    } catch (e) {
+    
+        // Use our custom code from axios
+        if (e.code === "PRODUCT_NOT_FOUND") {
+        return res.status(404).render("productError", {
+            errorMsg: `We're sorry, but no results were found for ${productData}`
+        })
+        }
+        // If no input was put or just empty spaces, throw error
+        return res.status(400).render("productError", {errorMsg: e.toString()});
     }
-    // If no input was put or just empty spaces, throw error
-    return res.status(400).render("productError", {errorMsg: e.toString()});
-  }
-
-  // When successful, render to movieSearchResults.handlebar
-  return res.status(200).render("productById", {
-    category: productResults.category,  
-    vendor: productResults.vendor,      
-    name: productResults.name,       
-    description: productResults.description,
-    price: productResults.price,
-    photos: productResults.photos,
-    condition: productResults.condition,  
-    status: productResults.status,    
-    // reviews: productResults.reviewsArray,
-    overallRating: productResults.overallRatingValue,
-    productListedDate: productResults.productListedDate 
-  });
+    
+    // When successful, render to movieSearchResults.handlebar
+    return res.status(200).render("productById", {
+        category: productResults.category,  
+        vendor: productResults.vendor,      
+        name: productResults.name,       
+        description: productResults.description,
+        price: productResults.price,
+        photos: productResults.photos,
+        condition: productResults.condition,  
+        status: productResults.status,    
+        // reviews: productResults.reviewsArray,
+        overallRating: productResults.overallRatingValue,
+        productListedDate: productResults.productListedDate 
+    });
 });
 
 //export router
 export default router;
-
-// Create our product route
-router.route('/createproduct').post(async (req, res) => {
-
-    try {
-
-    // Declare the variables we will be adding as input
-    const {
-        category,
-        vendor,
-        name,
-        description,
-        price,
-        photos,
-        condition,
-        status
-    } = req.body;
-
-    // Call our createProduct method to create method in DB
-    const createNewProduct = await productInfo.createProduct(
-        category,
-        vendor,
-        name,
-        description,
-        parseFloat(price),                          // Ensure price is a number, not string
-        Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
-        condition,
-        status
-    );
-      
-    // Ensure to send new product to JSON, status 201 meaning a new resource, aka product, was successfully created
-    res.status(201).json(createNewProduct);
-    } catch (e) {
-        return res.status(400).render("productError", { errorMsg: e.toString() });
-    }
-});
