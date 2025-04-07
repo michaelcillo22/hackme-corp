@@ -2,7 +2,7 @@
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
 
 import express from 'express';
-import { seedDB } from './RDUsersseed.js';
+import { seedDB } from './RDUsersSeed.js';
 const app = express();
 // import configRoutes from './routes/index.js';
 
