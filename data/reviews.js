@@ -248,7 +248,7 @@ export const removeReview = async (reviewId) => {
 
   // Check if the product cannot be updated
   if (!newProductUpdate) {
-    throw `Oh no! The review with id of ${trimmedID} does not exist, so it cannot be deleted :(`;
+    throw `Oh no! The review with id of ${reviewId} does not exist, so it cannot be deleted :(`;
   }
 
   // Return product object that the review belonged to show that the review sub-document was removed from the movie document

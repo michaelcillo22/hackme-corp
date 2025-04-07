@@ -305,3 +305,74 @@ export const updateProduct = async (
   productUpdatedInfo._id = productUpdatedInfo._id.toString();
   return productUpdatedInfo;
 };
+
+export const searchProductByName = async (name) => {
+
+  // Let's do our basic validations, where it will be trimmed too
+  name = helpers.checkString(name, "Product Name");
+
+  try {
+
+    // Get our product collection
+    const productCollection = await products();
+
+    // Get our array of products based on search using regex for case-insensitive
+    let productResults = await productCollection.find({
+      name: {$regex: name, $options: "i"}
+    }).toArray();
+
+    let productResultsTotal = productResults.length;
+
+    // Throw error if no products were found
+    if (!productResults || productResults.length === 0) {
+      let productError = new Error(`Oh no! No products were found matching '${name}'`);
+      productError.code = "NO_RESULTS";
+      throw productError;
+    }
+
+    return productResults;
+  } catch (e) {
+    if (e.code === 'ENOTFOUND') {
+        throw 'Error: Invalid URL';
+    }
+    else if (e.response) {
+        throw `Error: ${e.response.status}: ${e.response.statusText}`;
+    }
+    else {
+        throw e;
+    }
+  }
+};
+
+export const searchProductById = async (id) => {
+  
+  // Let's do our basic validations, where it will be trimmed too
+  id = helpers.checkId(id, "Product ID");
+
+  try {
+
+    // Call our getProductById
+    let currentProduct = getProductById(id);
+
+    // Throw error if no products were found
+    if (!currentProduct) {
+      let productError = new Error(`Oh no! No product was found with ID '${id}'`);
+      productError.code = "PRODUCT_NOT_FOUND";
+      throw productError;
+    }
+
+    // Return our movie result
+    return currentProduct;
+
+  } catch (e) {
+    if (e.code === 'ENOTFOUND') {
+        throw 'Error: Invalid URL';
+    }
+    else if (e.response) {
+        throw `Error: ${e.response.status}: ${e.response.statusText}`;
+    }
+    else {
+        throw e;
+    }
+  }
+};
