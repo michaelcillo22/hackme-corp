@@ -1,0 +1,37 @@
+<!-- 
+This handlebar file will be rendered when the following route is hit: GET http://localhost:3000/
+ 
+The title of the document should be "Product Finder". You should have the title set as the <title> element of the HTML document and as an h1 in your document.
+
+Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must use at least 5 of them on this page. 
+
+
+-->
+
+<!-- HTML File -->
+<h1>hackme.corp</h1>
+<article>
+    <header>
+        <h2>{{productDescription}}</h2>
+    </header>
+</article>
+<form action="/products/searchproducts" method="post">
+    <label for="{{searchInputId}}">Enter Product Name:</label>
+    <input type="text" id="{{searchInputId}}" name="{{searchInputId}}">
+    <br><br>
+    <input type="submit" value="Search Product">
+</form>
+<article>
+    <header>
+        <h2>{{title}}</h2>
+    </header>
+</article>
+<ul>
+    {{#each products}}
+    <li>
+
+      <!-- List all available products in database -->
+      <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a> - {{this.category}} - ${{this.price}}
+    </li>
+    {{/each}}
+</ul>
