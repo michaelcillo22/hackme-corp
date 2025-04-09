@@ -1,4 +1,4 @@
-import { dbConnection, closeConnection } from './config/mongoConnection.js';
+import { dbConnection, closeConnection } from '../config/mongoConnection.js';
 import categoryMethods from '../data/categories.js';
 
 
