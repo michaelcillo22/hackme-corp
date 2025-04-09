@@ -1,0 +1,40 @@
+
+{{!-- This page will respond with a valid HTML document with the results returned from the API.
+The title of the document should be "Movies Found". You should have the title set as the <title> element of
+    the HTML document and as an h1 in your document. In an h2 element, you will print the supplied
+    searchMoviesByName.
+
+    You must also provide an a tag that links back to your / route with the text Make another search.
+
+    Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must
+    use at
+    least 5 of them on this page.
+ --}}
+
+
+{{!-- <!-- HTML File -->
+<!-- 
+This handlebar file will be rendered when the following route is hit: GET http://localhost:3000/
+ 
+The title of the document should be "Movie Finder". You should have the title set as the <title> element of the HTML document and as an h1 in your document.
+
+Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must use at least 5 of them on this page. 
+ -->
+
+<!-- HTML File --> --}}
+<h1>{{header}}</h1>
+<article>
+    <header>
+        <h2>Here are your product results for {{productSearchTerm}}</h2>
+    </header>
+</article>
+<article>
+    <ol>
+        {{#each productResultList}}
+        <li>
+            <a href="/products/{{this._id}}" class="movieLink">{{this.name}} <br> <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}"></a>
+        </li>
+        {{/each}}
+    </ol>
+    <a href="/products">Search for Another Product</a>
+</article>

@@ -1,0 +1,60 @@
+{{!
+This page will be rendered when the following route is hit: GET http://localhost:3000/movie/:id
+The title of the document should be the name of the Movie. You should have the title set as the <title> element of
+the HTML document.
+
+Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must
+use at least 5 of them on this page.
+}}
+<article>
+    <h1>{{name}}</h1>
+    <img class="searchResultImage" alt="{{name}} Poster" src="{{photos}}">
+
+    <h2>{{vendor}}</h2>
+    <section>
+        <h3 class="h3Color">Product Details</h3>
+            <dl>
+                <dt>Category:</dt>
+                <dd>{{category}}</dd>
+                <dt>Description:</dt>
+                <dd>{{description}}</dd>
+                <dt>Price:</dt>
+                <dd>{{price}}</dd>
+                <dt>Photos:</dt>
+                <dd>{{photos}}</dd>
+                <dt>Condition:</dt>
+                <dd>{{condition}}</dd>
+                <dt>Status:</dt>
+                <dd>{{status}}</dd>
+                <dt>Product Listed Date:</dt>
+                <dd>{{productListedDate}}</dd>
+            </dl>
+    </section>
+
+    {{!-- <section>
+        <h4 class="h4Color">Cast and Crew</h4>
+            <p><strong>Director:</strong> {{director}}</p>
+            <p><strong>Writer:</strong> {{writer}}</p>
+            <p><strong>Cast:</strong> {{actors}}</p>
+    </section> --}}
+
+    {{!-- <section>
+        <h4>Reviews</h4>
+        <table class="my_coolratings_table">
+        <tr>
+            <th>Source</th>
+            <th>Rating</th>
+        </tr>
+        {{#each reviews}}
+        <tr>
+            <td>{{this.reviewer_name}}</td>
+            <td>{{this.review_score}}</td>
+        </tr>
+        {{/each}}
+        </table>
+    </section> --}}
+
+    <section>
+        <a href="/products">Search for Another Product</a>
+    </section>
+</article>
