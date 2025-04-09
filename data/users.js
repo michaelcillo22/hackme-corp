@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { users } from '../config/mongoCollections.js';
-import helpers from '../helpers.js';
+import helpers from '../helpers/RDUsershelpers.js';
 import bcrypt from 'bcryptjs';
 
 const createUser = async (

@@ -1,5 +1,5 @@
-import { dbConnection, closeConnection } from './config/mongoConnection.js';
-import userMethods from './data/users.js';
+import { dbConnection, closeConnection } from '../config/mongoConnection.js';
+import userMethods from '../data/users.js';
 
 
 export async function seedDB() {
