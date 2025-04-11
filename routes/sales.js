@@ -6,11 +6,7 @@ const router = Router();
 
 //get all sales for a business with userId
 router.route('/userId').get(async (req, res) => {
-    try {
-        
-    } catch (error) {
-        return res.status(500).json({error: error});
-    }
+    
   });
 
   //get a specific sale with saleId
