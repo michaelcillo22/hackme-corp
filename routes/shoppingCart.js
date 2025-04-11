@@ -23,14 +23,6 @@ router.get('/cart/add-to-cart/:id', async (req, res) => {
   }
 });
 
-router.get('/cart/reduce/:id', (req, res) => {
-  const productId = req.params.id;
-  const cart = new Cart(req.session.cart ? req.session.cart : {});
-  cart.reduceByOne(productId);
-  req.session.cart = cart;
-  res.redirect('/cart');
-});
-
 router.get('/cart/remove/:id', (req, res) => {
   const productId = req.params.id;
   const cart = new Cart(req.session.cart ? req.session.cart : {});
