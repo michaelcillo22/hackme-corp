@@ -1,61 +1,55 @@
-import { Router } from 'express';
-import Stripe from 'stripe';    // stripe payment processing platform
-
+import { carts } from "../config/mongoCollection.js";
+import { products } from "../config/mongoCollection.js";
+import { ObjectId } from "mongodb";
+import { Router } from "express";
+import stripe from "../config/stripe.js";
 const router = Router();
-const stripe = new Stripe(stripeSecretKey);
 
-router.get('/checkout', isLoggedIn, (req, res) => {
-  if (!req.session.cart) {
-    return res.redirect('/shopping-cart');
-  }
-  const cart = new Cart(req.session.cart);
-  const errMsg = req.flash('error')[0];
+router.post("/checkout", async (req, res) => {
+    try {
+        const { userId, paymentMethodId } = req.body;
 
-  return res.render('shop/checkout', {
-    total: cart.totalPrice,
-    errMsg,
-    noError: !errMsg,
-  });
+        if (!userId || !paymentMethodId) {
+            throw new Error("User and Payment Method ID are required.");
+        }
+
+        const cartCollection = await carts();
+        const cart = await cartCollection.findOne({ userId });
+
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ error: "Cannot checkout an empty cart!" });
+        }
+
+        let total = 0;
+        for (const item of cart.items) {
+            const product = await products.findOne({ _id: new ObjectId(item.productId) });
+            if (!product) {
+                return res.status(404).json({ error: `Product ID ${item.productId} not found.` });
+            }
+            total += product.price * item.quantity;
+        }
+
+        // Process payment with Stripe
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(total * 100),
+            currency: "usd",
+            payment_method: paymentMethodId,
+            confirm: true
+        });
+
+        // Payment Successful - Clear Cart
+        await cartCollection.updateOne({ userId }, { $set: { items: [] } });
+
+        res.status(200).json({
+            message: "Payment was successful! Clearing Cart.",
+            transactionId: paymentIntent.id,
+            totalAmountPaid: total
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: error.message });
+    }
 });
-
-router.post('/checkout', isLoggedIn, async (req, res) => {
-  if (!req.session.cart) {
-    return res.redirect('/shopping-cart');
-  }
-  const cart = new Cart(req.session.cart);
-
-  try {
-    const charge = await stripe.charges.create({
-      amount: cart.totalPrice * 100,
-      currency: 'usd',
-      source: req.body.stripeToken, // obtained from Stripe.js
-      description: 'Test Charge',
-    });
-
-    const order = new Order({
-      user: req.user,
-      cart,
-      address: req.body.address,
-      name: req.body.name,
-      paymentId: charge.id,
-    });
-
-    await order.save();
-    req.flash('success', 'Successfully bought product!');
-    req.session.cart = null;
-    res.redirect('/');
-  } catch (err) {
-    req.flash('error', err.message);
-    res.redirect('/checkout');
-  }
-});
-
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  req.session.oldUrl = req.url;
-  res.redirect('/user/signin');
-}
 
 export default router;
