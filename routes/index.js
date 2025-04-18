@@ -1,15 +1,19 @@
+import homeRoutes from './home.js';
 import userRoutes from './users.js';
 import orderRoutes from './orders.js';
 import productRoutes from './products.js';
+import reviewRoutes from './reviews.js';
 // import shoppingCartRoutes from '../data/shoppingCart.js';
 // import checkoutRoutes from '../data/checkout.js';
 import {static as staticDir} from 'express';
 
 const constructorMethod = (app) => {
 
+    app.use('/', homeRoutes);
     app.use('/users', userRoutes);
     app.use('/orders', orderRoutes);
     app.use('/products', productRoutes);
+    app.use('/reviews', reviewRoutes);
     // app.use('/shoppingCarts', shoppingCartRoutes);
     // app.use('/checkout', checkoutRoutes);
 
