@@ -4,6 +4,7 @@ const router = express.Router();
 
 import {productInfo} from "../data/index.js";
 import helpers from "../helpers/helpers_CD.js";
+import categories from "../data/categories.js";
 
 router.route('/').get(async (req, res) => {
   //code here for GET will render the home handlebars file
@@ -100,14 +101,20 @@ router.route('/searchproducts').post(async (req, res) => {
 
 // Create our product route
 router
-    .route('/createproduct')
+  .route('/createproduct')
 
     // Show our create product page handlebar
-    .get(async (req, res) => {
+      .get(async (req, res) => {
         try {
-            res.render("createProduct", { title: "List a New Product" });
+          
+          // Obtain categories dynamically
+          let getAllCategories = await categories.getAllCategories();
+          return res.render("createProduct", {
+            title: "List a New Product",
+            categories: getAllCategories
+          });
         } catch (e) {
-            return res.status(400).render("productError", { errorMsg: e.toString() });
+          return res.status(400).render("productError", { errorMsg: e.toString() });
         }
     })
     .post(async (req, res) => {
@@ -183,7 +190,7 @@ router.route('/:id').get(async (req, res) => {
         return res.status(400).render("productError", {errorMsg: e.toString()});
     }
     
-    // When successful, render to movieSearchResults.handlebar
+    // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productById", {
         category: productResults.category,  
         vendor: productResults.vendor,      
