@@ -3,6 +3,7 @@ import {dbConnection, closeConnection} from '../config/mongoConnection.js';
 import * as products from '../data/products.js';
 
 const db = await dbConnection();
+await db.dropDatabase();
 
 // Test createProduct
 export async function productSeed() {
