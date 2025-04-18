@@ -5,9 +5,22 @@
 <html lang="en">
   <head>
     <title>{{title}}</title>
-    <link rel="stylesheet" href="/styles.css">  // update to align with location of styles folder
+    <link rel="stylesheet" href="public/css/styles.css">  // update to align with location of styles folder
   </head>
   <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        {{#if isAuthenticated}}
+        <a href="/auth/logout">Logout</a>
+        {{else}}
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        {{/if}}
+      </nav>
+    </header>
+
+
     {{{body}}}
     
   <footer>

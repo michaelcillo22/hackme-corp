@@ -1,0 +1,27 @@
+<main>
+    <h1>Login</h1>
+    <p>
+        Please enter your email and password to log in
+    </p>
+
+    {{#if errorMessage}}
+      <p class="error">{{errorMessage}}</p>
+    {{/if}}  
+    
+    <form action="/login" method="POST" id="login-form">
+
+        <label for="emailAddressInput">Email address:</label>
+        <input type="email" id="emailAddressInput" name="emailAddressInput" required>
+
+        <label for="passwordInput" >Password:</label>
+        <input type="password" id="passwordInput" name="passwordInput" required>
+
+        <button type="submit" class="styled-button">Login</button>
+    </form>
+
+   <p>
+        <a href="/register">Click here to register!</a>
+   </p>
+
+
+</main>

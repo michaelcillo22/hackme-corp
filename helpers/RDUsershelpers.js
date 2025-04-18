@@ -2,20 +2,23 @@
 
 
 
-const validateEmail = (str, name, minLength = 0 ) => {
+const validateEmail = (str, name) => {
 
     if (!str || typeof str !== 'string' || str.trim().length === 0) {
         throw `${name} must be a non-empty string`;
     }
-    if (str.trim().length < minLength) {
-        throw new Error(`${name} must be at least ${minLength} characters long`);
+    
+    
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(str.trim())) {
+        throw new Error(`${name} must be a valid email address.`);
+
     }
-
-    const emailRegex = /^[^\s@]+@[^\S@]+\.[^\S@]+$/;
-    return emailRegex.test(str.trim());
+    return str.trim();
 
 
-}
+};
 
 const validatePassword = (str, name, minLength) => {
 

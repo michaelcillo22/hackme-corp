@@ -16,7 +16,7 @@ const createUser = async (
         throw new Error('You must enter valid inputs for all fields.');
     }
 
-    userID = helpers.validateEmail(userID, 'UserID', 7);
+    userID = helpers.validateEmail(userID, 'UserID');
     userName = helpers.validateString(userName, 'userName', 2);
     password = helpers.validatePassword(password, 'password', 12);
     userType = helpers.validateString(userType, 'userType');    
@@ -49,6 +49,37 @@ const createUser = async (
 
   
     return newUser;
+};
+
+const loginUser = async (userID, password) => {
+
+  if (!userID || !password) {
+    throw new Error('You must enter valid inputs for all fields');
+  }
+
+  userID = helpers.validateEmail(userID, 'userID');
+  
+
+  const usersCollection = await users();
+  const user = await usersCollection.findOne({userID});
+  if (!user) {
+    throw new Error('Either the email address or password is invalid');
+  }
+  const passwordHash = user.passwordHash;
+  const passwordMatch = await bcrypt.compare(password, passwordHash);
+
+  if (!passwordMatch) {
+    throw new Error('Either the email address or password is invalid');
+  }
+
+  return {
+    _id: user._id.toString(),
+    userName: user.userName,
+    userID: user.userID,
+    userType: user.userType
+  };
+
+
 };
 
 
@@ -99,6 +130,6 @@ const removeUser = async (id) => {
     
   };
 
-  const userMethods = { createUser, getAllUsers, getUserById, removeUser };
+  const userMethods = { createUser, getAllUsers, getUserById, removeUser, loginUser };
 
   export default userMethods;

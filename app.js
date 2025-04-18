@@ -2,6 +2,7 @@ import express from 'express';
 import middleWareFunctions from './tasks/middleware.js';
 import router from './routes/index.js';  
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
+import configRoutes from './routes/index.js';
 
 // Initialize app with express
 const app = express();
@@ -30,8 +31,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware Configuration
 middleWareFunctions(app);
 
+configRoutes(app);
+
 // Use Routes
-app.use('/', router);
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

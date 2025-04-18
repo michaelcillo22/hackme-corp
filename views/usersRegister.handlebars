@@ -1,0 +1,43 @@
+<main>
+    <h1>Register</h1>
+    <p>
+        Create an account
+    </p>
+
+     {{#if errorMessage}}
+      <p class="error">{{errorMessage}}</p>
+    {{/if}}  
+
+    <form action="/register" method="POST" id="registration-form">
+
+        <label for="userNameInput">User Name:</label>
+        <input type="text" id="userNameInput" name="userNameInput" required>
+
+        
+
+        <label for="emailAddressInput">Email address:</label>
+        <input type="email" id="emailAddressInput" name="emailAddressInput" required>
+
+        <label for="passwordInput" >Password:</label>
+        <input type="password" id="passwordInput" name="passwordInput" required>
+        <small>Password must be at least 8 characters long, and must contain at least one uppercase, one lowercase, one number and one special character.</small>
+
+        <label for="confirmPasswordInput" >Confirm Password:</label>
+        <input type="password" id="confirmPasswordInput" name="confirmPasswordInput" required>
+
+        <label for="roleInput">Role:</label>
+        <select id="roleInput" name="roleInput" required>
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+            
+        </select>
+
+        <button type="submit" class="styled-button">Register</button>
+    </form>
+
+   <p>
+        <a href="/login">Already have an account?  Click here to log-in</a>
+   </p>
+
+
+</main>
