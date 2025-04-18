@@ -9,6 +9,7 @@ export const createReview = async (
   verified_purchase,  // Boolean
   reviewer_name,      // String
   reviewer_account,   // Object ID
+  review_title,       // String
   review_score,       // Number
   review_body,        // String
 ) => {
@@ -17,11 +18,17 @@ export const createReview = async (
   productId = helpers.checkId(productId, "Product ID");
   reviewer_account = helpers.checkId(reviewer_account, "Reviewer Account ID");
   reviewer_name = helpers.checkString(reviewer_name, "Reviewer Name");
+  review_title = helpers.checkString(review_title, "Review Title");
   review_body = helpers.checkString(review_body, "Review Body");
 
   // Other checks if input is provided
   if (!verified_purchase || !review_score) {
     throw "Oh no! Reviewer verification or score was not provided :(";
+  }
+
+  // Check if verified_purchase is type boolean
+  if (typeof verified_purchase !== "boolean") {
+    throw "Oh no! Verified_purchase must be a boolean :(";
   }
 
   // Check if score is pos and valid
@@ -76,6 +83,7 @@ export const createReview = async (
     verified_purchase: verified_purchase,
     reviewer_name: reviewer_name,     
     reviewer_account: reviewer_account,  
+    review_title: review_title,
     review_date: reviewDate,
     review_score: review_score,       
     review_body: review_body,       
@@ -90,7 +98,7 @@ export const createReview = async (
     {returnDocument: "after"}
   );
 
-  // Check if the movie does not exist
+  // Check if the product does not exist
   if (!productUpdatedReview) {
     throw "Oh no! The product does not exist, hence cannot be updated :(";
   }
@@ -127,11 +135,11 @@ export const createReview = async (
     throw "Oh no! The product could not be updated with the new review :(";
   }
 
-  // Return movie object that the review belonged to show that the review sub-document was removed from the movie document
+  // Return product object that the review belonged to show that the review sub-document was removed from the product document
   return newProductUpdate;
 };
 
-// Populate all reviews for the movie
+// Populate all reviews for the product
 export const getAllReviews = async (productId) => {
 
   // Validate productId
@@ -150,7 +158,7 @@ export const getAllReviews = async (productId) => {
     throw "Oh no! There is no product with the ID mentioned :(";
   }
 
-  // Intiialzie our review array list of that particular movie
+  // Intiialzie our review array list of that particular product
   let ourReviewList = currentProduct.reviews;
 
   // Check if review array is empty, we should return empty
@@ -197,59 +205,59 @@ export const getReview = async (reviewId) => {
   return currentReview;
 };
 
-// Remove review from inventory
-export const removeReview = async (reviewId) => {
+// // Remove review from inventory
+// export const removeReview = async (reviewId) => {
   
-  // Validate id
-  reviewId = helpers.checkId(reviewId, "Review ID");
+//   // Validate id
+//   reviewId = helpers.checkId(reviewId, "Review ID");
 
-  // Get our product collection ready
-  const productCollection = await products();
+//   // Get our product collection ready
+//   const productCollection = await products();
 
-  // Initialize our product deletion info and remove review
-  const reviewDeletionInfo = await productCollection.findOneAndUpdate(
-    {"reviews._id": new ObjectId(reviewId)},
-    {$pull: {reviews: {_id: new ObjectId(reviewId)}}},
-    {returnDocument: "after" }
-  );
+//   // Initialize our product deletion info and remove review
+//   const reviewDeletionInfo = await productCollection.findOneAndUpdate(
+//     {"reviews._id": new ObjectId(reviewId)},
+//     {$pull: {reviews: {_id: new ObjectId(reviewId)}}},
+//     {returnDocument: "after" }
+//   );
 
-  // Check if the review cannot be removed (does not exist)
-  if (!reviewDeletionInfo) {
-    throw `Oh no! The review with id of ${reviewId} does not exist, so it cannot be deleted :(`;
-  }
+//   // Check if the review cannot be removed (does not exist)
+//   if (!reviewDeletionInfo) {
+//     throw `Oh no! The review with id of ${reviewId} does not exist, so it cannot be deleted :(`;
+//   }
 
-  // Obtain the updated movie document after the review was deleted
-  let productUpdated = reviewDeletionInfo;
+//   // Obtain the updated product document after the review was deleted
+//   let productUpdated = reviewDeletionInfo;
 
-  // Initialize our review array
-  let reviewsArray = productUpdated.reviews;
-  let overallRatingValue = 0;
+//   // Initialize our review array
+//   let reviewsArray = productUpdated.reviews;
+//   let overallRatingValue = 0;
 
-  // Perform recalculations, ensure not to divide by 0
-  if (reviewsArray.length > 0) {
-    let sumRating = 0;
-    for (let reviewTracker of reviewsArray) {
-      sumRating += reviewTracker.review_score;
-    }
+//   // Perform recalculations, ensure not to divide by 0
+//   if (reviewsArray.length > 0) {
+//     let sumRating = 0;
+//     for (let reviewTracker of reviewsArray) {
+//       sumRating += reviewTracker.review_score;
+//     }
 
-    let averageReview = sumRating / reviewsArray.length;
+//     let averageReview = sumRating / reviewsArray.length;
 
-    // Ensure the rating is rounded to 1 decimal place
-    overallRatingValue = Number((averageReview).toFixed(1));
-  }
+//     // Ensure the rating is rounded to 1 decimal place
+//     overallRatingValue = Number((averageReview).toFixed(1));
+//   }
 
-  // Now update the product with the new overall rating value
-  const newProductUpdate = await productCollection.findOneAndUpdate(
-    {_id: productUpdated._id},
-    {$set: {overallRating: overallRatingValue}},
-    {returnDocument: "after" }
-  );
+//   // Now update the product with the new overall rating value
+//   const newProductUpdate = await productCollection.findOneAndUpdate(
+//     {_id: productUpdated._id},
+//     {$set: {overallRating: overallRatingValue}},
+//     {returnDocument: "after" }
+//   );
 
-  // Check if the product cannot be updated
-  if (!newProductUpdate) {
-    throw `Oh no! The review with id of ${reviewId} does not exist, so it cannot be deleted :(`;
-  }
+//   // Check if the product cannot be updated
+//   if (!newProductUpdate) {
+//     throw `Oh no! The product with review id of ${reviewId} does not exist, so it cannot be deleted :(`;
+//   }
 
-  // Return product object that the review belonged to show that the review sub-document was removed from the movie document
-  return newProductUpdate;
-};
+//   // Return product object that the review belonged to show that the review sub-document was removed from the product document
+//   return newProductUpdate;
+// };
