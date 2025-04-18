@@ -76,9 +76,10 @@ export async function seedDB() {
         console.log('Seeding complete!');
       } catch (e) {
         console.error('Error seeding the database:', e);
-      } finally {
-        await closeConnection();
-      }
+      } 
+      // finally {
+      //   await closeConnection();
+      // }
       }
     
     

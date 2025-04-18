@@ -53,6 +53,7 @@ const seedOrders = async () => {
 // Execute seeding
 seedOrders().catch((error) => {
     console.error("Error seeding orders:", error);
-}).finally(() => {
-    process.exit();
-});
+})
+// .finally(() => {
+//     process.exit();
+// });
