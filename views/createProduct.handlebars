@@ -4,7 +4,12 @@
 {{!-- Create our form server request for listing product--}}
 <form id = "createProductForm">
     <label for = "category">Category:</label>
-    <input type = "text" id = "category" name = "category" required><br>
+    <select id = "category" name = "category" required>
+      <option value = "">-- Choose Category --</option>
+      {{#each categories}}
+        <option value = "{{this.categoryName}}">{{this.categoryName}}</option>
+      {{/each}}
+    </select><br>
     
     <label for = "vendor">Vendor:</label>
     <input type = "text" id = "vendor" name = "vendor" required><br>
@@ -22,27 +27,25 @@
     <input type = "text" id = "photos" name = "photos" required><br>
     
     <label for = "condition">Condition:</label>
-    {{!-- <select id="condition" name="condition" required>
-      <option value="New">New</option>
-      <option value="Used">Used</option>
-    </select><br> --}}
-    <input type = "text" id = "condition" name = "condition" required><br>
+    <select id = "condition" name = "condition" required>
+      <option value = "New">New</option>
+      <option value = "Used">Used</option>
+    </select><br>
 
-    <label for="status">Status:</label>
-    {{!-- <select id="status" name="status" required>
-      <option value="In stock">In stock</option>
-      <option value="Out of stock">Out of stock</option>
-    </select><br> --}}
-    <input type = "text" id = "status" name = "status" required><br>
+    <label for = "status">Status:</label>
+    <select id = "status" name = "status" required>
+      <option value = "In stock">In stock</option>
+      <option value = "Out of stock">Out of stock</option>
+    </select><br>
     
     <button type = "submit">List Product</button>
 </form>
 
-    <!-- Insert our product results in div -->
-    <div id = "productResult"></div>
+<!-- Insert our product results in div -->
+<div id = "productResult"></div>
 
-    <!-- If there is an error -->
-    <div id = "err_output"></div>
+<!-- If there is an error -->
+<div id = "err_output"></div>
 
-  <!-- Get our external JavaScript file -->
-  <script src = "/public/js/productClient.js"></script>
+<!-- Get our external JavaScript file -->
+<script src = "/public/js/productClient.js"></script>
