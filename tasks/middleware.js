@@ -23,6 +23,15 @@ export default (app) => {
     app.use(helmet()); // Security headers
     app.use(compression());
 
+    app.get('/', (req, res) => {
+        res.render('home', {
+            title: 'Home',
+            isAuthenticated: req.session && req.session.userId,
+            userName: req.session && req.session.userName,
+        });
+    });
+    
+
     app.use('/', async (req, res, next) => {
 
         if (req.originalUrl.startsWith('/public')) {
@@ -39,9 +48,7 @@ export default (app) => {
                 const user = await usersCollection.findOne({ _id: new ObjectId(req.session.userId) });
             
                 req.session.userType = user ? user.userType : null;
-                } else {
-                    req.userType = null;
-                }
+                } 
                 
             }
         
@@ -55,14 +62,14 @@ export default (app) => {
         res.locals.isAuthenticated = req.isAuthenticated;
         res.locals.userType = req.userType;
 
-        if (req.isAuthenticated && req.originalUrl === 'auth/login') {
+        if (req.isAuthenticated && req.originalUrl === '/auth/login') {
             console.log('Authenticated user trying to access login, redirected to home');
-            return res.redirect('auth/home');
+            return res.redirect('/auth/home');
         }
     
-        else if (req.isAuthenticated && !['auth/logout', 'auth/error', 'auth/login', 'auth/register']) {
+        else if (req.isAuthenticated && !['/auth/logout', '/auth/error', '/auth/login', '/auth/register'].includes(req.originalUrl)) {
             console.log('Redirecting authenticated user to home');
-            return res.redirect('/home');
+            return res.redirect('/auth/home');
         }  
     
         next();   

@@ -8,7 +8,7 @@
       <p class="error">{{errorMessage}}</p>
     {{/if}}  
 
-    <form action="/register" method="POST" id="registration-form">
+    <form action="/auth/register" method="POST" id="registration-form">
 
         <label for="userNameInput">User Name:</label>
         <input type="text" id="userNameInput" name="userNameInput" required>
@@ -36,7 +36,7 @@
     </form>
 
    <p>
-        <a href="/login">Already have an account?  Click here to log-in</a>
+        <a href="/auth/login">Already have an account?  Click here to log-in</a>
    </p>
 
 
