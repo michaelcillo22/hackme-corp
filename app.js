@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 // Import seed files
 import * as productSeed from './tasks/productSeed.js';
 import * as categorySeed from './tasks/RDCatseed.js';
+import * as userSeed from './tasks/RDUsersseed.js';
+import * as orderSeed from './tasks/seedOrders.js'
 
 // Initialize app with express
 const app = express();
@@ -31,8 +33,10 @@ app.use('/public', express.static(path.join(directoryName, 'public')));
 
   try {
     //await ; use this for seed files
+    userSeed.seedDB();
     categorySeed.seedDB();
     productSeed.productSeed();
+
 
   } catch (e) {
     console.error('Errors seeding or server setup:', e);
