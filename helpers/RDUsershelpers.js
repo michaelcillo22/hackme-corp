@@ -57,7 +57,7 @@ const validateString = (str, name, minLength = 0) => {
     if (str.trim().length < minLength) {
         throw new Error(`${name} must be at least ${minLength} characters long`);
     }
-    if (name === 'userType' && str !== 'Seller' && str!== 'Buyer' ) {
+    if (name === 'userType' && str !== 'seller' && str!== 'buyer' ) {
       throw new Error('User type can only be a buyer or a seller');
     }
     

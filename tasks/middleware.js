@@ -24,19 +24,20 @@ export default (app) => {
     app.use(compression());
 
     app.get('/', (req, res) => {
+
+        const isAuthenticated = req.session && req.session.userId;
+        const userName = req.session && req.session.userName;
         res.render('home', {
             title: 'Home',
-            isAuthenticated: req.session && req.session.userId,
-            userName: req.session && req.session.userName,
+            isAuthenticated,
+            userName,
         });
     });
     
 
-    app.use('/', async (req, res, next) => {
+    app.use('/auth', async (req, res, next) => {
 
-        if (req.originalUrl.startsWith('/public')) {
-            return next();
-        }
+        
         try {
             const timestamp = new Date().toUTCString();
             req.isAuthenticated = req.session && req.session.userId;
@@ -61,16 +62,6 @@ export default (app) => {
     
         res.locals.isAuthenticated = req.isAuthenticated;
         res.locals.userType = req.userType;
-
-        if (req.isAuthenticated && req.originalUrl === '/auth/login') {
-            console.log('Authenticated user trying to access login, redirected to home');
-            return res.redirect('/auth/home');
-        }
-    
-        else if (req.isAuthenticated && !['/auth/logout', '/auth/error', '/auth/login', '/auth/register'].includes(req.originalUrl)) {
-            console.log('Redirecting authenticated user to home');
-            return res.redirect('/auth/home');
-        }  
     
         next();   
     

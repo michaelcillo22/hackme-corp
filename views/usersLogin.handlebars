@@ -8,7 +8,7 @@
       <p class="error">{{errorMessage}}</p>
     {{/if}}  
     
-    <form action="/login" method="POST" id="login-form">
+    <form action="/auth/login" method="POST" id="login-form">
 
         <label for="emailAddressInput">Email address:</label>
         <input type="email" id="emailAddressInput" name="emailAddressInput" required>
@@ -20,7 +20,7 @@
     </form>
 
    <p>
-        <a href="/register">Click here to register!</a>
+        <a href="/auth/register">Click here to register!</a>
    </p>
 
 
