@@ -23,4 +23,6 @@ export const users = getCollectionFn('users');
 export const ordersData = getCollectionFn('orders');
 export const categories = getCollectionFn('categories');
 export const sales = getCollectionFn('sales');
+export const carts = getCollectionFn('carts');
+
 
