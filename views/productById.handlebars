@@ -1,10 +1,5 @@
 {{!
-This page will be rendered when the following route is hit: GET http://localhost:3000/movie/:id
-The title of the document should be the name of the Movie. You should have the title set as the <title> element of
-the HTML document.
-
-Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must
-use at least 5 of them on this page.
+This page will be rendered to display a single product's page
 }}
 <article>
     <h1>{{name}}</h1>
@@ -20,8 +15,8 @@ use at least 5 of them on this page.
                 <dd>{{description}}</dd>
                 <dt>Price:</dt>
                 <dd>{{price}}</dd>
-                <dt>Photos:</dt>
-                <dd>{{photos}}</dd>
+                <dt hidden>Photos:</dt>
+                <dd hidden>{{photos}}</dd>
                 <dt>Condition:</dt>
                 <dd>{{condition}}</dd>
                 <dt>Status:</dt>
@@ -33,41 +28,34 @@ use at least 5 of them on this page.
 
     <section>
         <h4>Reviews</h4>
-        <table class="my_coolratings_table">
-            <tr>
-                <th>Source</th>
-                <th>Rating</th>
-            </tr>
+        <ol>
             {{#each reviews}}
-            <tr>
-                <td>{{this.reviewer_name}}</td>
-                <td>{{this.review_title}}</td>
-                <td>{{this.review_date}}</td>
-                <td>{{this.review_score}}</td>
-                <td>{{this.review_body}}</td>
-                <td>{{this.comments}}</td>
-                <td>{{this.helpfulness}}</td>
-            </tr>
+            <li>Name: {{this.reviewer_name}}</li>
+            <ul>
+                <li>{{this.review_title}}</li>
+                <li>Date: {{this.review_date}}</li>
+                <li>Rating: {{this.review_score}}</li>
+                <li>Review: {{this.review_body}}</li>
+                <li>Comments: {{this.comments}}</li>
+                <li>Likes: {{this.helpfulness}}</li>
+            </ul>
             {{/each}}
-        </table>
+        </ol>
     </section>
 
     {{!-- Write our review --}}
     <section>
-        <h4>Review Product</h4>
+        <br><h4>Review Product</h4>
         <form method = "POST" action = "/reviews/{{_id}}">
 
             <!-- Make this hidden so route can double‑check the productId -->
             <input type = "hidden" name = "productId" value = "{{_id}}">
 
-            {{!-- <label for = "reviewer_name">Your Name</label>
-            <input type = "text" id = "reviewer_name" name = "reviewer_name" required> --}}
+            <label for = "review_score">Rating 1-5</label>
+            <input type = "number" id = "review_score" name = "review_score" min = "1" max = "5" step = "0.1" required><br><br>
 
-            <label for = "review_score">Rating (1–5)</label>
-            <input type = "number" id = "review_score" name = "review_score" min = "1" max = "5" step = "0.1" required>
-
-            <label for = "review_body">Write Your Review</label>
-            <textarea id = "review_body" name = "review_body" required></textarea>
+            <label for = "review_body">Write Your Review</label><br>
+            <textarea id = "review_body" name = "review_body" required></textarea><br>
 
             <button type="submit">Submit Review</button>
         </form>
