@@ -44,7 +44,7 @@ router
 
 
     try {
-      const newUser = await createUser(userID, userName, password, userType);
+      const newUser = await usersData.createUser(userID, userName, password, userType);
       res.redirect('/auth/login');
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -56,13 +56,12 @@ router
   .get(async (req, res) => {
     //code here for GET
     console.log('GET /login route triggered');
-    try {
-      res.status(200).render('usersLogin');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error loading login page');
+    if (req.isAuthenticated) {
+      return res.redirect('/home');
     }
-  })
+      res.status(200).render('usersLogin');
+    })
+
   .post(async (req, res) => {
     //code here for POST
     const { emailAddressInput: userID, passwordInput: password } = req.body;
@@ -73,7 +72,7 @@ router
 
     try {
       
-      const user = await loginUser(userID, password);
+      const user = await usersData.loginUser(userID, password);
       console.log('User authenticated:', user);
 
       req.session.userId = user._id;
@@ -98,7 +97,7 @@ router
         }
         console.log('user logout successful');
   
-        res.status(200).render('logout');
+        res.status(200).render('usersLogout');
       });
     } else {
       res.redirect('/login');
