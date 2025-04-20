@@ -1,7 +1,7 @@
 import { ordersData } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 
-const seedOrders = async () => {
+export const seedOrders = async () => {
     const ordersCollection = await ordersData();
     const db = ordersCollection.s.db;
 
@@ -53,6 +53,4 @@ const seedOrders = async () => {
 // Execute seeding
 seedOrders().catch((error) => {
     console.error("Error seeding orders:", error);
-}).finally(() => {
-    process.exit();
-});
+})
