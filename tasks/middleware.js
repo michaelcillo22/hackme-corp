@@ -6,6 +6,10 @@ import helmet from 'helmet';    // Security middleware for Express apps to prote
 import compression from 'compression';
 import { engine } from 'express-handlebars';
 import { users } from '../config/mongoCollections.js';
+import { fileURLToPath } from 'url';
+
+const fileName = fileURLToPath(import.meta.url);
+const directoryName = path.dirname(fileName);
 
 
 export default (app) => {
@@ -24,6 +28,7 @@ export default (app) => {
     app.use(compression());
 
     app.get('/', (req, res) => {
+        console.log('Root route accessed');
         res.render('home', {
             title: 'Home',
             isAuthenticated: req.session && req.session.userId,

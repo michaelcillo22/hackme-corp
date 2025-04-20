@@ -1,8 +1,14 @@
 import express from 'express';
 import middleWareFunctions from './tasks/middleware.js';
-import router from './routes/index.js';  
+ 
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
 import configRoutes from './routes/index.js';
+
+
+import * as productSeed from './tasks/seedProductsReviews.js';
+import * as categorySeed from './tasks/RDCatseed.js';
+import * as userSeed from './tasks/RDUsersseed.js';
+import * as orderSeed from './tasks/seedOrders.js'
 
 // Initialize app with express
 const app = express();
@@ -19,6 +25,10 @@ const PORT = process.env.PORT || 5000;
   console.log('Connected to MongoDB!');
 
   try {
+
+    userSeed.seedDB();
+    categorySeed.seedDB();
+    productSeed.productReviewSeed();
     //await ; use this for seed files
     
   } catch (e) {

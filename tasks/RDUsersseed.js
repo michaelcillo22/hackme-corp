@@ -6,7 +6,7 @@ export async function seedDB() {
   const db = await dbConnection();
 
     try {
-        await db.collection('users').drop();
+        // await db.collection('users').drop();
     console.log('Dropped existing users collection.');
   } catch (e) {
     console.log('Users collection does not exist yet. No need to drop.');
@@ -20,65 +20,63 @@ export async function seedDB() {
           'user1@example.com',
           'John Doe',
           'Passworgggggd123!',
-          'Buyer'
+          'buyer'
         );
     
         const user2 = await userMethods.createUser(
           'user2@example.com',
           'Jane Smith',
           'SecurePass456!',
-          'Buyer'
+          'buyer'
         );
     
         const user3 = await userMethods.createUser(
           'user3@example.com',
           'Emily Johnson',
           'MyPassword789!',
-          'Seller'
+          'seller'
         );
     
         const user4 = await userMethods.createUser(
           'user4@example.com',
           'Michael Brown',
           'BrownieSecure009!',
-          'Seller'
+          'seller'
         );
     
         const user5 = await userMethods.createUser(
           'user5@example.com',
           'Chris Green',
           'GreenMonster667!',
-          'Seller'
+          'seller'
         );
     
         const user6 = await userMethods.createUser(
           'user6@example.com',
           'Sophia White',
           'WhiteRabbit2025!',
-          'Seller'
+          'seller'
         );
     
         const user7 = await userMethods.createUser(
           'user7@example.com',
           'David Black',
           'BlackMaggggic998!',
-          'Seller'
+          'seller'
         );
     
         const user8 = await userMethods.createUser(
           'user8@example.com',
           'Olivia Blue',
           'BlueSkggggggy445!',
-          'Buyer'
+          'buyer'
         );
     
         console.log('Users successfully added!');
         console.log('Seeding complete!');
       } catch (e) {
         console.error('Error seeding the database:', e);
-      } finally {
-        await closeConnection();
-      }
+      } 
       }
     
     

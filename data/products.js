@@ -5,7 +5,7 @@ import {categories} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
 
 // Listing a product
-export const createProduct = async (
+const createProduct = async (
   category,     // String
   vendor,       // String
   name,         // Allow string and num
@@ -123,7 +123,7 @@ export const createProduct = async (
 };
 
 // Populate all of our products from inventory
-export const getAllProducts = async () => {
+const getAllProducts = async () => {
 
   // Initialize our product collection
   const productCollection = await products();
@@ -146,7 +146,7 @@ export const getAllProducts = async () => {
 };
 
 // Get Product ID
-export const getProductById = async (productId) => {
+const getProductById = async (productId) => {
 
   // Validate id
   productId = helpers.checkId(productId);
@@ -167,7 +167,7 @@ export const getProductById = async (productId) => {
 };
 
 // Remove product from inventory
-export const removeProduct = async (productId) => {
+const removeProduct = async (productId) => {
   
   // Validate id
   productId = helpers.checkId(productId);
@@ -190,7 +190,7 @@ export const removeProduct = async (productId) => {
 };
 
 // TO DO: Update product listing
-export const updateProduct = async (
+const updateProduct = async (
   productId,
   category,
   vendor,
@@ -304,3 +304,7 @@ export const updateProduct = async (
   productUpdatedInfo._id = productUpdatedInfo._id.toString();
   return productUpdatedInfo;
 };
+
+const productFunctions = { createProduct, getAllProducts, removeProduct, getProductById, updateProduct };
+
+export default productFunctions;

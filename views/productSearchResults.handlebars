@@ -1,0 +1,16 @@
+<h1>{{header}}</h1>
+<article>
+    <header>
+        <h2>Here are your product results for {{productSearchTerm}}</h2>
+    </header>
+</article>
+<article>
+    <ol>
+        {{#each productResultList}}
+        <li>
+            <a href="/products/{{this._id}}" class="productLink">{{this.name}} <br> <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}"></a>
+        </li>
+        {{/each}}
+    </ol>
+    <a href="/products">Search for Another Product</a>
+</article>
