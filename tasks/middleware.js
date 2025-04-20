@@ -1,8 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import flash from 'connect-flash';
-import path from 'path';    // Cross-platform file path utilities
-import helmet from 'helmet';    // Security middleware for Express apps to protect against common vulnerabilities (xss)
+import path from 'path';    // Cross-platform file path utilities  // Security middleware for Express apps to protect against common vulnerabilities (xss)
 import compression from 'compression';
 import { engine } from 'express-handlebars';
 import { users } from '../config/mongoCollections.js';
@@ -24,7 +23,7 @@ export default (app) => {
     app.use(flash());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use(helmet()); // Security headers
+    // Security headers
     app.use(compression());
 
     app.get('/', (req, res) => {
@@ -38,8 +37,11 @@ export default (app) => {
     
 
     app.use('/', async (req, res, next) => {
+        console.log('Middleware processing started');
+
 
         if (req.originalUrl.startsWith('/public')) {
+            console.log('Public route detected, skipping middleware');
             return next();
         }
         try {

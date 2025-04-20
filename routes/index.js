@@ -19,7 +19,7 @@ const constructorMethod = (app) => {
     app.use('/orders', orderRoutes);
     app.use('/products', productRoutes);
     app.use('/categories', categoriesRoutes);
-    app.use('./reviews', reviewRoutes)
+    app.use('/reviews', reviewRoutes)
     // app.use('/shoppingCarts', shoppingCartRoutes);
     // app.use('/checkout', checkoutRoutes);
     app.use('/auth', authRoutes);

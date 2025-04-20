@@ -5,12 +5,12 @@ import userMethods from '../data/users.js';
 export async function seedDB() {
   const db = await dbConnection();
 
-    try {
-        // await db.collection('users').drop();
-    console.log('Dropped existing users collection.');
-  } catch (e) {
-    console.log('Users collection does not exist yet. No need to drop.');
-    }
+  //   try {
+  //       // await db.collection('users').drop();
+  //   console.log('Dropped existing users collection.');
+  // } catch (e) {
+  //   console.log('Users collection does not exist yet. No need to drop.');
+  //   }
 
     try {
         console.log('Seeding users...');

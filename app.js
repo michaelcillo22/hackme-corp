@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 5000;
 
     userSeed.seedDB();
     categorySeed.seedDB();
-    productSeed.productReviewSeed();
+    // productSeed.productReviewSeed();
     //await ; use this for seed files
     
   } catch (e) {
