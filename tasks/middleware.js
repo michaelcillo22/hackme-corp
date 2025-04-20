@@ -5,10 +5,10 @@ import path from 'path';    // Cross-platform file path utilities  // Security m
 import compression from 'compression';
 import { engine } from 'express-handlebars';
 import { users } from '../config/mongoCollections.js';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 
-const fileName = fileURLToPath(import.meta.url);
-const directoryName = path.dirname(fileName);
+// const fileName = fileURLToPath(import.meta.url);
+// const directoryName = path.dirname(fileName);
 
 
 export default (app) => {
@@ -27,23 +27,19 @@ export default (app) => {
     app.use(compression());
 
     app.get('/', (req, res) => {
+        const isAuthenticated = req.session && req.session.userId;
+        const userName = req.session && req.session.userName;
         console.log('Root route accessed');
         res.render('home', {
             title: 'Home',
-            isAuthenticated: req.session && req.session.userId,
-            userName: req.session && req.session.userName,
+            isAuthenticated,
+            userName,
         });
     });
-    
 
-    app.use('/', async (req, res, next) => {
-        console.log('Middleware processing started');
+    app.use('/auth', async (req, res, next) => {
 
-
-        if (req.originalUrl.startsWith('/public')) {
-            console.log('Public route detected, skipping middleware');
-            return next();
-        }
+        
         try {
             const timestamp = new Date().toUTCString();
             req.isAuthenticated = req.session && req.session.userId;
@@ -68,16 +64,6 @@ export default (app) => {
     
         res.locals.isAuthenticated = req.isAuthenticated;
         res.locals.userType = req.userType;
-
-        if (req.isAuthenticated && req.originalUrl === '/auth/login') {
-            console.log('Authenticated user trying to access login, redirected to home');
-            return res.redirect('/auth/home');
-        }
-    
-        else if (req.isAuthenticated && !['/auth/logout', '/auth/error', '/auth/login', '/auth/register'].includes(req.originalUrl)) {
-            console.log('Redirecting authenticated user to home');
-            return res.redirect('/auth/home');
-        }  
     
         next();   
     
@@ -86,6 +72,64 @@ export default (app) => {
         res.status(500).send('Internal Server Error');
     }     
     });
+    
+
+//     app.use('/', async (req, res, next) => {
+//         console.log('Middleware processing started');
+
+
+//         if (req.originalUrl.startsWith('/public')) {
+//             console.log('Public route detected, skipping middleware');
+//             return next();
+//         }
+
+//         else if (req.originalUrl.startsWith('/auth')) {
+           
+//         try {
+//             const timestamp = new Date().toUTCString();
+//             req.isAuthenticated = req.session && req.session.userId;
+//             req.userType = null;
+    
+//             if (req.isAuthenticated) {
+//                 if (!req.session.userType) {
+//                 const usersCollection = await users();
+//                 const user = await usersCollection.findOne({ _id: new ObjectId(req.session.userId) });
+            
+//                 req.session.userType = user ? user.userType : null;
+//                 } 
+                
+//             }
+        
+//         console.log(`Current Timestamp: ${timestamp}, Request Method: ${req.method}, Request Route: ${req.originalUrl}`);
+//         if (req.isAuthenticated) {
+//             console.log('User is authenticated');
+//         } else {
+//             console.log('User has not been authenticated');
+//         }
+    
+//         res.locals.isAuthenticated = req.isAuthenticated;
+//         res.locals.userType = req.userType;
+
+//         if (req.isAuthenticated && req.originalUrl === '/auth/login') {
+//             console.log('Authenticated user trying to access login, redirected to home');
+//             return res.redirect('/auth/home');
+//         }
+    
+//         else if (req.isAuthenticated && !['/auth/logout', '/auth/error', '/auth/login', '/auth/register'].includes(req.originalUrl)) {
+//             console.log('Redirecting authenticated user to home');
+//             return res.redirect('/auth/home');
+//         }  
+    
+//         next();   
+    
+//     } catch (error) {
+//         console.error('Error in middleware:', error);
+//         res.status(500).send('Internal Server Error');
+//     }     
+// } else {
+//     return next();
+// }
+    // });
 
      
  
