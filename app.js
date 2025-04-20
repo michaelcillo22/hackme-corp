@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Import seed files
-import * as productSeed from './tasks/productSeed.js';
+import * as productReviewSeed from './tasks/seedProductsReviews.js';
 import * as categorySeed from './tasks/RDCatseed.js';
 import * as userSeed from './tasks/RDUsersseed.js';
 import * as orderSeed from './tasks/seedOrders.js'
@@ -33,10 +33,10 @@ app.use('/public', express.static(path.join(directoryName, 'public')));
 
   try {
     //await ; use this for seed files
-    userSeed.seedDB();
-    categorySeed.seedDB();
-    productSeed.productSeed();
-
+    await userSeed.seedDB();
+    await categorySeed.seedDB();
+    // await orderSeed.seedDB();
+    await productReviewSeed.productReviewSeed();
 
   } catch (e) {
     console.error('Errors seeding or server setup:', e);

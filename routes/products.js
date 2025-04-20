@@ -192,6 +192,7 @@ router.route('/:id').get(async (req, res) => {
     
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productById", {
+        _id: productResults._id,
         category: productResults.category,  
         vendor: productResults.vendor,      
         name: productResults.name,       
@@ -200,7 +201,7 @@ router.route('/:id').get(async (req, res) => {
         photos: productResults.photos,
         condition: productResults.condition,  
         status: productResults.status,    
-        // reviews: productResults.reviewsArray,
+        reviews: productResults.reviews,
         overallRating: productResults.overallRatingValue,
         productListedDate: productResults.productListedDate 
     });
