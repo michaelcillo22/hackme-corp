@@ -17,14 +17,15 @@
         <a href="/auth/login">Login</a>
         <a href="/auth/register">Register</a>
         {{/if}}
+        <a href="/products">Products</a></li>
       </nav>
     </header>
 
-
-    {{{body}}}
-    
+    <main>
+        {{{body}}}  {{!-- This is where our view's content gets injected --}}
+    </main>
   <footer>
-    <p>2025 Hackmazon </p>
+    <p>2025 Hackmazon</p>
   </footer>
     <script src="/js/usersClientSide.js" type="module"></script>
   </body>
