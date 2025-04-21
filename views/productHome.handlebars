@@ -39,8 +39,8 @@ Your page should reference a CSS file, /public/css/styles.css; this file should 
 
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
 <br>
-{{#if user}}
+{{#if isAuthenticated}}
     <a href = "/products/createproduct" id = "productLink">List Product</a>
 {{else}}
-    <a href="/login">Please sign in to list a product</a>
+    <a href="/auth/login">Please sign in to list a product</a>
 {{/if}}

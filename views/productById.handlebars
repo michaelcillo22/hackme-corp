@@ -42,7 +42,7 @@ This page will be rendered to display a single product's page
                 <li>Likes: {{this.review_likes}}</li>
 
                 {{!-- Ensure user is logged in to be able to like and comment --}}
-                {{#if ../user}}
+                {{#if ../isAuthenticated}}
 
                     {{!-- Call our post like route --}}
                     <form method = "POST" action = "/reviews/{{../_id}}/{{this._id}}/like">
@@ -54,7 +54,7 @@ This page will be rendered to display a single product's page
                         <summary>Comments ({{this.comments.length}})</summary>
                         <ul>
                             {{#each this.comments}}
-                                <li>{{this.commenter}}: {{{this.comment_body}}}</li>
+                                <li>{{this.commenter_name}}: {{{this.comment_body}}} - Posted on {{this.comment_date}}</li>
                             {{/each}}
                         </ul>
 
@@ -65,7 +65,7 @@ This page will be rendered to display a single product's page
                         </form>
                     </details>
                 {{else}}
-                    <a href="/login">Please log in first to like or comment!</a>
+                    <a href="/auth/login">Please log in first to like or comment!</a>
                 {{/if}}
             </ul>
             {{/each}}
@@ -77,7 +77,7 @@ This page will be rendered to display a single product's page
         <br><h4>Review Product</h4>
 
         {{!-- User needs to be logged in first in order to do review  --}}
-        {{#if user}}
+        {{#if isAuthenticated}}
             <form method = "POST" action = "/reviews/{{_id}}">
 
                 <!-- Make this hidden so route can double‑check the productId -->
@@ -92,7 +92,7 @@ This page will be rendered to display a single product's page
                 <button type="submit">Submit Review</button>
             </form>
         {{else}}
-            <p>You must be logged in and have purchased this product to write a review!</p>
+            <a href="/auth/login">You must be logged in and have purchased this product to write a review!</a>
         {{/if}}
     </section>
 
