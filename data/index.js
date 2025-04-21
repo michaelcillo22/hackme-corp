@@ -6,5 +6,5 @@ import * as salesDataFunctions from './sales.js';
 export const productInfo = productDataFunctions;
 export const reviewInfo = reviewDataFunctions;
 export const orderInfo = orderDataFunctions;
-export const salesData = productDataFunctions;
+export const salesData = salesDataFunctions;
 

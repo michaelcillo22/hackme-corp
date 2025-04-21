@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import salesData from "../data/index.js"
-import * as helpers from "../helpers_kh.js";
+import {salesData} from "../data/index.js"
+import * as helpers from "../helpers/helpers_kh.js";
 
 const router = Router();
 

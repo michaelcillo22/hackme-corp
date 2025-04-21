@@ -1,6 +1,6 @@
 
 import {ObjectId} from 'mongodb';
-import * as helpers from "../helpers_kh.js";
+import * as helpers from "../helpers/helpers_kh.js";
 import {sales} from '../config/mongoCollections.js';
 
 //uses given params to create new sale with unique object id
