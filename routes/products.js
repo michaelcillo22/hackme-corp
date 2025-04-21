@@ -16,7 +16,7 @@ router.route('/').get(async (req, res) => {
     let productsList = await productInfo.getAllProducts();
 
     // Get logged-in user info
-    const userLoggedIn = req.session.user;
+    const userLoggedIn = req.isAuthenticated;
 
     // Render to home.handlebars
     res.render("productHome", {
@@ -109,64 +109,79 @@ router
   .route('/createproduct')
 
     // Show our create product page handlebar
-      .get(async (req, res) => {
-        try {
-          
-          // Obtain categories dynamically
-          let getAllCategories = await categories.getAllCategories();
-          return res.render("createProduct", {
-            title: "List a New Product",
-            categories: getAllCategories
-          });
-        } catch (e) {
-          return res.status(400).render("productError", { errorMsg: e.toString() });
+    .get(async (req, res) => {
+      try {
+        
+        // Ensure ensure user is auth and logged in
+        if (!req.isAuthenticated) {
+          return res.redirect("/auth/login");
         }
+
+        // Obtain categories dynamically
+        let getAllCategories = await categories.getAllCategories();
+        return res.render("createProduct", {
+          title: "List a New Product",
+          categories: getAllCategories
+        });
+      } catch (e) {
+        return res.status(400).render("productError", { errorMsg: e.toString() });
+      }
     })
+
     .post(async (req, res) => {
-        try {
+      try {
+        
+        // Ensure ensure user is auth and logged in
+        if (!req.isAuthenticated) {
+          return res.redirect("/auth/login");
+        }
 
         // Declare the variables we will be adding as input
-        const {
+        let {
             category,
-            vendor,
             name,
             description,
             price,
             photos,
             condition,
+            status,
             stock
         } = req.body;
 
-        // Add XSS
-        category = xss(req.body.category);
-        vendor = xss(req.body.vendor);
-        name = xss(req.body.name);
-        description = xss(req.body.description);
-        price = xss(req.body.price);
+        // Vendor is the name of user logged in
+        let vendor = req.session.userName;
+
+        // Sanitize and add XSS
+        category = xss(category);
+        name = xss(name);
+        description = xss(description);
+        condition = xss(condition);
+        status = xss(status);
+
+        // Check as number
+        price = Number(xss(price.toString()));
+        stock = Number(xss(stock.toString()));
 
         // TO DO: Switch to photo upload using Multer or ensure to sanitize each URL in photos
-        // photos = xss(req.body.photos);
-        condition = xss(req.body.condition);
-        let noXSSStock = req.body.stock.toString();
-        stock = Number(xss(noXSSStock));
 
         // Call our createProduct method to create method in DB
-        const createNewProduct = await productInfo.createProduct(
+        let createNewProduct = await productInfo.createProduct(
             category,
             vendor,
             name,
             description,
-            parseFloat(price),                          // Ensure price is a number, not string
+            price,                                      // Ensure price is a number, not string
             Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
             condition,
+            // status,
             stock
         );
         
         // Ensure to send new product to JSON, status 201 meaning a new resource, aka product, was successfully created
         res.status(201).json(createNewProduct);
-        } catch (e) {
-            return res.status(400).json({ error: e.toString() });
-        }
+      } catch (e) {
+          return res.status(400).json({ error: e.toString() });
+      }
     });
 
 router.route('/:id').get(async (req, res) => {

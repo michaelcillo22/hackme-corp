@@ -42,6 +42,12 @@ router
 
     .post(async (req, res) => {
         try {
+
+            // Ensure ensure user is auth and logged in
+            if (!req.isAuthenticated) {
+                return res.redirect("/auth/login");
+            }
+
             const reviewPostData = req.body;
     
             // Ensure there is something present in the req.body as shown in lecture 6
@@ -57,18 +63,17 @@ router
             }
     
             // Then we need to get logged-in user info
-            const userLoggedIn = req.session.user;
+            const userLoggedIn = req.session.userId;
+            const userName = req.session.userName;
 
             // Check if not logged in
-            if (!userLoggedIn || !userLoggedIn._id) {
+            if (!userLoggedIn) {
               throw "Oh no! You must be logged in to submit a review";
             }
 
-            const reviewerAccount = userLoggedIn._id;
-
             // Check the orders made by user and see if they actually have purchased this product
             let userOrders = await orderInfo.getAllOrdersByUser(
-                {userId: reviewerAccount},
+                {userId: userLoggedIn},
                 "buyer"
             );
             
@@ -77,7 +82,7 @@ router
             );
 
             // Check our validations and add XSS
-            let reviewerName = xss(helpers.checkString(userLoggedIn.userName, "Reviewer Name"));
+            let reviewerName = xss(helpers.checkString(userName, "Reviewer Name"));
             let reviewTitle = xss(helpers.checkString(reviewPostData.review_title, "Review Title"));
             let reviewBody = xss(helpers.checkString(reviewPostData.review_body, "Review Body"));
             let noXSSReviewScore = helpers.checkString(reviewPostData.review_score.toString(), "Review Score");
@@ -145,14 +150,7 @@ router
     .route('/:productId/:reviewId/like')
     .post(async (req, res) => {
         try {
-            const reviewPostData = req.body;
-    
-            // Ensure there is something present in the req.body as shown in lecture 6
-            if (!reviewPostData || Object.keys(reviewPostData).length === 0) {
-                return res.status(400).render("productError", { errorMsg: "There are no fields in the req.body" });
-            }
         
-            // Check for productId from URL
             // First do our ID validations
             let productId = helpers.checkId(req.params.productId, "Product ID");
             let reviewId = helpers.checkId(req.params.reviewId, "Review ID");
@@ -165,34 +163,35 @@ router
             }
     
             // Then we need to get logged-in user info
-            const userLoggedIn = req.session.user;
+            const userLoggedIn = req.session.userId;
 
             // Check if not logged in
-            if (!userLoggedIn || !userLoggedIn._id) {
+            if (!userLoggedIn) {
               throw "Oh no! You must be logged in to submit a comment";
             }
 
             // Call our like review function
-            await reviewInfo.likeReview(reviewId, userLoggedIn._id);
+            await reviewInfo.likeReview(reviewId, userLoggedIn);
 
             // Obtain the updated product data with reviews
             const updatedProduct = await productInfo.getProductById(productId);
-            
+
             // Success, display product with new review
-            return res.status(200).render("productById", { 
-                category: updatedProduct.category,  
-                vendor: updatedProduct.vendor,      
-                name: updatedProduct.name,       
-                description: updatedProduct.description,
-                price: updatedProduct.price,
-                photos: updatedProduct.photos,
-                condition: updatedProduct.condition,  
-                status: updatedProduct.status,  
-                stock: updatedProduct.stock, 
-                reviews: updatedProduct.reviews,
-                overallRating: updatedProduct.overallRating,
-                user: userLoggedIn
-            });
+            return res.redirect(`/products/${productId}`);
+            // return res.status(200).render("productById", { 
+            //     category: updatedProduct.category,  
+            //     vendor: updatedProduct.vendor,      
+            //     name: updatedProduct.name,       
+            //     description: updatedProduct.description,
+            //     price: updatedProduct.price,
+            //     photos: updatedProduct.photos,
+            //     condition: updatedProduct.condition,  
+            //     status: updatedProduct.status,  
+            //     stock: updatedProduct.stock, 
+            //     reviews: updatedProduct.reviews,
+            //     overallRating: updatedProduct.overallRating,
+            //     user: userLoggedIn
+            // });
         } catch (e) {
             return res.status(400).render("productError", { errorMsg: e });
         }
@@ -231,34 +230,36 @@ router
             }
     
             // Then we need to get logged-in user info
-            const userLoggedIn = req.session.user;
+            const userLoggedIn = req.session.userId;
+            const userName = req.session.userName;
 
             // Check if not logged in
-            if (!userLoggedIn || !userLoggedIn._id) {
+            if (!userLoggedIn) {
               throw "Oh no! You must be logged in to submit a comment";
             }
 
             // Call our like review function
-            await reviewInfo.createComment(reviewId, userLoggedIn._id, userLoggedIn.userName, commentBody);
+            await reviewInfo.createComment(reviewId, userLoggedIn, userName, commentBody);
 
             // Obtain the updated product data with reviews
-            const updatedProduct = await productInfo.getProductById(productId);
+            let updatedProduct = await productInfo.getProductById(productId);
             
             // Success, display product with new review
-            return res.status(200).render("productById", { 
-                category: updatedProduct.category,  
-                vendor: updatedProduct.vendor,      
-                name: updatedProduct.name,       
-                description: updatedProduct.description,
-                price: updatedProduct.price,
-                photos: updatedProduct.photos,
-                condition: updatedProduct.condition,  
-                status: updatedProduct.status,  
-                stock: updatedProduct.stock, 
-                reviews: updatedProduct.reviews,
-                overallRating: updatedProduct.overallRating,
-                user: userLoggedIn
-            });
+            return res.redirect(`/products/${productId}`);
+            // return res.status(200).render("productById", { 
+            //     category: updatedProduct.category,  
+            //     vendor: updatedProduct.vendor,      
+            //     name: updatedProduct.name,       
+            //     description: updatedProduct.description,
+            //     price: updatedProduct.price,
+            //     photos: updatedProduct.photos,
+            //     condition: updatedProduct.condition,  
+            //     status: updatedProduct.status,  
+            //     stock: updatedProduct.stock, 
+            //     reviews: updatedProduct.reviews,
+            //     overallRating: updatedProduct.overallRating,
+            //     user: userLoggedIn
+            // });
         } catch (e) {
             return res.status(400).render("productError", { errorMsg: e });
         }
