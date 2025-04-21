@@ -205,59 +205,82 @@ export const getReview = async (reviewId) => {
   return currentReview;
 };
 
-// // Remove review from inventory
-// export const removeReview = async (reviewId) => {
-  
-//   // Validate id
-//   reviewId = helpers.checkId(reviewId, "Review ID");
+// To like a review
+export const likeReview = async (reviewId, userLoggedIn) => {
 
-//   // Get our product collection ready
-//   const productCollection = await products();
+  // Validate ids
+  reviewId = helpers.checkId(reviewId, "Review ID");
+  userLoggedIn = helpers.checkId(userLoggedIn, "User ID");
 
-//   // Initialize our product deletion info and remove review
-//   const reviewDeletionInfo = await productCollection.findOneAndUpdate(
-//     {"reviews._id": new ObjectId(reviewId)},
-//     {$pull: {reviews: {_id: new ObjectId(reviewId)}}},
-//     {returnDocument: "after" }
-//   );
+  // Get our product collection ready
+  const productCollection = await products();
 
-//   // Check if the review cannot be removed (does not exist)
-//   if (!reviewDeletionInfo) {
-//     throw `Oh no! The review with id of ${reviewId} does not exist, so it cannot be deleted :(`;
-//   }
+  // Update likes on review
+  const currentProduct = await productCollection.findOneAndUpdate(
+    {"reviews._id": new ObjectId(reviewId)},
+    {$inc: {"reviews.$.review_likes": 1}},
+    {returnDocument: "after"}
+  );
 
-//   // Obtain the updated product document after the review was deleted
-//   let productUpdated = reviewDeletionInfo;
+  // Check if no review exists with that id
+  if (!currentProduct) {
+    throw "Oh no! There is no review with the ID mentioned :(";
+  }
 
-//   // Initialize our review array
-//   let reviewsArray = productUpdated.reviews;
-//   let overallRatingValue = 0;
+  return currentProduct;
+};
 
-//   // Perform recalculations, ensure not to divide by 0
-//   if (reviewsArray.length > 0) {
-//     let sumRating = 0;
-//     for (let reviewTracker of reviewsArray) {
-//       sumRating += reviewTracker.review_score;
-//     }
 
-//     let averageReview = sumRating / reviewsArray.length;
+// To create a review comment
+export const createComment = async (reviewId, userId, userName, commentBody) => {
 
-//     // Ensure the rating is rounded to 1 decimal place
-//     overallRatingValue = Number((averageReview).toFixed(1));
-//   }
+  // Validate ids and strings
+  reviewId = helpers.checkId(reviewId, "Review ID");
+  userId = helpers.checkId(userId, "User ID");
+  userName = helpers.checkString(userName, "Username");
+  commentBody = helpers.checkString(commentBody, "Comment Body");
 
-//   // Now update the product with the new overall rating value
-//   const newProductUpdate = await productCollection.findOneAndUpdate(
-//     {_id: productUpdated._id},
-//     {$set: {overallRating: overallRatingValue}},
-//     {returnDocument: "after" }
-//   );
+  // Get our product collection ready
+  const productCollection = await products();
 
-//   // Check if the product cannot be updated
-//   if (!newProductUpdate) {
-//     throw `Oh no! The product with review id of ${reviewId} does not exist, so it cannot be deleted :(`;
-//   }
+  // Set current date of when comment was posted
+  let dateNow = new Date();
+  let monthNow = dateNow.getMonth() + 1;
+  let dayNow = dateNow.getDate();
+  let yearNow = dateNow.getFullYear();
 
-//   // Return product object that the review belonged to show that the review sub-document was removed from the product document
-//   return newProductUpdate;
-// };
+  // Set format correctly
+  if (monthNow < 10) {
+    monthNow = "0" + monthNow;
+  }
+
+  if (dayNow < 10) {
+    dayNow = "0" + dayNow;
+  }
+
+  let commentDate = `${monthNow}/${dayNow}/${yearNow}`;
+  commentDate = commentDate.toString();
+
+  // Create our comments subcollection
+  let newReviewComment = {
+    _id: new ObjectId(),
+    commenter_account: userId,
+    commenter_name: userName,
+    comment_body: commentBody,
+    comment_date: commentDate
+  };
+
+  // Update review comment
+  const currentProduct = await productCollection.findOneAndUpdate(
+    {"reviews._id": new ObjectId(reviewId)},
+    {$push: {"reviews.$.comments": newReviewComment}},
+    {returnDocument: "after"}
+  );
+
+  // Check if no review exists with that id
+  if (!currentProduct) {
+    throw "Oh no! There is no review with the ID mentioned :(";
+  }
+
+  return currentProduct;
+};
