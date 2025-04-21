@@ -5,6 +5,7 @@ const router = express.Router();
 import {productInfo} from "../data/index.js";
 import helpers from "../helpers/helpers_CD.js";
 import categories from "../data/categories.js";
+import xss from "xss";
 
 router.route('/').get(async (req, res) => {
   //code here for GET will render the home handlebars file
@@ -14,12 +15,16 @@ router.route('/').get(async (req, res) => {
     // Get our available products
     let productsList = await productInfo.getAllProducts();
 
+    // Get logged-in user info
+    const userLoggedIn = req.session.user;
+
     // Render to home.handlebars
     res.render("productHome", {
       title: "Available Products",
       productDescription: "Search our available products today!",
       searchInputId: "searchProductsByName",
-      products: productsList
+      products: productsList,
+      user: userLoggedIn
     })
 
   } catch (e) {
@@ -54,7 +59,7 @@ router.route('/searchproducts').post(async (req, res) => {
     productSearchTerm = productData.searchProductsByName;
 
     // Make appropriate validations using checkString
-    productSearchTerm = helpers.checkString(productSearchTerm, "Product Search Term");
+    productSearchTerm = xss(helpers.checkString(productSearchTerm, "Product Search Term"));
   } catch (e) {
     return res.status(400).render("productError", {errorMsg: e.toString()});
   }
@@ -129,8 +134,21 @@ router
             price,
             photos,
             condition,
-            status
+            stock
         } = req.body;
+
+        // Add XSS
+        category = xss(req.body.category);
+        vendor = xss(req.body.vendor);
+        name = xss(req.body.name);
+        description = xss(req.body.description);
+        price = xss(req.body.price);
+
+        // TO DO: Switch to photo upload using Multer or ensure to sanitize each URL in photos
+        // photos = xss(req.body.photos);
+        condition = xss(req.body.condition);
+        let noXSSStock = req.body.stock.toString();
+        stock = Number(xss(noXSSStock));
 
         // Call our createProduct method to create method in DB
         const createNewProduct = await productInfo.createProduct(
@@ -141,7 +159,7 @@ router
             parseFloat(price),                          // Ensure price is a number, not string
             Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
             condition,
-            status
+            stock
         );
         
         // Ensure to send new product to JSON, status 201 meaning a new resource, aka product, was successfully created
@@ -201,6 +219,7 @@ router.route('/:id').get(async (req, res) => {
         photos: productResults.photos,
         condition: productResults.condition,  
         status: productResults.status,    
+        stock: productResults.stock,
         reviews: productResults.reviews,
         overallRating: productResults.overallRatingValue,
         productListedDate: productResults.productListedDate 

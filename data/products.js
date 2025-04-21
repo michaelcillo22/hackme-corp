@@ -10,10 +10,10 @@ export const createProduct = async (
   vendor,       // String
   name,         // Allow string and num
   description,  // String
-  price,        // Must be positive number
+  price,        // Must be a positive num
   photos,       // An array
   condition,    // String
-  status,       // String
+  stock,        // Must be a positive num
 ) => {
   
   // Validation checks
@@ -21,9 +21,8 @@ export const createProduct = async (
   vendor = helpers.checkString(vendor, "Vendor");
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
-  status = helpers.checkString(status, "Status");
   photos = helpers.checkStringArray(photos, "Photo URL");
-  photos = helpers.checkValidURL(photos, "Photo URL")
+  photos = helpers.checkValidURL(photos, "Photo URL");
 
   // Other checks if input is provided
   if ( !name || !price || !photos) {
@@ -50,7 +49,6 @@ export const createProduct = async (
   );
 
   let validConditions = ["New", "Used"];
-  let validStatus = ["In stock", "Out of stock"];
 
   if (!validCategories.includes(category)) {
     throw "Oh no! The category must be valid :(";
@@ -60,13 +58,22 @@ export const createProduct = async (
     throw "Oh no! The condition must be valid :(";
   };
 
-  if (!validStatus.includes(status)) {
-    throw "Oh no! The status must be valid :(";
-  };
-
   // Check if price is pos and valid
   if (price < 0 || isNaN(price) || typeof price !== "number") {
     throw "Oh no! Price must be a positive number :(";
+  }
+
+  // Check if stock is a pos integer num and valid
+  if (stock < 0 || !Number.isInteger(stock) || typeof stock !== "number") {
+    throw "Oh no! Stock must be a positive number :(";
+  }
+
+  // Determine status based on stock
+  let status = null;
+  if (stock === 0) {
+    status = "Out of stock";
+  } else {
+    status = "In stock";
   }
 
   // Set current date of when product is posted
@@ -91,6 +98,7 @@ export const createProduct = async (
   let reviewsArray = [];
   let overallRatingValue = 0;
 
+  // Define our new product
   let newProduct = {
     category: category,  
     vendor: vendor,      
@@ -100,6 +108,7 @@ export const createProduct = async (
     photos: photos,
     condition: condition,  
     status: status,    
+    stock: stock,
     reviews: reviewsArray,
     overallRating: overallRatingValue,
     productListedDate: productListedDate  
@@ -199,7 +208,7 @@ export const updateProduct = async (
   price,
   photos,
   condition,
-  status
+  stock
 ) => {
 
   // Validation checks
@@ -208,7 +217,6 @@ export const updateProduct = async (
   vendor = helpers.checkString(vendor, "Vendor");
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
-  status = helpers.checkString(status, "Status");
   photos = helpers.checkStringArray(photos, "Photo URL");
   photos = helpers.checkValidURL(photos, "Photo URL")
 
@@ -227,9 +235,16 @@ export const updateProduct = async (
   }
 
   // Check for valid category, condition, and status values
-  let validCategories = []; // TO DO: Obtain from Categories collection
+  // Obtain categories' names dynamically from categories collection
+  let categoryCollection = await categories();
+  let categoryArray = await categoryCollection.find({}).toArray();
+
+  // Utilize a map to obtain names of categories
+  let validCategories = categoryArray.map(currentCategory =>
+    currentCategory.categoryName
+  );
+
   let validConditions = ["New", "Used"];
-  let validStatus = ["In stock", "Out of stock"];
 
   if (!validCategories.includes(category)) {
     throw "Oh no! The category must be valid :(";
@@ -239,13 +254,22 @@ export const updateProduct = async (
     throw "Oh no! The condition must be valid :(";
   };
 
-  if (!validStatus.includes(status)) {
-    throw "Oh no! The status must be valid :(";
-  };
-
   // Check if price is pos and valid
   if (price < 0 || isNaN(price) || typeof price !== "number") {
     throw "Oh no! Price must be a positive number :(";
+  }
+
+  // Check if stock is a pos integer num and valid
+  if (stock < 0 || !Number.isInteger(stock) || typeof stock !== "number") {
+    throw "Oh no! Stock must be a positive number :(";
+  }
+
+  // Determine status based on stock
+  let status = null;
+  if (stock === 0) {
+    status = "Out of stock";
+  } else {
+    status = "In stock";
   }
 
   // Set current date of when product is posted
@@ -275,7 +299,8 @@ export const updateProduct = async (
     price: price,
     photos: photos,
     condition: condition,
-    status: status
+    status: status,
+    stock: stock
   }
 
   const theProductId = new ObjectId(productId);
