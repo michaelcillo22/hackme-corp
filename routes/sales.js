@@ -34,6 +34,7 @@ router.route('/').post(async (req, res) => {
             salesDate,
             items);
         if(!sale) throw "Unable to create a new sale.";
+        //add redirect
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
@@ -51,7 +52,7 @@ router.route('/userId').get(async (req, res) => {
     }
     try {
         const salesList = await salesData.getSaleByVendorId(user);
-        res.render('dashboard', {sales: salesList});
+        res.render('dashboard', {title: "dashboard", sales: salesList});
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
@@ -84,6 +85,7 @@ router.route('/userId/saleId').get(async (req, res) => {
     try {
         let sale = await salesData.removeSale(s);
         if(!sale) throw `Could not remove sale with sale Id ${s}`;
+        //add redirect
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
