@@ -26,11 +26,13 @@ const PORT = process.env.PORT || 5000;
 
   try {
 
-    userSeed.seedDB();
-    categorySeed.seedDB();
-    productSeed.productReviewSeed();
-    orderSeed.seedOrders();
-    // productSeed.productReviewSeed();
+    await db.dropDatabase();
+    console.log("Database dropped.")
+
+    await userSeed.seedDB();
+    await categorySeed.seedDB();
+    await productSeed.productReviewSeed();
+    await orderSeed.seedOrders();
     //await ; use this for seed files
     
   } catch (e) {
