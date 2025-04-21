@@ -1,6 +1,6 @@
 
 import {ObjectId} from 'mongodb';
-import * as helpers from "../helpers.js";
+import * as helpers from "../helpers_kh.js";
 import {sales} from '../config/mongoCollections.js';
 
 //uses given params to create new sale with unique object id
@@ -97,7 +97,7 @@ export const getSaleByOrderId = async (orderId) => {
 
 };
 
-//returns sale with given buyerId
+//returns one or more sales with given buyerId
 export const getSaleByBuyerId = async (buyerId) => {
 
     //input validation
@@ -106,10 +106,23 @@ export const getSaleByBuyerId = async (buyerId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.findOne({buyerId: buyerId});
+    const sale = await salesCollection.find({buyerId: buyerId}).toArray();
     if(sale === null) throw 'Could not find a sale with this buyerId';
     return sale;
 
+};
+
+//returns one or more sales with a given vendor id
+export const getSaleByVendorId = async (vendorId) => {
+    //input validation
+    vendorId = helpers.stringCheck(vendorId);
+    if(!ObjectId.isValid(vendorId)) throw 'Invalid object id';
+
+    //search collection for the sale
+    const salesCollection = await sales();
+    const sale = await salesCollection.find({items: {$eleMatch: {vendor: vendorId}}}).toArray();
+    if(sale === null) throw 'Could not find a sale with this buyerId';
+    return sale;
 };
 
 //delete sale with the given saleId from the collection
