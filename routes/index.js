@@ -4,7 +4,7 @@ import productRoutes from './products.js';
 import authRoutes from './auth.js';
 import categoriesRoutes from './categories.js';
 import reviewRoutes from './reviews.js';
-
+import salesRoutes from './sales.js';
 // import shoppingCartRoutes from './shoppingCart.js';
 // import checkoutRoutes from './checkout.js';
 
@@ -23,7 +23,7 @@ const constructorMethod = (app) => {
     // app.use('/shoppingCarts', shoppingCartRoutes);
     // app.use('/checkout', checkoutRoutes);
     app.use('/auth', authRoutes);
-
+    app.use('/sales', salesRoutes)
     app.use(/(.*)/, (req, res) => {
         return res.status(404).json({ error: 'Not found'});
     });
