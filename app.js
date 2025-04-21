@@ -6,7 +6,7 @@ import configRoutes from './routes/index.js';
 
 
 import * as productSeed from './tasks/seedProductsReviews.js';
- import * as categorySeed from './tasks/RDCatseed.js';
+import * as categorySeed from './tasks/RDCatseed.js';
 import * as userSeed from './tasks/RDUsersseed.js';
 import * as orderSeed from './tasks/seedOrders.js'
 
