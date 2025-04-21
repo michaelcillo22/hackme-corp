@@ -5,7 +5,7 @@ import * as reviews from '../data/reviews.js';
 import {users} from "../config/mongoCollections.js";
 
 const db = await dbConnection();
-await db.dropDatabase();
+// await db.dropDatabase();
 
 // Test createProduct
 export async function productReviewSeed() {
