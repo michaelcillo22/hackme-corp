@@ -27,7 +27,8 @@ if (productForm) {
       // Assume photos are entered as a comma-separated list
       photos: productFormData.get('photos').split(',').map(url => url.trim()),
       condition: productFormData.get('condition'),
-      status: productFormData.get('status')
+      status: productFormData.get('status'),
+      stock: Number(productFormData.get('stock')) 
     }
 
     try {
