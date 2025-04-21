@@ -1,3 +1,14 @@
+<!-- 
+This handlebar file will be rendered when the following route is hit: GET http://localhost:3000/
+ 
+The title of the document should be "Product Finder". You should have the title set as the <title> element of the HTML document and as an h1 in your document.
+
+Your page should reference a CSS file, /public/css/styles.css; this file should have at least 10 rulesets you must use at least 5 of them on this page. 
+
+
+-->
+
+<!-- HTML File -->
 <h1>hackme.corp</h1>
 <article>
     <header>
@@ -21,10 +32,15 @@
 
       <!-- List all available products in database -->
       <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a> - {{this.category}} - ${{this.price}}
+      <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}">
     </li>
     {{/each}}
 </ul>
 
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
 <br>
-<a href = "/products/createproduct" id = "productLink">List Product</a>
+{{#if user}}
+    <a href = "/products/createproduct" id = "productLink">List Product</a>
+{{else}}
+    <a href="/login">Please sign in to list a product</a>
+{{/if}}

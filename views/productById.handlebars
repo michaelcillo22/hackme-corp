@@ -1,3 +1,6 @@
+{{!
+This page will be rendered to display a single product's page
+}}
 <article>
     <h1>{{name}}</h1>
     <img class="searchResultImage" alt="{{name}} Poster" src="{{photos}}">
@@ -12,10 +15,12 @@
                 <dd>{{description}}</dd>
                 <dt>Price:</dt>
                 <dd>{{price}}</dd>
-                <dt>Photos:</dt>
-                <dd>{{photos}}</dd>
+                <dt hidden>Photos:</dt>
+                <dd hidden>{{photos}}</dd>
                 <dt>Condition:</dt>
                 <dd>{{condition}}</dd>
+                <dt>Stock:</dt>
+                <dd>{{stock}}</dd>
                 <dt>Status:</dt>
                 <dd>{{status}}</dd>
                 <dt>Product Listed Date:</dt>
@@ -25,45 +30,71 @@
 
     <section>
         <h4>Reviews</h4>
-        <table class="my_coolratings_table">
-            <tr>
-                <th>Source</th>
-                <th>Rating</th>
-            </tr>
+        <h3>{{overallRating}}</h3>
+        <ol>
             {{#each reviews}}
-            <tr>
-                <td>{{this.reviewer_name}}</td>
-                <td>{{this.review_title}}</td>
-                <td>{{this.review_date}}</td>
-                <td>{{this.review_score}}</td>
-                <td>{{this.review_body}}</td>
-                <td>{{this.comments}}</td>
-                <td>{{this.helpfulness}}</td>
-            </tr>
+            <li>Name: {{this.reviewer_name}}</li>
+            <ul>
+                <li>{{this.review_title}}</li>
+                <li>Date: {{this.review_date}}</li>
+                <li>Rating: {{this.review_score}} Stars</li>
+                <li>Review: {{this.review_body}}</li>
+                <li>Likes: {{this.review_likes}}</li>
+
+                {{!-- Ensure user is logged in to be able to like and comment --}}
+                {{#if ../user}}
+
+                    {{!-- Call our post like route --}}
+                    <form method = "POST" action = "/reviews/{{../_id}}/{{this._id}}/like">
+                        <button type = "submit">Like Review</button>
+                    </form>
+
+                    {{!-- Display our comments for each review --}}
+                    <details>
+                        <summary>Comments ({{this.comments.length}})</summary>
+                        <ul>
+                            {{#each this.comments}}
+                                <li>{{this.commenter}}: {{{this.comment_body}}}</li>
+                            {{/each}}
+                        </ul>
+
+                        {{!-- Call our comment form --}}
+                        <form method = "POST" action = "/reviews/{{../_id}}/{{this._id}}/comments">
+                            <textarea name = "comment_body" required></textarea>
+                            <button type = "submit">Add Comment</button>
+                        </form>
+                    </details>
+                {{else}}
+                    <a href="/login">Please log in first to like or comment!</a>
+                {{/if}}
+            </ul>
             {{/each}}
-        </table>
+        </ol>
     </section>
 
     {{!-- Write our review --}}
     <section>
-        <h4>Review Product</h4>
-        <form method = "POST" action = "/reviews/{{_id}}">
+        <br><h4>Review Product</h4>
 
-            <!-- Make this hidden so route can double‑check the productId -->
-            <input type = "hidden" name = "productId" value = "{{_id}}">
+        {{!-- User needs to be logged in first in order to do review  --}}
+        {{#if user}}
+            <form method = "POST" action = "/reviews/{{_id}}">
 
-            {{!-- <label for = "reviewer_name">Your Name</label>
-            <input type = "text" id = "reviewer_name" name = "reviewer_name" required> --}}
+                <!-- Make this hidden so route can double‑check the productId -->
+                <input type = "hidden" name = "productId" value = "{{_id}}">
 
-            <label for = "review_score">Rating (1–5)</label>
-            <input type = "number" id = "review_score" name = "review_score" min = "1" max = "5" step = "0.1" required>
+                <label for = "review_score">Rating 1-5</label>
+                <input type = "number" id = "review_score" name = "review_score" min = "1" max = "5" step = "0.1" required><br><br>
 
-            <label for = "review_body">Write Your Review</label>
-            <textarea id = "review_body" name = "review_body" required></textarea>
+                <label for = "review_body">Write Your Review</label><br>
+                <textarea id = "review_body" name = "review_body" required></textarea><br>
 
-            <button type="submit">Submit Review</button>
-        </form>
-        </section>
+                <button type="submit">Submit Review</button>
+            </form>
+        {{else}}
+            <p>You must be logged in and have purchased this product to write a review!</p>
+        {{/if}}
+    </section>
 
     <section>
         <a href="/products">Search for Another Product</a>
