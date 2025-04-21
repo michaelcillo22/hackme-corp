@@ -15,6 +15,13 @@ import reviewRoutes from './reviews.js';
 
 const constructorMethod = (app) => {
 
+    // This will ensure that the login state when logged in passes through every page
+    app.use(async (req, res, next) => {
+        req.isAuthenticated = Boolean(req.session.userId);
+        res.locals.isAuthenticated = req.isAuthenticated;
+        next();
+    });
+
     app.use('/users', userRoutes);
     app.use('/orders', orderRoutes);
     app.use('/products', productRoutes);
