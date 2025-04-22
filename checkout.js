@@ -12,7 +12,7 @@ const router = Router();
 router.get("/checkout/:userId", async (req, res) => {
     try {
         const userId = helpers.checkString(req.params.userId, "User ID");
-        const cart = await shoppingCartMethods.getCardByUserId(userId);
+        const cart = await shoppingCartMethods.getCartByUserId(userId);
 
         if (!cart.items.length) {
             return res.status(400).json({ error: "Your cart is empty! Add items to cart."});
@@ -30,7 +30,7 @@ router.post("/checkout/confirm", async (req, res) => {
             return res.status(401).json({ error: "User is not authenticated!" });
         }
 
-        const userId = req.user._id;
+        const userId = helpers.checkString(req.params.userId, "User ID");
         const cart = await shoppingCartMethods.getCartByUserId(userId);
 
         if (!cart.items.length) {
