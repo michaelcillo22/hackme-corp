@@ -1,10 +1,11 @@
+// TO DO:
 import {dbConnection, closeConnection} from '../config/mongoConnection.js';
 import * as products from '../data/products.js';
 import * as reviews from '../data/reviews.js';
 import {users} from "../config/mongoCollections.js";
 
 const db = await dbConnection();
-await db.dropDatabase();
+// await db.dropDatabase();
 
 // Test createProduct
 export async function productReviewSeed() {
@@ -30,7 +31,7 @@ export async function productReviewSeed() {
             120.99,       
             ["https://usedmac.com/wp-content/uploads/2007/04/ibook_g4_mid_2005.jpg"],  
             "Used",    
-            "In stock",    
+            2,    
         )
     
         console.log("Creating our second product!");
@@ -42,7 +43,7 @@ export async function productReviewSeed() {
             210.99,       
             ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqFc3P--o6t8WfBTBBv3L6t0jFGXSgAFwM3Q&s"],  
             "Used",    
-            "In stock",    
+            0,    
         )  
 
         // Make reviews
