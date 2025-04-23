@@ -8,7 +8,9 @@
     <ol>
         {{#each productResultList}}
         <li>
-            <a href="/products/{{this._id}}" class="productLink">{{this.name}} <br> <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}"></a>
+            <a href="/products/{{this._id}}" class="movieLink">{{this.name}}<br>
+            <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}">
+            </a>
         </li>
         {{/each}}
     </ol>

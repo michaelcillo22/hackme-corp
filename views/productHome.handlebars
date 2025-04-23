@@ -21,10 +21,15 @@
 
       <!-- List all available products in database -->
       <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a> - {{this.category}} - ${{this.price}}
+      <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}">
     </li>
     {{/each}}
 </ul>
 
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
 <br>
-<a href = "/products/createproduct" id = "productLink">List Product</a>
+{{#if isAuthenticated}}
+    <a href = "/products/createproduct" id = "productLink">List Product</a>
+{{else}}
+    <a href="/auth/login">Please sign in to list a product</a>
+{{/if}}
