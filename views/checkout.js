@@ -1,23 +1,42 @@
-$(document).ready(() => {
-    $("#checkout-form").submit(function (event) {
-        event.preventDefault(); 
+document.addEventListener("DOMContentLoaded", () => {
+  const paymentForm = document.getElementById("paymentForm");
 
-        const formData = {
-            name: $("#name").val(),
-            address: $("#address").val()
-        };
+  paymentForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-        $.ajax({
-            url: "/checkout", 
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(formData),
-            success: (response) => {
-                $("#checkout-message").html("<p>Order placed successfully!</p>");
-            },
-            error: (xhr) => {
-                $("#checkout-message").html(`<p>Error: ${xhr.responseText}</p>`);
-            }
-        });
-    });
+    const formData = {
+      userId: document.getElementById("userId")?.value, // Ensure userId is available
+      cardNumber: document.getElementById("cardNum").value,
+      expirationDate: document.getElementById("expDate").value,
+      cvv: document.getElementById("cvv").value,
+      billingAddress: {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        state: document.getElementById("state").value,
+        zip: document.getElementById("zip").value,
+      },
+    };
+
+    fetch("/checkout/confirm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          alert("Payment Successful! Your order has been placed.");
+        } else {
+          alert(`Error: ${result.error}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Payment error:", error);
+        alert("An error occurred while processing the payment.");
+      });
+  });
 });
