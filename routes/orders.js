@@ -55,4 +55,14 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+// GET /orders - Render orders.handlebars
+router.get('/', async (req, res) => {
+    try {
+        const orders = await ordersData.getAllOrders(); // Fetch all orders
+        res.render('orders', { orders }); // Pass orders to the view
+    } catch (error) {
+        res.status(500).render('orders', { error: 'Failed to load orders.' });
+    }
+});
+
 export default router;
