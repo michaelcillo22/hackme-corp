@@ -1,7 +1,7 @@
 // shoppingCart.js
 import { ObjectId } from "mongodb";
-import { carts } from "../config/mongoCollection.js";
-import helpers from "../helpers_CD.js";
+import { carts } from "../config/mongoCollections.js";
+import helpers from "../helpers/helpers_CD.js";
 
 const shoppingCartMethods = {
     
