@@ -6,7 +6,7 @@ import configRoutes from './routes/index.js';
 
 
 import * as productSeed from './tasks/seedProductsReviews.js';
- import * as categorySeed from './tasks/RDCatseed.js';
+import * as categorySeed from './tasks/RDCatseed.js';
 import * as userSeed from './tasks/RDUsersseed.js';
 import * as orderSeed from './tasks/seedOrders.js'
 
@@ -26,10 +26,13 @@ const PORT = process.env.PORT || 5000;
 
   try {
 
-    userSeed.seedDB();
-    categorySeed.seedDB();
-    productSeed.productReviewSeed();
-    orderSeed.seedOrders();
+    await db.dropDatabase();
+    console.log("Database dropped.")
+
+    await userSeed.seedDB();
+    await categorySeed.seedDB();
+    await productSeed.productReviewSeed();
+    await orderSeed.seedOrders();
     // productSeed.productReviewSeed();
     //await ; use this for seed files
     

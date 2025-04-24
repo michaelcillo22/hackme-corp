@@ -5,10 +5,16 @@
 <form id = "createProductForm">
     <label for = "category">Category:</label>
     <select id = "category" name = "category" required>
-      <option value = "">-- Choose Category --</option>
-      {{#each categories}}
-        <option value = "{{this.categoryName}}">{{this.categoryName}}</option>
+      <option value = "">-- Choose Main Category --</option>
+      {{#each parentCategories}}
+        <option value = "{{this._id}}">{{this.categoryName}}</option>
       {{/each}}
+    </select><br>
+
+    {{!-- For subcategories --}}
+    <label for = "subCategory">Sub-Category:</label>
+    <select id = "subCategory" name = "subCategory" disabled>
+      <option value = "">-- Choose Subcategory --</option>
     </select><br>
     
     <label for = "name">Product Name:</label>
@@ -43,3 +49,4 @@
 
 <!-- Get our external JavaScript file -->
 <script src = "/js/productClient.js"></script>
+<script type = "module" src = "/js/productCategoryClient.js"></script>
