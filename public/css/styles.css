@@ -18,10 +18,20 @@ main {
 }
 
 /* For h1 headers */
-h1 {
-    color: green;
+.h1Color {
+    color: lightgreen;
+    font-weight: bold;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+/* For titles */
+title {
+    color: lightgreen;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
 }
 
 /* For paragraphs */
@@ -87,12 +97,12 @@ input[type=text] {
 
 /* For h3 headers*/
 .h3Color {
-    color: darkred;
+    color: lightgreen;
 }
 
 /* For h4 headers*/
 .h4Color {
-    color: darkred;
+    color: lightgreen;
 }
 
 /* For table */
