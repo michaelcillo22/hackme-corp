@@ -1,8 +1,9 @@
 import helpers from "../helpers/helpers_CD.js";
-import {products} from "../config/mongoCollection.js";
-import {carts} from "../config/mongoCollection.js";
+import {products} from "../config/mongoCollections.js";
+import {carts} from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import {Router} from "express";
+import {shoppingCart} from "../data/index.js";
 
 const router = Router();
 

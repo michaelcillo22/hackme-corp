@@ -15,16 +15,18 @@ router.route('/').get(async (req, res) => {
     // Get our available products
     let productsList = await productInfo.getAllProducts();
 
-    // Get logged-in user info
+    // Get logged-in user info and id
     const userLoggedIn = req.isAuthenticated;
+    let currentUserId = req.session.userId
 
     // Render to home.handlebars
     res.render("productHome", {
       title: "Available Products",
       productDescription: "Search our available products today!",
       searchInputId: "searchProductsByName",
-      products: productsList,
-      user: userLoggedIn
+      user: userLoggedIn,
+      currentUserId: currentUserId,
+      products: productsList
     })
 
   } catch (e) {
@@ -88,12 +90,16 @@ router.route('/searchproducts').post(async (req, res) => {
 
   try {
 
+    // Get logged-in user info and id
+    let currentUserId = req.session.userId
+
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productSearchResults", {
       title: "Products Found", 
       header: "Products Found",      
       productSearchTerm: productSearchTerm,     
-      productResultList: productResults        
+      productResultList: productResults,
+      currentUserId: currentUserId     
     });
 
   } catch (e) {
@@ -117,11 +123,15 @@ router
           return res.redirect("/auth/login");
         }
 
-        // Obtain categories dynamically
+        // Obtain both parent and child categories dynamically
         let getAllCategories = await categories.getAllCategories();
+        let getParentCategories = getAllCategories.filter(child => !child.parentCategory);
+        let getChildCategories = getAllCategories.filter(child => !!child.parentCategory);
+
         return res.render("createProduct", {
           title: "List a New Product",
-          categories: getAllCategories
+          parentCategories: getParentCategories,
+          childCategories: getChildCategories
         });
       } catch (e) {
         return res.status(400).render("productError", { errorMsg: e.toString() });
@@ -222,7 +232,10 @@ router.route('/:id').get(async (req, res) => {
         // If no input was put or just empty spaces, throw error
         return res.status(400).render("productError", {errorMsg: e.toString()});
     }
-    
+
+    // Get logged-in user info and id
+    let currentUserId = req.session.userId
+
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productById", {
         _id: productResults._id,
@@ -237,7 +250,8 @@ router.route('/:id').get(async (req, res) => {
         stock: productResults.stock,
         reviews: productResults.reviews,
         overallRating: productResults.overallRatingValue,
-        productListedDate: productResults.productListedDate 
+        productListedDate: productResults.productListedDate,
+        currentUserId: currentUserId
     });
 });
 
