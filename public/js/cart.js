@@ -1,11 +1,4 @@
-// TO DO: Cart View - RR
-
-{{!-- Using AJAX PUT and DELETE requests to: 
-put items in cart, update items in cart, remove an item from cart, and clear cart completely --}}
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
+$(document).ready(function () {
 
         function updateItemCount() {
             const itemCount = $('#cart-items li').length;
@@ -92,4 +85,3 @@ put items in cart, update items in cart, remove an item from cart, and clear car
             });
         });
     });
-</script>
