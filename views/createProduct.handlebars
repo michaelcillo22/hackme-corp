@@ -2,20 +2,11 @@
 <h1>{{title}}</h1>
 
 {{!-- Create our form server request for listing product--}}
-<form id = "createProductForm">
-    <label for = "category">Category:</label>
-    <select id = "category" name = "category" required>
-      <option value = "">-- Choose Main Category --</option>
-      {{#each parentCategories}}
-        <option value = "{{this._id}}">{{this.categoryName}}</option>
-      {{/each}}
-    </select><br>
+<form id = "createProductForm" method = "POST" action = "/products/createproduct">
 
-    {{!-- For subcategories --}}
-    <label for = "subCategory">Sub-Category:</label>
-    <select id = "subCategory" name = "subCategory" disabled>
-      <option value = "">-- Choose Subcategory --</option>
-    </select><br>
+    <div id = "categoryContainer">
+      {{!-- productCategoryClient.js will add dropdowns here --}}
+    </div>
     
     <label for = "name">Product Name:</label>
     <input type = "text" id = "name" name = "name" required><br>
