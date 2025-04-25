@@ -7,6 +7,7 @@ import reviewRoutes from './reviews.js';
 import salesRoutes from './sales.js';
 import shoppingCartRoutes from './shoppingCart.js';
 // import checkoutRoutes from './checkout.js';
+import path from 'path';
 
 const constructorMethod = (app) => {
 
@@ -28,11 +29,14 @@ const constructorMethod = (app) => {
     app.use('/orders', orderRoutes);
     app.use('/products', productRoutes);
     app.use('/categories', categoriesRoutes);
-    app.use('/reviews', reviewRoutes)
+    app.use('/reviews', reviewRoutes);
     app.use('/cart', shoppingCartRoutes);
     // app.use('/checkout', checkoutRoutes);
     app.use('/auth', authRoutes);
-    app.use('/sales', salesRoutes)
+    app.use('/sales', salesRoutes);
+    app.get('/payment_index', (req, res) => {
+        res.sendFile(path.resolve('static/payment_index.html'));
+    });
     app.use(/(.*)/, (req, res) => {
         return res.status(404).json({ error: 'Not found'});
     });
