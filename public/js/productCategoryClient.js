@@ -1,71 +1,96 @@
-// Get our categories and subcategories for products
-const productForm = document.getElementById("createProductForm");
-
-// If the form won't catch
-if (!productForm) {
-  throw "Oh no! The form is having trouble loading :(";
-}
-
-(async () => {f
+(async () => {
   try {
-    // Store references to our elements as stated in assignment
-    const errOutput = document.getElementById("err_output");
+    // Get our categories and subcategories for products
+    const productForm = document.getElementById("createProductForm");
+
+    // Get our category container
+    let categoryContainer = document.getElementById('categoryContainer');
+
+    // If the container won't catch
+    if (!categoryContainer) {
+      throw "Oh no! The container is having trouble loading :(";
+    }
+
+    // If the form won't catch
+    if (!productForm) {
+      throw "Oh no! The form is having trouble loading :(";
+    }
+
+    // Used for errors
+    const errOutput = document.getElementById('err_output');
 
     // AJAX: Send GET to server route for getting categories
     const productCategory = await fetch('/categories');
 
     // Now we update the page with result or handle errors
     const resultDiv = document.getElementById('productResult');
-    
+  
+    // If categories could not be fetched, throw error
+    if (!productCategory.ok) {
+      resultDiv.innerText = "Error: Categories could not be loaded :(";
+    }
+
     // Store our category results
     const categoryResult = await productCategory.json();
 
-    // If categories could not be fetched, throw error
-    if (!productCategory.ok) {
-      resultDiv.innerText = "Error: " + categoryResult.error;
-    }
-
-    // Get our cat and subcat
-    let parentCategories = document.getElementById('category');
-    let childCategories = document.getElementById('subCategory');
-
-    // Store our main categories
-    let mainCats = []
+    // Build our child categories
+    let childCat = {};
     for (let cat of categoryResult) {
-      if (!cat.parentCategory) {
-        mainCats.push(cat);
+
+      // Ensure the category and subcategories are differentiated and exists
+      if (cat.parentCategory && cat.parentCategory.id) {
+        let parentId = cat.parentCategory.id;
+        childCat[parentId] = childCat[parentId] || [];
+        childCat[parentId].push(cat);
       }
     }
 
-    // Get our parent categories
-    for (let cat of mainCats) {
-      parentCategories.append(new Option(cat.categoryName, cat._id));
+    // This is needed for auto populating categories
+    function autoCategoryDropdown(catOptions, catPlaceholder) {
+      let catSelection = document.createElement('select');
+      catSelection.name = 'category';
+      catSelection.innerHTML = `<option value="">— ${catPlaceholder} —</option>`;
+      
+      // Add category options
+      for (let opt of catOptions) {
+          catSelection.add(new Option(opt.categoryName, opt._id));
+      }
+      return catSelection;
     }
 
-    // Once the parent category is put, auto change the subcategory selections if any
-    parentCategories.addEventListener("change", () => {
+    // Detects if there is a subcategory of a category chosen
+    function autoPopulate(cat) {
 
-      // Set the subcategories inner HTML to the optiond
-      childCategories.innerHTML = '<option value="">— Choose Sub-Category —</option>';  
-
-      const parentId = parentCategories.value;
-
-      // If parentCategory is null, meaning no subcategory
-      if (!parentId) {
-        return childCategories.setAttribute("disabled", "");
-      }
-  
-      // Now filter the matches for subcategories
-      for (let child of categoryResult) {
-        if (child.parentCategory && child.parentCategory.id === parentId) {
-          childCategories.append(new Option(child.categoryName, child._id));
-        }
+      // Track our next category dropdown selection
+      while ((cat.target.nextSibling)) {
+        cat.target.nextSibling.remove();
       }
 
-      // Ensure to remove the disabled attribute
-      childCategories.removeAttribute("disabled");
-    });
+      const selectedId = childCat[cat.target.value];
 
+      if (!selectedId) {
+        throw "Oh no! Invalid category :(";
+      }
+
+      // Call our autoCategoryDropdown function
+      const childCatSelections = autoCategoryDropdown(selectedId, 'Select Sub-Category');
+      
+      childCatSelections.addEventListener('change', autoPopulate);
+
+      // Ensure to append childCatSelections
+      categoryContainer.appendChild(childCatSelections);
+    }
+
+    // Get our parent categories as first dropdown
+    let parentCats = categoryResult.filter(
+      cat => !cat.parentCategory
+    );
+
+    let parentCatSelections = autoCategoryDropdown(parentCats, 'Select Category');
+
+    parentCatSelections.addEventListener('change', autoPopulate);
+
+    categoryContainer.appendChild(parentCatSelections);
   } catch (error) {
       console.error("AJAX Error:", error);
       errOutput.innerHTML += `<p>${error}</p>`;
