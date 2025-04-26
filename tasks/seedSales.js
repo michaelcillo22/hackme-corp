@@ -1,12 +1,18 @@
-
 import { dbConnection, closeConnection } from '../config/mongoConnection.js';
-import salesMethods from '../data/sales.js';
+import { createSale, getAllSales } from '../data/sales.js'; // Use named imports
 import {ObjectId} from "mongodb";
 
 
 export const seedSales = async () => {
+
+    const salesCollection = await sales();
+    const db = salesCollection.s.db;
+
+    // Drop the database
+    await db.dropDatabase();
+
     try {
-        const sale1 = await salesMethods.createSale(new ObjectId().toString(),
+        const sale1 = await createSale(new ObjectId().toString(),
             new ObjectId().toString(), 
             48.25,
             "apple pay",
@@ -15,7 +21,7 @@ export const seedSales = async () => {
             new Date(),
             ["keyboard", "laptop"]
         );
-        const sale2 = await salesMethods.createSale(new ObjectId().toString(),
+        const sale2 = await createSale(new ObjectId().toString(),
             new ObjectId().toString(),
             12.35,
             "credit card",
@@ -24,7 +30,7 @@ export const seedSales = async () => {
             new Date(),
             ["computer mouse"]
         );
-        const sale3 = await salesMethods.createSale(new ObjectId().toString(),
+        const sale3 = await createSale(new ObjectId().toString(),
             new ObjectId().toString(),
             50.40,
             "paypal",
@@ -33,7 +39,7 @@ export const seedSales = async () => {
             new Date(),
             ["headphones", "phone charger"]
         );
-        const sale4 = await salesMethods.createSale(new ObjectId().toString(),
+        const sale4 = await createSale(new ObjectId().toString(),
             new ObjectId().toString(),
             100.00,
             "credit card",
@@ -42,7 +48,7 @@ export const seedSales = async () => {
             new Date(),
             ["earbuds", "keyboard", "monitor"]
         );
-        const sale5 = await salesMethods.createSale(new ObjectId().toString(),
+        const sale5 = await createSale(new ObjectId().toString(),
             new ObjectId().toString(),
             200.79,
             "apple pay",

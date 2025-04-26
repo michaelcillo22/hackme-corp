@@ -139,3 +139,11 @@ export const removeSale = async (saleId) => {
     return sale._id.toString() + " has been successfully deleted!";
 
 };
+
+// Returns all sales from the collection
+export const getAllSales = async () => {
+    const salesCollection = await sales();
+    const allSales = await salesCollection.find({}).toArray();
+    if (!allSales) throw 'Could not retrieve sales.';
+    return allSales;
+};

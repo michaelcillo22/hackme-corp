@@ -1,4 +1,40 @@
-
 <main>
-    <h1>Sales</h1>
+    <h1>Dashboard</h1>
+
+    <section>
+        <h2>Sales</h2>
+        <div id="sales-list">
+            {{#if sales}}
+                <ul>
+                    {{#each sales}}
+                        <li>{{@index}}. Sale ID: {{this.saleId}}, Amount: ${{this.amount}}, Buyer: {{this.buyerEmail}}, Sale Date: {{this.saleDate}}</li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>No sales found.</p>
+            {{/if}}
+        </div>
+    </section>
+
+    <section>
+        <h2>Orders</h2>
+        <div id="orders-list">
+            {{#if orders}}
+                <ul>
+                    {{#each orders}}
+                        <li>{{@index}}. Order ID: {{this.orderId}}, Status: {{this.orderStatus}}, Buyer: {{this.buyerEmail}}, Purchase Date: {{this.purchaseDate}}
+                            <a href="/orders/{{this.orderId}}">View</a>
+                            <form action="/orders/{{this.orderId}}/delivered" method="POST" style="display:inline;">
+                                <input type="hidden" name="_method" value="PATCH">
+                                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                                <button type="submit" class="delivered-button" aria-label="Mark order {{this.orderId}} as Delivered">Delivered</button>
+                            </form>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>No orders found.</p>
+            {{/if}}
+        </div>
+    </section>
 </main>
