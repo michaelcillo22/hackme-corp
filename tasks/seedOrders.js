@@ -50,7 +50,7 @@ export const seedOrders = async () => {
     }
 };
 
-// Execute seeding
-seedOrders().catch((error) => {
-    console.error("Error seeding orders:", error);
-})
+// // Execute seeding
+// seedOrders().catch((error) => {
+//     console.error("Error seeding orders:", error);
+// })
