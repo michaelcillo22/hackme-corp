@@ -32,7 +32,11 @@
 
       <!-- List all available products in database -->
       <img class="searchResultImage img-thumbnail" alt="{{this.name}} Poster" src="{{this.photos}}"><br>
-      <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a><br>Category: {{this.category}}<br>Price: ${{this.price}}<br>Stock Quantity: {{this.stock}} 
+      <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a>
+        <br>Category: {{this.category}}
+        <br>Price: ${{this.price}}
+        <br>Stock Quantity: {{this.stock}} 
+        <br>Average Rating: {{this.overallRating}} ⭐ 
         {{#if ../isAuthenticated}}
             <form action = "/cart/add" method = "POST">
                 <input type = "hidden" name = "userId" value = "{{../currentUserId}}">

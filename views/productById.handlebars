@@ -34,14 +34,14 @@ This page will be rendered to display a single product's page
 
     <section>
         <h3 class="h3Color">Reviews</h3>
-        <h3>{{overallRating}}</h3>
+        <h3>Average Rating: {{overallRating}} ⭐</h3>
         <ol>
             {{#each reviews}}
             <li>Name: {{this.reviewer_name}}</li>
             <ul>
                 <li>{{this.review_title}}</li>
                 <li>Date: {{this.review_date}}</li>
-                <li>Rating: {{this.review_score}} Stars</li>
+                <li>Rating: {{this.review_score}} ⭐</li>
                 <li>Review: {{this.review_body}}</li>
                 <li>Likes: {{this.review_likes}}</li>
 
