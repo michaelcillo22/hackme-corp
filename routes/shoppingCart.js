@@ -1,5 +1,6 @@
 import helpers from "../helpers/helpers_CD.js";
-import {products} from "../config/mongoCollections.js";
+// import {products} from "../config/mongoCollections.js";
+import {productInfo} from "../data/index.js";
 import {carts} from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import {Router} from "express";
@@ -16,7 +17,7 @@ router.post('/cart/add', async (req, res) => {
             throw new Error("Missing required fields: userId, productId, quantity.");
         }
 
-        const product = await products.getProductById(productId);
+        const product = await productInfo.getProductById(productId);
         if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
@@ -25,7 +26,13 @@ router.post('/cart/add', async (req, res) => {
 
         
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
+        const allProducts  = await productInfo.getAllProducts();
+
+        res.render('shoppingCart', { 
+            title: "Shopping Cart",
+            availableProducts: allProducts,
+            cartItems: updatedCart.items, 
+            cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -37,7 +44,13 @@ router.get('/cart/:userId', async (req, res) => {
     try {
         const userId = req.params.userId; 
         const cart = await shoppingCart.getCartByUserId(userId);
-        res.render('cart', { cartItems: cart.items, cartTotal: cart.total }); // render shoppingCart.handlebars
+
+        const allProducts  = await productInfo.getAllProducts();
+        res.render('shoppingCart', { 
+            title: "Shopping Cart",
+            availableProducts: allProducts,
+            cartItems: cart.items, 
+            cartTotal: cart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -54,8 +67,15 @@ router.put('/cart/update', async (req, res) => {
         }
 
         await shoppingCart.updateItemQuantity(userId, productId, quantity);
+
+        const allProducts  = await productInfo.getAllProducts();
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
+        res.render('shoppingCart', { 
+            title: "Shopping Cart",
+            availableProducts: allProducts,
+            cartItems: updatedCart.items, 
+            cartTotal: updatedCart.total 
+        }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -68,7 +88,13 @@ router.delete('/cart/remove/:userId/:productId', async (req, res) => {
         const { userId, productId } = req.params;
         await shoppingCart.removeItemFromCart(userId, productId);
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
+        const allProducts  = await productInfo.getAllProducts();
+        res.render('shoppingCart', { 
+            title: "Shopping Cart",
+            availableProducts: allProducts,
+            cartItems: updatedCart.items, 
+            cartTotal: updatedCart.total 
+        }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -81,7 +107,12 @@ router.delete('/cart/clear/:userId', async (req, res) => {
         const userId = req.params.userId;
         await shoppingCart.clearCart(userId);
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
+        const allProducts  = await productInfo.getAllProducts();
+        res.render('shoppingCart', { 
+            title: "Shopping Cart",
+            availableProducts: allProducts,
+            cartItems: updatedCart.items, 
+            cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
