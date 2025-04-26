@@ -11,15 +11,15 @@
   </head>
   <body>
     <header>
-      <nav>
-        <a href="/">Home</a>
+      <nav class="navbar navbar-expand-sm navbar-dark justify-content-center bg-success">
+        <a class="nav-link px-4" href="/">Home</a>
+        <a class="nav-link px-4" href="/products">Products</a></li>
         {{#if isAuthenticated}}
-        <a href="/auth/logout">Logout</a>
+          <a class="nav-link px-4" href="/auth/logout">Logout</a>
         {{else}}
-        <a href="/auth/login">Login</a>
-        <a href="/auth/register">Register</a>
+          <a class="nav-link px-4" href="/auth/login">Login</a>
+          <a class="nav-link px-4" href="/auth/register">Register</a>
         {{/if}}
-        <a href="/products">Products</a></li>
       </nav>
     </header>
 
