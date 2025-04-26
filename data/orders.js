@@ -12,10 +12,9 @@ const exportedMethods = {
     async getOrderById(orderId) {
         if (!orderId) throw new Error("You must provide an order ID");
         if (typeof orderId !== 'string') throw new Error("Order ID must be a string");
-        if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID format");
 
         const ordersCollection = await ordersData();
-        const order = await ordersCollection.findOne({ _id: new ObjectId(orderId) });
+        const order = await ordersCollection.findOne({ orderId: orderId }); // Match by custom orderId field
         if (!order) throw new Error(`No order found with ID: ${orderId}`);
 
         return order;
@@ -87,7 +86,6 @@ const exportedMethods = {
     async updateOrder(orderId, updatedFields) {
         if (!orderId) throw new Error("You must provide an order ID");
         if (typeof orderId !== 'string') throw new Error("Order ID must be a string");
-        if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID format");
 
         if (!updatedFields || typeof updatedFields !== 'object' || Array.isArray(updatedFields)) {
             throw new Error("You must provide an object with fields to update");
@@ -95,7 +93,7 @@ const exportedMethods = {
 
         const ordersCollection = await ordersData();
         const updateInfo = await ordersCollection.updateOne(
-            { _id: new ObjectId(orderId) },
+            { orderId: orderId }, // Match by custom orderId field
             { $set: updatedFields }
         );
 
@@ -110,7 +108,14 @@ const exportedMethods = {
         return await this.getOrderById(orderId);
     },
 
-// TODO:
+    async getAllOrders() {
+        const ordersCollection = await ordersData();
+        const orders = await ordersCollection.find({}).toArray();
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found in the database.");
+        }
+        return orders;
+    },
 }
 
 export default exportedMethods;
