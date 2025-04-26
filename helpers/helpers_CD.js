@@ -61,7 +61,7 @@ const exportedMethods = {
     checkValidURL(url, varName) {
 
         // Check using regex
-        let urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*$/;
+        let urlRegex = /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
 
         if (!urlRegex.test(url)) {
             throw `Error: ${url} is not a valid ${varName}`;
@@ -94,8 +94,6 @@ const exportedMethods = {
     
         return arr;
     },
-
-
 };
 
 export default exportedMethods;

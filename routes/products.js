@@ -1,10 +1,11 @@
-// To do//import express and express router as shown in lecture code and worked in previous labs.  Import your data functions from /data/movies.js that you will call in your routes below
+//import express and express router as shown in lecture code and worked in previous labs.  Import your data functions from /data/movies.js that you will call in your routes below
 import express from "express";
 const router = express.Router();
 
 import {productInfo} from "../data/index.js";
 import helpers from "../helpers/helpers_CD.js";
 import categories from "../data/categories.js";
+import xss from "xss";
 
 router.route('/').get(async (req, res) => {
   //code here for GET will render the home handlebars file
@@ -14,11 +15,19 @@ router.route('/').get(async (req, res) => {
     // Get our available products
     let productsList = await productInfo.getAllProducts();
 
+    // Get logged-in user info and id, and check if they are a vendor or buyer
+    const userLoggedIn = req.isAuthenticated;
+    let userVendor = req.session.userType === 'seller';
+    let currentUserId = req.session.userId
+
     // Render to home.handlebars
     res.render("productHome", {
       title: "Available Products",
       productDescription: "Search our available products today!",
       searchInputId: "searchProductsByName",
+      user: userLoggedIn,
+      userVendor: userVendor,
+      currentUserId: currentUserId,
       products: productsList
     })
 
@@ -54,7 +63,7 @@ router.route('/searchproducts').post(async (req, res) => {
     productSearchTerm = productData.searchProductsByName;
 
     // Make appropriate validations using checkString
-    productSearchTerm = helpers.checkString(productSearchTerm, "Product Search Term");
+    productSearchTerm = xss(helpers.checkString(productSearchTerm, "Product Search Term"));
   } catch (e) {
     return res.status(400).render("productError", {errorMsg: e.toString()});
   }
@@ -83,12 +92,16 @@ router.route('/searchproducts').post(async (req, res) => {
 
   try {
 
+    // Get logged-in user info and id
+    let currentUserId = req.session.userId
+
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productSearchResults", {
       title: "Products Found", 
       header: "Products Found",      
       productSearchTerm: productSearchTerm,     
-      productResultList: productResults        
+      productResultList: productResults,
+      currentUserId: currentUserId     
     });
 
   } catch (e) {
@@ -104,51 +117,99 @@ router
   .route('/createproduct')
 
     // Show our create product page handlebar
-      .get(async (req, res) => {
-        try {
-          
-          // Obtain categories dynamically
-          let getAllCategories = await categories.getAllCategories();
-          return res.render("createProduct", {
-            title: "List a New Product",
-            categories: getAllCategories
-          });
-        } catch (e) {
-          return res.status(400).render("productError", { errorMsg: e.toString() });
+    .get(async (req, res) => {
+      try {
+        
+        // Ensure ensure user is auth and logged in
+        if (!req.isAuthenticated) {
+          return res.redirect("/auth/login");
         }
+
+        // Obtain both parent and child categories dynamically
+        let getAllCategories = await categories.getAllCategories();
+
+        return res.render("createProduct", {
+          title: "List a New Product",
+          categories: getAllCategories,
+        });
+      } catch (e) {
+        return res.status(400).render("productError", { errorMsg: e.toString() });
+      }
     })
+
     .post(async (req, res) => {
-        try {
+      console.log("raw req.body.category:", req.body.category);
+      try {
+        
+        // Ensure ensure user is auth and logged in
+        if (!req.isAuthenticated) {
+          return res.redirect("/auth/login");
+        }
 
         // Declare the variables we will be adding as input
-        const {
+        let {
             category,
-            vendor,
             name,
             description,
             price,
             photos,
             condition,
-            status
+            status,
+            stock
         } = req.body;
 
+        // Vendor is the name of user logged in
+        let vendor = req.session.userName;
+
+        // Keep track of selected category Id
+        if (!Array.isArray(category)) {
+          category = [category];
+        }
+
+        let selectedCatId = category[category.length - 1];
+
+        // Check if the deepest category is picked up
+        console.log("Deepest Category ID:", selectedCatId);
+
+        if (!selectedCatId) {
+          throw "You must select at least one category";
+        }
+
+        // Sanitize and add XSS
+        // selectedCatId = xss(selectedCatId);
+        
+        // Get category Id name
+        let categoryObj = await categories.getCategoryById(selectedCatId);
+        let categoryName = categoryObj.categoryName;
+
+        name = xss(name);
+        description = xss(description);
+        condition = xss(condition);
+        status = xss(status);
+
+        // Check as number
+        price = Number(xss(price.toString()));
+        stock = Number(xss(stock.toString()));
+
+        // TO DO: Switch to photo upload using Multer or ensure to sanitize each URL in photos
+
         // Call our createProduct method to create method in DB
-        const createNewProduct = await productInfo.createProduct(
-            category,
+        let createNewProduct = await productInfo.createProduct(
+            categoryName,
             vendor,
             name,
             description,
-            parseFloat(price),                          // Ensure price is a number, not string
+            price,                                      // Ensure price is a number, not string
             Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
             condition,
-            status
+            stock
         );
         
         // Ensure to send new product to JSON, status 201 meaning a new resource, aka product, was successfully created
         res.status(201).json(createNewProduct);
-        } catch (e) {
-            return res.status(400).json({ error: e.toString() });
-        }
+      } catch (e) {
+          return res.status(400).json({ error: e.toString() });
+      }
     });
 
 router.route('/:id').get(async (req, res) => {
@@ -189,7 +250,10 @@ router.route('/:id').get(async (req, res) => {
         // If no input was put or just empty spaces, throw error
         return res.status(400).render("productError", {errorMsg: e.toString()});
     }
-    
+
+    // Get logged-in user info and id
+    let currentUserId = req.session.userId
+
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productById", {
         _id: productResults._id,
@@ -201,9 +265,11 @@ router.route('/:id').get(async (req, res) => {
         photos: productResults.photos,
         condition: productResults.condition,  
         status: productResults.status,    
+        stock: productResults.stock,
         reviews: productResults.reviews,
         overallRating: productResults.overallRatingValue,
-        productListedDate: productResults.productListedDate 
+        productListedDate: productResults.productListedDate,
+        currentUserId: currentUserId
     });
 });
 

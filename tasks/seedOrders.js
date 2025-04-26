@@ -6,7 +6,7 @@ export const seedOrders = async () => {
     const db = ordersCollection.s.db;
 
     // Drop the database
-    await db.dropDatabase();
+    // await db.dropDatabase();
 
     // Sample orders
     const sampleOrders = [
@@ -50,7 +50,7 @@ export const seedOrders = async () => {
     }
 };
 
-// Execute seeding
-seedOrders().catch((error) => {
-    console.error("Error seeding orders:", error);
-})
+// // Execute seeding
+// seedOrders().catch((error) => {
+//     console.error("Error seeding orders:", error);
+// })

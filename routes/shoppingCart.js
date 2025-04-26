@@ -1,8 +1,9 @@
 import helpers from "../helpers/helpers_CD.js";
-import {products} from "../config/mongoCollection.js";
-import {carts} from "../config/mongoCollection.js";
+import {products} from "../config/mongoCollections.js";
+import {carts} from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import {Router} from "express";
+import {shoppingCart} from "../data/index.js";
 
 const router = Router();
 
@@ -20,8 +21,11 @@ router.post('/cart/add', async (req, res) => {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        const updatedCart = await shoppingCart.addItemToCart(userId, productId, quantity);
-        res.status(200).json(updatedCart);
+        await shoppingCart.addItemToCart(userId, productId, quantity);
+
+        
+        const updatedCart = await shoppingCart.getCartByUserId(userId);
+        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -31,12 +35,12 @@ router.post('/cart/add', async (req, res) => {
 // get the users cart
 router.get('/cart/:userId', async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.userId; 
         const cart = await shoppingCart.getCartByUserId(userId);
-        res.status(200).json(cart);
+        res.render('cart', { cartItems: cart.items, cartTotal: cart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
@@ -49,11 +53,12 @@ router.put('/cart/update', async (req, res) => {
             throw new Error("You are missing the required fields: userId, productId, quantity.");
         }
 
-        const updatedCart = await shoppingCart.updateItemQuantity(userId, productId, quantity);
-        res.status(200).json(updatedCart);
+        await shoppingCart.updateItemQuantity(userId, productId, quantity);
+        const updatedCart = await shoppingCart.getCartByUserId(userId);
+        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
@@ -61,12 +66,12 @@ router.put('/cart/update', async (req, res) => {
 router.delete('/cart/remove/:userId/:productId', async (req, res) => {
     try {
         const { userId, productId } = req.params;
-
-        const updatedCart = await shoppingCart.removeItemFromCart(userId, productId);
-        res.status(200).json(updatedCart);
+        await shoppingCart.removeItemFromCart(userId, productId);
+        const updatedCart = await shoppingCart.getCartByUserId(userId);
+        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
@@ -74,12 +79,12 @@ router.delete('/cart/remove/:userId/:productId', async (req, res) => {
 router.delete('/cart/clear/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-
-        const clearedCart = await shoppingCart.clearCart(userId);
-        res.status(200).json(clearedCart);
+        await shoppingCart.clearCart(userId);
+        const updatedCart = await shoppingCart.getCartByUserId(userId);
+        res.render('cart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
     } catch (error) {
         console.error(error);
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: error.message });
     }
 });
 

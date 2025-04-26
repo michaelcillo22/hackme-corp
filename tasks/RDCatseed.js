@@ -83,6 +83,6 @@ export async function seedDB() {
       }
     
     
-    seedDB().catch((e) => {
-      console.error('Error running seed script:', e);
-    });
+    // seedDB().catch((e) => {
+    //   console.error('Error running seed script:', e);
+    // });

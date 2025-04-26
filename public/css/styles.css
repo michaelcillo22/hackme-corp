@@ -2,8 +2,8 @@
     margin: 0;
     padding: 0;
     font-family: 'Courier New', monospace;
-    background-color: black;
-    color: antiquewhite;
+    /* background-color: black;
+    color: antiquewhite; */
 }
 
 /* For body */
@@ -18,8 +18,9 @@ main {
 }
 
 /* For h1 headers */
-h1 {
-    color: green;
+.h1Color {
+    color: lightgreen;
+    font-weight: bold;
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -30,6 +31,14 @@ p {
     line-height: 1;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+/* For buttons */
+button {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 10px 0;
+    box-sizing: border-box;
 }
 
 /* For input boxes */
@@ -79,12 +88,12 @@ input[type=text] {
 
 /* For h3 headers*/
 .h3Color {
-    color: darkred;
+    color: lightgreen;
 }
 
 /* For h4 headers*/
 .h4Color {
-    color: darkred;
+    color: lightgreen;
 }
 
 /* For table */
