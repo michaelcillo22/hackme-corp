@@ -15,13 +15,19 @@
         <h2>{{title}}</h2>
     </header>
 </article>
+
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
 <br>
-{{#if isAuthenticated}}
-    <a href = "/products/createproduct" id = "productLink">List Product</a>
+
+{{!-- Ensures that vendors only see the “List Product” --}}
+{{#if userVendor}}
+    <a href="/products/createproduct">List Product</a>
+{{else if isAuthenticated}}
+    <h3>To list a product, you must be a vendor!</h3>
 {{else}}
-    <a href="/auth/login">Please sign in to list a product</a><br><br>
+    <a href="/auth/login">Vendors: Please sign in to list a product</a>
 {{/if}}
+
 <ul>
     {{#each products}}
     <li>
@@ -34,7 +40,7 @@
                 <input type = "hidden" name = "userId" value = "{{../currentUserId}}">
                 <input type = "hidden" name = "productId" value = "{{this._id}}">
                 <input type = "number" name = "quantity" min = "1" value = "1">
-                <button type = "submit">Add to Cart</button>
+                <button type = "submit">Add to Cart</button><br><br>
             </form>
         {{else}}
             <br><a href="/auth/login">Please sign in to add a product to cart</a><br><br>
