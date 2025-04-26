@@ -5,7 +5,7 @@ import {categories} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
 
 // Listing a product
-const createProduct = async (
+export const createProduct = async (
   category,     // String
   vendor,       // String
   name,         // Allow string and num
@@ -22,12 +22,11 @@ const createProduct = async (
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
   status = helpers.checkString(status, "Status");
-  photos = helpers.checkStringArray(photos, "Photo URL");
-  photos = helpers.checkValidURL(photos, "Photo URL")
-
+  //photos = helpers.checkStringArray(photos, "Photo URL");
+ // photos = helpers.checkValidURL(photos, "Photo URL")
   // Other checks if input is provided
   if ( !name || !price || !photos) {
-    throw "Oh no! The name, price, and/or photo UR is not provided :(";
+    throw "Oh no! The name, price, and/or photo URL is not provided :(";
   }
 
   // Check if photos is an array and there is at least one photo
@@ -63,7 +62,7 @@ const createProduct = async (
   if (!validStatus.includes(status)) {
     throw "Oh no! The status must be valid :(";
   };
-
+  
   // Check if price is pos and valid
   if (price < 0 || isNaN(price) || typeof price !== "number") {
     throw "Oh no! Price must be a positive number :(";

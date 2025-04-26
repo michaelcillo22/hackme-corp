@@ -5,7 +5,7 @@ import * as helpers from "../helpers/helpers_kh.js";
 const router = Router();
 
 //create sale
-router.route('/').post(async (req, res) => {
+router.route('/sale').post(async (req, res) => {
     try {
         const {
             orderId,
@@ -52,14 +52,15 @@ router.route('/userId').get(async (req, res) => {
     }
     try {
         const salesList = await salesData.getSaleByVendorId(user);
-        res.render('dashboard', {title: "dashboard", sales: salesList});
+        const analytics = await salesData.analytics(user);
+        res.render('dashboard', {title: "Dashboard", sales: salesList, analytics: analytics});
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
 });
 
   //get a specific sale with saleId
-router.route('/userId/saleId').get(async (req, res) => {
+router.route('/saleId').get(async (req, res) => {
     //ensure SaleId is a valid object id
     try {
         let s = helpers.stringCheck(req.params.saleId);

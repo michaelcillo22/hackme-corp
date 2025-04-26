@@ -8,7 +8,8 @@ import configRoutes from './routes/index.js';
 import * as productSeed from './tasks/seedProductsReviews.js';
  import * as categorySeed from './tasks/RDCatseed.js';
 import * as userSeed from './tasks/RDUsersseed.js';
-import * as orderSeed from './tasks/seedOrders.js'
+import * as orderSeed from './tasks/seedOrders.js';
+import * as saleSeed from './tasks/seedSales.js';
 
 // Initialize app with express
 const app = express();
@@ -26,16 +27,37 @@ const PORT = process.env.PORT || 5000;
 
   try {
 
-    userSeed.seedDB();
-    categorySeed.seedDB();
-    productSeed.productReviewSeed();
-    orderSeed.seedOrders();
+    await userSeed.seedDB();
+    //await categorySeed.seedDB();
+    //await productSeed.productReviewSeed();
+    //await orderSeed.seedOrders();
+   // await saleSeed.seedSales();
     // productSeed.productReviewSeed();
     //await ; use this for seed files
     
   } catch (e) {
     console.error('Errors seeding or server setup:', e);
 } 
+try {
+  await categorySeed.seedDB();
+} catch (error) {
+  console.error('Errors seeding or server setup:', e);
+}
+try {
+  await productSeed.productReviewSeed();
+} catch (error) {
+  console.error('Errors seeding or server setup:', e);
+}
+try {
+  await orderSeed.seedOrders();
+} catch (error) {
+  console.error('Errors seeding or server setup:', e);
+}
+try {
+  await saleSeed.seedSales();
+} catch (error) {
+  console.error('Errors seeding or server setup:', e);
+}
 })();
 
 // Middleware Configuration
