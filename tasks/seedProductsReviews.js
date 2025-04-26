@@ -17,9 +17,10 @@ export async function productReviewSeed() {
         let listUsers = await availUsers.find({}).toArray();
 
         // Select users to review for example
-        let [mariahReview, britneyReview] = listUsers;
+        let [mariahReview, britneyReview, avaReview] = listUsers;
         let mariahId = mariahReview._id.toString();
         let britneyId = britneyReview._id.toString();
+        let avaId = avaReview._id.toString();
 
         // Now let's create our products and reviews
         console.log("Creating our first product!");
@@ -56,6 +57,16 @@ export async function productReviewSeed() {
             "LOVE IT!",                                                     
             4.5,                                                         
             "Absolutely love the iBook!"
+        )
+
+        const iBookG4Review2 = await reviews.createReview(
+            iBookG4._id.toString(), 
+            true,             
+            mariahReview.userName || mariahReview.username || "Ava",  
+            mariahId, 
+            "Eh :/",                                                     
+            3.5,                                                         
+            "It's nice for its age. Eh Idk how I feel about it today though :"
         )
 
         console.log("Creating our second review now!");
