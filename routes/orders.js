@@ -55,4 +55,25 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+// PATCH /orders/:id/delivered - Update order status to "Delivered"
+router.patch('/:id/delivered', async (req, res) => {
+    try {
+        const updatedOrder = await ordersData.updateOrder(req.params.id, { orderStatus: 'Delivered' });
+        res.json(updatedOrder);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// GET /orders - Render orders.handlebars
+router.get('/', async (req, res) => {
+    try {
+        const orders = await ordersData.getAllOrders(); // Fetch all orders
+        res.render('orders', { orders }); // Pass orders to the view
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).render('orders', { error: 'Failed to load orders.' });
+    }
+});
+
 export default router;
