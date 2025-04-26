@@ -5,7 +5,13 @@ This page will be rendered to display a single product's page
     <section>
         <br><a href="/products">Search for Another Product</a>
     </section>
+        {{!-- Will only show if user is logged in as a seller and is the who listed the product --}}
+        {{#if currentUserIsProductLister}}
+            <a href="/products/{{_id}}/edit">Edit Product</a>
+        {{/if}}
+    <section>
 
+    </section>
     <h1>{{name}}</h1>
     <img class="searchResultImage" alt="{{name}} Poster" src="{{photos}}">
 
