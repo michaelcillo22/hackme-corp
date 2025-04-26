@@ -12,20 +12,18 @@
 </form>
 <article>
     <header>
-        <h2>{{title}}</h2>
+        <br><h2>{{title}}</h2>
     </header>
 </article>
 
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
-<br>
-
 {{!-- Ensures that vendors only see the “List Product” --}}
 {{#if userVendor}}
     <a href="/products/createproduct">List Product</a>
 {{else if isAuthenticated}}
     <h3>To list a product, you must be a vendor!</h3>
 {{else}}
-    <a href="/auth/login">Vendors: Please sign in to list a product</a>
+    <a href="/auth/login">Vendors: Please sign in to list a product</a><br><br>
 {{/if}}
 
 <ul>
@@ -33,8 +31,8 @@
     <li>
 
       <!-- List all available products in database -->
-      <img class="searchResultImage" alt="{{this.name}} Poster" src="{{this.photos}}">
-      <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a> - {{this.category}} - ${{this.price}}
+      <img class="searchResultImage img-thumbnail" alt="{{this.name}} Poster" src="{{this.photos}}"><br>
+      <a href="/products/{{this._id}}" id = "productLink">{{this.name}}</a><br>Category: {{this.category}}<br>Price: ${{this.price}}<br>Stock Quantity: {{this.stock}} 
         {{#if ../isAuthenticated}}
             <form action = "/cart/add" method = "POST">
                 <input type = "hidden" name = "userId" value = "{{../currentUserId}}">

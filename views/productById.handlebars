@@ -2,6 +2,10 @@
 This page will be rendered to display a single product's page
 }}
 <article>
+    <section>
+        <br><a href="/products">Search for Another Product</a>
+    </section>
+
     <h1>{{name}}</h1>
     <img class="searchResultImage" alt="{{name}} Poster" src="{{photos}}">
 
@@ -29,7 +33,7 @@ This page will be rendered to display a single product's page
     </section>
 
     <section>
-        <h4>Reviews</h4>
+        <h3 class="h3Color">Reviews</h3>
         <h3>{{overallRating}}</h3>
         <ol>
             {{#each reviews}}
@@ -74,7 +78,7 @@ This page will be rendered to display a single product's page
 
     {{!-- Write our review --}}
     <section>
-        <br><h4>Review Product</h4>
+        <br><h3 class="h3Color">Review Product</h3>
 
         {{!-- User needs to be logged in first in order to do review  --}}
         {{#if isAuthenticated}}
@@ -94,9 +98,5 @@ This page will be rendered to display a single product's page
         {{else}}
             <a href="/auth/login">You must be logged in and have purchased this product to write a review!</a>
         {{/if}}
-    </section>
-
-    <section>
-        <a href="/products">Search for Another Product</a>
     </section>
 </article>
