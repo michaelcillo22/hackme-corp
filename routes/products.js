@@ -15,8 +15,9 @@ router.route('/').get(async (req, res) => {
     // Get our available products
     let productsList = await productInfo.getAllProducts();
 
-    // Get logged-in user info and id
+    // Get logged-in user info and id, and check if they are a vendor or buyer
     const userLoggedIn = req.isAuthenticated;
+    let userVendor = req.session.userType === 'seller';
     let currentUserId = req.session.userId
 
     // Render to home.handlebars
@@ -25,6 +26,7 @@ router.route('/').get(async (req, res) => {
       productDescription: "Search our available products today!",
       searchInputId: "searchProductsByName",
       user: userLoggedIn,
+      userVendor: userVendor,
       currentUserId: currentUserId,
       products: productsList
     })
@@ -125,13 +127,10 @@ router
 
         // Obtain both parent and child categories dynamically
         let getAllCategories = await categories.getAllCategories();
-        let getParentCategories = getAllCategories.filter(child => !child.parentCategory);
-        let getChildCategories = getAllCategories.filter(child => !!child.parentCategory);
 
         return res.render("createProduct", {
           title: "List a New Product",
-          parentCategories: getParentCategories,
-          childCategories: getChildCategories
+          categories: getAllCategories,
         });
       } catch (e) {
         return res.status(400).render("productError", { errorMsg: e.toString() });
@@ -139,6 +138,7 @@ router
     })
 
     .post(async (req, res) => {
+      console.log("raw req.body.category:", req.body.category);
       try {
         
         // Ensure ensure user is auth and logged in
@@ -161,8 +161,27 @@ router
         // Vendor is the name of user logged in
         let vendor = req.session.userName;
 
+        // Keep track of selected category Id
+        if (!Array.isArray(category)) {
+          category = [category];
+        }
+
+        let selectedCatId = category[category.length - 1];
+
+        // Check if the deepest category is picked up
+        console.log("Deepest Category ID:", selectedCatId);
+
+        if (!selectedCatId) {
+          throw "You must select at least one category";
+        }
+
         // Sanitize and add XSS
-        category = xss(category);
+        // selectedCatId = xss(selectedCatId);
+        
+        // Get category Id name
+        let categoryObj = await categories.getCategoryById(selectedCatId);
+        let categoryName = categoryObj.categoryName;
+
         name = xss(name);
         description = xss(description);
         condition = xss(condition);
@@ -176,14 +195,13 @@ router
 
         // Call our createProduct method to create method in DB
         let createNewProduct = await productInfo.createProduct(
-            category,
+            categoryName,
             vendor,
             name,
             description,
             price,                                      // Ensure price is a number, not string
             Array.isArray(photos) ? photos : [photos],  // Convert photos to an array if needed.
             condition,
-            // status,
             stock
         );
         
