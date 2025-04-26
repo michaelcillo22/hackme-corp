@@ -1,11 +1,11 @@
-<h1>{{title}}</h1>
+<h1>Shopping Cart</h1>
 
-{{!-- Shopping Cart Form --}}
+
 <form id="shoppingCartForm">
     <label for="product">Product:</label>
     <select id="product" name="product" required>
       <option value="">-- Choose a Product --</option>
-      {{#each availableProducts}}
+      {{#each product}}
         <option value="{{this._id}}">{{this.name}} - ${{this.price}}</option>
       {{/each}}
     </select><br>
@@ -18,9 +18,9 @@
 
 {{!-- Display cart contents --}}
 <div id="cartContents">
-    <h2>Your Shopping Cart</h2>
+    <h2>Cart Contents</h2>
     <ul id="cartList"></ul>
-    <p><strong>Total:</strong> <span id="cartTotal">$0.00</span></p>
+    <p><strong>Total:</strong> <span id="cartTotal">${{price}}</span></p>
     <button id="checkoutButton">Proceed to Checkout</button>
 </div>
 
@@ -28,5 +28,5 @@
 <div id="err_output"></div>
 
 {{!--External JS Files --}}
-<script src="/js/cartClient.js"></script>
-<script type="module" src="/js/productCategoryClient.js"></script>
+<script type="module" src="/js/shoppingCartClient.js"></script>
+<script type="module" src="/js/productClient.js"></script>

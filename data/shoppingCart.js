@@ -22,6 +22,8 @@ const shoppingCartMethods = {
     async addItemToCart(userId, productId, quantity) {
         userId = helpers.checkString(userId, "User ID");
         productId = helpers.checkId(productId, "Product ID");
+        quantity = Number(quantity);
+        
 
         if (typeof quantity !== "number" || quantity <= 0) {
             throw new Error("Quantity must be a positive number.");

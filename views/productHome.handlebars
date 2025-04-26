@@ -38,7 +38,7 @@
         <br>Stock Quantity: {{this.stock}} 
         <br>Average Rating: {{this.overallRating}} ⭐ 
         {{#if ../isAuthenticated}}
-            <form action = "/cart/add" method = "POST">
+            <form action = "/cart/cart/add" method = "POST">
                 <input type = "hidden" name = "userId" value = "{{../currentUserId}}">
                 <input type = "hidden" name = "productId" value = "{{this._id}}">
                 <input type = "number" name = "quantity" min = "1" value = "1">
