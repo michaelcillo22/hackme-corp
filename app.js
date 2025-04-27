@@ -32,6 +32,13 @@ app.use('/public', express.static('public'));
   console.log('Connected to MongoDB!');
 
   try {
+    await db.dropDatabase();
+    console.log('Database dropped.  Seeding fresh data...');
+  } catch (error) {
+    console.error('Error dropping database:', error);
+  }
+
+  try {
 
     await userSeed.seedDB();
     await categorySeed.seedDB();
