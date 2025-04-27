@@ -19,3 +19,24 @@
         {{/each}}
     {{/if}}
 </div>
+<h1>Orders</h1>
+
+<!-- Display a list of orders -->
+<div id="orders-list">
+    {{#if orders}}
+        <ul>
+            {{#each orders}}
+                <li>{{@index}}. Order ID: {{this.orderId}}, Status: {{this.orderStatus}}, Buyer: {{this.buyerEmail}}, Purchase Date: {{this.purchaseDate}}
+                    <a href="/orders/{{this.orderId}}">View</a>
+                    <form action="/orders/{{this.orderId}}/delivered" method="POST" style="display:inline;">
+                        <input type="hidden" name="_method" value="PATCH">
+                        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                        <button type="submit" class="delivered-button" aria-label="Mark order {{this.orderId}} as Delivered">Delivered</button>
+                    </form>
+                </li>
+        </ul>
+            {{else}}
+        <p>No orders found.</p>
+        {{/each}}
+    {{/if}}
+</div>

@@ -1,75 +1,67 @@
-// Get cart elements
-const cartForm = document.getElementById("shoppingCartForm");
+document.addEventListener("DOMContentLoaded", () => {
+  const cartList = document.getElementById("cartList");
+  const cartTotal = document.getElementById("cartTotal");
+  const cartForm = document.getElementById("shoppingCartForm");
+  const errOutput = document.getElementById("err-output");
 
-if (!cartForm) {
-  throw "Oh no! The cart form is having trouble loading :(";
-}
+  let cartItems = []; // Initialize cart items
 
-(async () => {
-  try {
-    const errOutput = document.getElementById("err_output");
+  function updateCart() {
+      try {
+          cartList.innerHTML = ""; 
+          let total = 0;
 
-    // AJAX: Get items
-    const cartResponse = await fetch('/cart/items');
+          cartItems.forEach(({ productId, name, price, quantity }) => {
+              const listItem = document.createElement("li");
+              listItem.dataset.productId = productId;
+              listItem.dataset.price = price;
 
-    if (!cartResponse.ok) {
-      throw new Error(`Error: ${cartResponse.statusText}`);
-    }
+              listItem.innerHTML = `
+                  ${name} - $${price} x 
+                  <span class="quantity">${quantity}</span>
+                  <button class="update-quantity" data-product-id="${productId}">Update</button>
+                  <button class="remove-item" data-product-id="${productId}">Remove</button>
+              `;
 
-    const cartItems = await cartResponse.json();
-    const cartList = document.getElementById("cartList");
-    const cartTotal = document.getElementById("cartTotal");
+              cartList.appendChild(listItem);
+              total += price * quantity;
+          });
 
-    // Update cart
-    function updateCart() {
-      cartList.innerHTML = ""; 
-      let total = 0;
-
-      cartItems.forEach(item => {
-        const listItem = document.createElement("li");
-        listItem.dataset.productId = item.productId;
-        listItem.dataset.price = item.price;
-        
-        listItem.innerHTML = `
-          ${item.name} - $${item.price} x 
-          <span class="quantity">${item.quantity}</span>
-          <button class="update-quantity" data-product-id="${item.productId}">Update</button>
-          <button class="remove-item" data-product-id="${item.productId}">Remove</button>
-        `;
-        
-        cartList.appendChild(listItem);
-        total += item.price * item.quantity;
-      });
-
-      cartTotal.innerText = `$${total.toFixed(2)}`;
-    }
-
-    updateCart();
-
-    // Event Listener for adding items to cart
-    cartForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const productId = document.getElementById("product").value;
-      const quantity = document.getElementById("quantity").value;
-      const userId = '{{userId}}';
-
-      const response = await fetch('/cart/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, productId, quantity }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add item to cart.");
+          cartTotal.innerText = `$${total.toFixed(2)}`;
+      } catch (error) {
+          console.error("Error updating cart:", error);
+          errOutput.innerHTML += `<p>${error.message}</p>`;
       }
-
-      alert("Item added successfully!");
-      cartItems.push({ productId, quantity });
-      updateCart();
-    });
-
-  } catch (error) {
-    console.error("AJAX Error:", error);
-    errOutput.innerHTML += `<p>${error}</p>`;
   }
-})();
+
+  // Event Listener for Adding Items to Cart
+  cartForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      
+      try {
+          const productId = document.getElementById("product").value;
+          const quantity = Number(document.getElementById("quantity").value);
+          const userId = document.getElementById("user-id").value; // Handlebars variable should be injected correctly
+
+          const response = await fetch('/cart/add', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId, productId, quantity }),
+          });
+
+          if (!response.ok) {
+              throw new Error("Failed to add item to cart.");
+          }
+
+          alert("Item added successfully!");
+          cartItems.push({ productId, price: 0, quantity }); // Consider fetching actual price
+          updateCart();
+      } catch (error) {
+          console.error("AJAX Error:", error);
+          errOutput.innerHTML += `<p>${error.message}</p>`;
+      }
+  });
+
+  // Initial cart update on page load
+  updateCart();
+});

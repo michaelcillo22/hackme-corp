@@ -1,15 +1,15 @@
-import { carts } from "../config/mongoCollection.js";
-import { products } from "../config/mongoCollection.js";
+import { carts } from "../config/mongoCollections.js";
+import { products } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import { Router } from "express";
 import shoppingCartMethods from "../data/shoppingCart.js";
 import * as helpers from "../helpers/helpers_CD.js";
 import { encryptCardData } from "../helpers/checkoutEncryption.js";
-import { orders } from "../config/mongoCollection.js";
+import { ordersData } from "../config/mongoCollections.js";
 
 const router = Router();
 
-router.get("/checkout/:userId", async (req, res) => {
+router.get("/:userId", async (req, res) => {
     try {
         const userId = helpers.checkString(req.params.userId, "User ID");
         const cart = await shoppingCartMethods.getCartByUserId(userId);
@@ -24,7 +24,7 @@ router.get("/checkout/:userId", async (req, res) => {
     }
 });
 
-router.post("/checkout/confirm", async (req, res) => {
+router.post("/confirm", async (req, res) => {
     try {
         if (!req.user) {
             return res.status(401).json({ error: "User is not authenticated!" });
@@ -45,7 +45,7 @@ router.post("/checkout/confirm", async (req, res) => {
         // Encrypt payment details using crypto before storing in mongodb
         const encryptPaymentData = encryptCardData(paymentData);
 
-        const orderCollection = await orders();
+        const orderCollection = await ordersData();
         const newOrder = {
             userId,
             items: cart.items,

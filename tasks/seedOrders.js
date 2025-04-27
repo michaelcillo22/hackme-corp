@@ -51,6 +51,6 @@ export const seedOrders = async () => {
 };
 
 // // Execute seeding
-// seedOrders().catch((error) => {
-//     console.error("Error seeding orders:", error);
-// })
+// // seedOrders().catch((error) => {
+// //     console.error("Error seeding orders:", error);
+// // })

@@ -19,7 +19,9 @@ if (productForm) {
     // Utilize FormData to obtain product info input
     const productFormData = new FormData(productForm)
     const productData = {
-      category: productFormData.get('category'),
+
+      // Get ALL categories
+      category: productFormData.getAll('category').filter(id => id),
       vendor: productFormData.get('vendor'),
       name: productFormData.get('name'),
       description: productFormData.get('description'),

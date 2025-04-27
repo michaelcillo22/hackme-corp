@@ -267,7 +267,7 @@ router.route('/:id').get(async (req, res) => {
         status: productResults.status,    
         stock: productResults.stock,
         reviews: productResults.reviews,
-        overallRating: productResults.overallRatingValue,
+        overallRating: productResults.overallRating,
         productListedDate: productResults.productListedDate,
         currentUserId: currentUserId
     });
