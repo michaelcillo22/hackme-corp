@@ -19,6 +19,7 @@
 {{!-- Button to create product, should only appear when logged in aunthenticated --}}
 {{!-- Ensures that vendors only see the “List Product” --}}
 {{#if userVendor}}
+    <a href="/products/vendorProducts">View My Products</a><br><br>
     <a href="/products/createproduct">List Product</a><br><br>
 {{else if isAuthenticated}}
     <h3>To list a product, you must be a vendor!</h3>
