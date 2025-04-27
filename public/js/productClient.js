@@ -26,8 +26,7 @@ if (productForm) {
       name: productFormData.get('name'),
       description: productFormData.get('description'),
       price: productFormData.get('price'),
-      // Assume photos are entered as a comma-separated list
-      photos: productFormData.get('photos').split(',').map(url => url.trim()),
+      photos: productFormData.get('photos'),
       condition: productFormData.get('condition'),
       status: productFormData.get('status'),
       stock: Number(productFormData.get('stock')) 

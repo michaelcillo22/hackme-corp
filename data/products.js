@@ -11,7 +11,7 @@ export const createProduct = async (
   name,         // Allow string and num
   description,  // String
   price,        // Must be a positive num
-  photos,       // An array
+  photos,       // String
   condition,    // String
   stock,        // Must be a positive num
 ) => {
@@ -21,7 +21,8 @@ export const createProduct = async (
   vendor = helpers.checkString(vendor, "Vendor");
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
-  photos = helpers.checkStringArray(photos, "Photo URL");
+  photos = helpers.checkString(photos, "Photo URL");
+  // photos = helpers.checkStringArray(photos, "Photo URL");
   photos = helpers.checkValidURL(photos, "Photo URL");
 
   // Other checks if input is provided
@@ -30,13 +31,13 @@ export const createProduct = async (
   }
 
   // Check if photos is an array and there is at least one photo
-  if (!Array.isArray(photos)) {
-    throw "Oh no! Photos is not an array :(";
-  }
+  // if (!Array.isArray(photos)) {
+  //   throw "Oh no! Photos is not an array :(";
+  // }
 
-  if (photos.length < 1) {
-    throw "Oh no! Photos must have at least one URL :(";
-  }
+  // if (photos.length < 1) {
+  //   throw "Oh no! Photos must have at least one URL :(";
+  // }
 
   // Check for valid category, condition, and status values
   // Obtain categories' names dynamically from categories collection
@@ -222,7 +223,8 @@ export const updateProduct = async (
   vendor = helpers.checkString(vendor, "Vendor");
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
-  photos = helpers.checkStringArray(photos, "Photo URL");
+  photos = helpers.checkString(photos, "Photo URL");
+  // photos = helpers.checkStringArray(photos, "Photo URL");
   photos = helpers.checkValidURL(photos, "Photo URL")
 
   // Other checks if input is provided
@@ -231,13 +233,13 @@ export const updateProduct = async (
   }
 
   // Check if photos is an array and there is at least one photo
-  if (!Array.isArray(photos)) {
-    throw "Oh no! Photos is not an array :(";
-  }
+  // if (!Array.isArray(photos)) {
+  //   throw "Oh no! Photos is not an array :(";
+  // }
 
-  if (photos.length < 1) {
-    throw "Oh no! Photos must have at least one URL :(";
-  }
+  // if (photos.length < 1) {
+  //   throw "Oh no! Photos must have at least one URL :(";
+  // }
 
   // Check for valid category, condition, and status values
   // Obtain categories' names dynamically from categories collection

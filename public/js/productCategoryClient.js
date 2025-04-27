@@ -1,7 +1,12 @@
 (async () => {
+
+  // Used for errors
+  const errOutput = document.getElementById('err_output');
+
+  // Get our categories and subcategories for products
+  const productForm = document.getElementById("createProductForm") || document.getElementById("editProductForm");
+
   try {
-    // Get our categories and subcategories for products
-    const productForm = document.getElementById("createProductForm");
 
     // Get our category container
     let categoryContainer = document.getElementById('categoryContainer');
@@ -15,9 +20,6 @@
     if (!productForm) {
       throw "Oh no! The form is having trouble loading :(";
     }
-
-    // Used for errors
-    const errOutput = document.getElementById('err_output');
 
     // AJAX: Send GET to server route for getting categories
     const productCategory = await fetch('/categories');
@@ -92,7 +94,6 @@
 
     categoryContainer.appendChild(parentCatSelections);
   } catch (error) {
-      console.error("AJAX Error:", error);
       errOutput.innerHTML += `<p>${error}</p>`;
       
       // Ensure to reset form upon analysis completion
