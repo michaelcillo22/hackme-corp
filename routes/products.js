@@ -120,8 +120,8 @@ router
     .get(async (req, res) => {
       try {
         
-        // Ensure ensure user is auth and logged in
-        if (!req.isAuthenticated) {
+        // Ensure ensure user is auth and logged in and user is type seller
+        if (!req.isAuthenticated || req.session.userType !== "seller") {
           return res.redirect("/auth/login");
         }
 
@@ -175,9 +175,6 @@ router
           throw "You must select at least one category";
         }
 
-        // Sanitize and add XSS
-        // selectedCatId = xss(selectedCatId);
-        
         // Get category Id name
         let categoryObj = await categories.getCategoryById(selectedCatId);
         let categoryName = categoryObj.categoryName;
@@ -212,7 +209,8 @@ router
       }
     });
 
-router.route('/:id').get(async (req, res) => {
+router.route('/:id')
+  .get(async (req, res) => {
     // code here for GET a single product
     // try catch for checking product data first
     let productData;
@@ -234,9 +232,9 @@ router.route('/:id').get(async (req, res) => {
     
         // Check if matches were found, then render
         if (!productResults || productResults.Response === "False" || !productResults.name || productResults.name === "N/A") {
-        return res.status(404).render("productError", {
-            errorMsg: `We're sorry, but no results were found for ${productData}`
-        })
+          return res.status(404).render("productError", {
+              errorMsg: `We're sorry, but no results were found for ${productData}`
+          })
         }
     
     } catch (e) {
@@ -251,8 +249,13 @@ router.route('/:id').get(async (req, res) => {
         return res.status(400).render("productError", {errorMsg: e.toString()});
     }
 
-    // Get logged-in user info and id
-    let currentUserId = req.session.userId
+    // Get logged-in user info like id, type, and name. Ensure the user logged in is a seller and the one who listed the product
+    let currentUserId = req.session.userId;
+    let productCollection = await productInfo.getProductById(productResults._id);
+    let currentUserIsProductLister = 
+      req.isAuthenticated
+      && req.session.userType === 'seller'
+      && productCollection.vendor === req.session.userName;
 
     // When successful, render to productSearchResults.handlebar
     return res.status(200).render("productById", {
@@ -269,8 +272,141 @@ router.route('/:id').get(async (req, res) => {
         reviews: productResults.reviews,
         overallRating: productResults.overallRating,
         productListedDate: productResults.productListedDate,
-        currentUserId: currentUserId
+        currentUserId: currentUserId,
+        currentUserIsProductLister: currentUserIsProductLister
     });
+});
+
+// Allows seller to edit their product listing
+router
+  .route('/:id/edit')
+    .get(async (req, res) => {
+      try {
+        
+        // Ensure ensure user is auth and a seller
+        if (!req.isAuthenticated || req.session.userType !== "seller") {
+          return res.redirect("/auth/login");
+        }
+
+        // Validate product id
+        let productId = helpers.checkId(req.params.id, "Product ID");
+      
+        // Obtain product
+        let getProduct = await productInfo.getProductById(productId);
+
+        // Check to ensure that the seller is actually the one who listed the product
+        let currentUserName = req.session.userName;
+        if (getProduct.vendor !== currentUserName) {
+          throw "Oh no! You are not the seller who listed this product :(";
+        }
+
+        // We need to load categories too
+        let getAllCategories = await categories.getAllCategories();
+
+        let selectedCategory = getAllCategories.map((cat) => ({
+          _id: cat._id,
+          categoryName: cat.categoryName,
+          categorySelected: cat.categoryName === getProduct.category
+        }));
+
+        // let currentCondition = getProduct.condition === "New"
+        return res.render("editProduct", {
+          _id: getProduct._id,
+          name: getProduct.name,
+          description: getProduct.description,
+          price: getProduct.price,
+          photos: Array.isArray(getProduct.photos) ? getProduct.photos : [getProduct.photos],  // Convert photos to an array if needed.,  
+          condition: getProduct.condition,
+          stock: getProduct.stock,
+          categories: selectedCategory
+        });
+      } catch (e) {
+        return res.status(400).render("productError", { errorMsg: e.toString() });
+      }
+    })
+
+    .post(async (req, res) => {
+      try {
+        
+        // Ensure ensure user is auth and logged in
+        if (!req.isAuthenticated || req.session.userType !== "seller") {
+          return res.redirect("/auth/login");
+        }
+
+        // Validate product id
+        let productId = helpers.checkId(req.params.id, "Product ID");
+      
+        // Obtain product
+        let getProduct = await productInfo.getProductById(productId);
+
+        // Check to ensure that the seller is actually the one who listed the product
+        let currentUserName = req.session.userName;
+        if (getProduct.vendor !== currentUserName) {
+          throw "Oh no! You are not the seller who listed this product :(";
+        }
+
+        // Get our variables
+        let {
+          category,
+          name,
+          description,
+          price,
+          photos,
+          condition,
+          status,
+          stock
+        } = req.body;
+
+        // // Ensure to sanitize and get category
+        // let getCategory = await categories.getCategoryById(xss(categoryId));
+        // let categoryName = getCategory.categoryName;
+
+        // Keep track of selected category Id
+        if (!Array.isArray(category)) {
+          category = [category];
+        }
+
+        let selectedCatId = category[category.length - 1];
+
+        // Check if the deepest category is picked up
+        console.log("Deepest Category ID:", selectedCatId);
+
+        if (!selectedCatId) {
+          throw "You must select at least one category";
+        }
+
+        // Get category Id name
+        let categoryObj = await categories.getCategoryById(selectedCatId);
+        let categoryName = categoryObj.categoryName;
+
+        name = xss(name);
+        description = xss(description);
+        condition = xss(condition);
+        status = xss(status);
+
+        // Check as number
+        price = Number(xss(price.toString()));
+        stock = Number(xss(stock.toString()));
+    
+        // Call updateProduct function
+        let updatedProduct = await productInfo.updateProduct(
+          productId,
+          categoryName,
+          getProduct.vendor,
+
+          // Ensure to pass it through XSS
+          name,
+          description,
+          price,
+          Array.isArray(photos) ? photos : [photos],
+          condition,
+          stock
+        );
+    
+        res.redirect(`/products/${productId}`);
+      } catch (e) {
+        return res.status(400).render("productError", { errorMsg: e.toString() });
+      }
 });
 
 //export router
