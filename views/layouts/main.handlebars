@@ -1,31 +1,36 @@
-// LETS USE THIS FOR ALL OF OUR MAIN.HANDLEBARS TO AVOID MULTIPLE MAIN.HANDLEBARS WHEN TESTING
 
-//basic main.handlebars RR
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
     <title>{{title}}</title>
-    <link rel="stylesheet" href="/css/styles.css">  // update to align with location of styles folder
+    <link rel="stylesheet" href="/css/styles.css">  
+    {{!-- Adding bootstrap --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
   </head>
   <body>
     <header>
-      <nav>
-        <a href="/">Home</a>
+      {{#if isAuthenticated}}
+        <p class="welcome-message">Welcome, {{userName}}!</p>
+        {{/if}}
+      <nav class="navbar navbar-expand-sm navbar-dark justify-content-center bg-success">
+        <a class="nav-link px-4" href="/">Home</a>
+        <a class="nav-link px-4" href="/products">Products</a></li>
         {{#if isAuthenticated}}
-        <a href="/auth/logout">Logout</a>
+          
+          <a class="nav-link px-4" href="/auth/logout">Logout</a>
         {{else}}
-        <a href="/auth/login">Login</a>
-        <a href="/auth/register">Register</a>
+          <a class="nav-link px-4" href="/auth/login">Login</a>
+          <a class="nav-link px-4" href="/auth/register">Register</a>
         {{/if}}
       </nav>
     </header>
 
-
-    {{{body}}}
+    {{{body}}} {{!-- This is where our view's content gets injected --}}
     
   <footer>
     <p>2025 Hackmazon </p>
   </footer>
     <script src="/js/usersClientSide.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>
-  </html>
+</html>

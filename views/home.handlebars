@@ -1,7 +1,10 @@
 
-<h1>hackme.corp</h1>
+<h1 class = "h1Color">hackme.corp</h1>
 <article>
     <header>
         <h2>{{title}}</h2>
     </header>
+    {{#if isAuthenticated}}
+        <a href="/sales/{{userId}}">Vendor Dashboard</a>
+        {{/if}}
 </article>

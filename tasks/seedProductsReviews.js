@@ -1,10 +1,11 @@
+// TO DO:
 import {dbConnection, closeConnection} from '../config/mongoConnection.js';
 import * as products from '../data/products.js';
 import * as reviews from '../data/reviews.js';
 import {users} from "../config/mongoCollections.js";
 
 const db = await dbConnection();
-await db.dropDatabase();
+// await db.dropDatabase();
 
 // Test createProduct
 export async function productReviewSeed() {
@@ -16,9 +17,10 @@ export async function productReviewSeed() {
         let listUsers = await availUsers.find({}).toArray();
 
         // Select users to review for example
-        let [mariahReview, britneyReview] = listUsers;
+        let [mariahReview, britneyReview, avaReview] = listUsers;
         let mariahId = mariahReview._id.toString();
         let britneyId = britneyReview._id.toString();
+        let avaId = avaReview._id.toString();
 
         // Now let's create our products and reviews
         console.log("Creating our first product!");
@@ -30,7 +32,7 @@ export async function productReviewSeed() {
             120.99,       
             ["https://usedmac.com/wp-content/uploads/2007/04/ibook_g4_mid_2005.jpg"],  
             "Used",    
-            "In stock",    
+            2,    
         )
     
         console.log("Creating our second product!");
@@ -42,7 +44,7 @@ export async function productReviewSeed() {
             210.99,       
             ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqFc3P--o6t8WfBTBBv3L6t0jFGXSgAFwM3Q&s"],  
             "Used",    
-            "In stock",    
+            0,    
         )  
 
         // Make reviews
@@ -55,6 +57,16 @@ export async function productReviewSeed() {
             "LOVE IT!",                                                     
             4.5,                                                         
             "Absolutely love the iBook!"
+        )
+
+        const iBookG4Review2 = await reviews.createReview(
+            iBookG4._id.toString(), 
+            true,             
+            mariahReview.userName || mariahReview.username || "Ava",  
+            mariahId, 
+            "Eh :/",                                                     
+            3.5,                                                         
+            "It's nice for its age. Eh Idk how I feel about it today though :"
         )
 
         console.log("Creating our second review now!");

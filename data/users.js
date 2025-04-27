@@ -21,6 +21,20 @@ const createUser = async (
     password = helpers.validatePassword(password, 'password', 12);
     userType = helpers.validateString(userType, 'userType');    
 
+
+    const usersCollection = await users();
+
+    const existingUser = await usersCollection.findOne({ userID });
+    if (existingUser) {
+      throw new Error('A user with this email already exists.');
+    }
+
+    const existingUsername = await usersCollection.findOne({ userName });
+    if (existingUsername) {
+      throw new Error('This username is already taken.');
+    }
+
+
     const saltRounds = 10;
 
     const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -39,7 +53,7 @@ const createUser = async (
 
     }
 
-    const usersCollection = await users();
+    
     const insertInfo = await usersCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {
         throw new Error('Could not add user');

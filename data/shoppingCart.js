@@ -1,27 +1,43 @@
-// shoppingCart.js
 import { ObjectId } from "mongodb";
-import { carts } from "../config/mongoCollection.js";
-import helpers from "../helpers_CD.js";
+import { carts , products } from "../config/mongoCollections.js";
+import helpers from "../helpers/helpers_CD.js";
 
 const shoppingCartMethods = {
     
     async getCartByUserId(userId) {
         userId = helpers.checkString(userId, "User ID");
-
         const cartCollection = await carts();
         const cart = await cartCollection.findOne({ userId });
-
+    
         if (!cart) {
-            return { userId, items: [] }; 
+            return { userId, items: [] };
         }
-
-        return cart;
+    
+        const productCollection = await products();
+        const productIDs = cart.items.map(item => new ObjectId(item.productId))
+        let enrichedItems = [];
+    
+        for (let item of cart.items) {
+            const product = await productCollection.findOne({ _id: new ObjectId(item.productId) });
+            if (product) {
+                enrichedItems.push({
+                    productId: item.productId,
+                    name: product.name,
+                    price: product.price,
+                    quantity: item.quantity
+                });
+            }
+        }
+    
+        return { userId, items: enrichedItems };
     },
 
     // Add item to cart
     async addItemToCart(userId, productId, quantity) {
         userId = helpers.checkString(userId, "User ID");
         productId = helpers.checkId(productId, "Product ID");
+        quantity = Number(quantity);
+        
 
         if (typeof quantity !== "number" || quantity <= 0) {
             throw new Error("Quantity must be a positive number.");
@@ -45,7 +61,7 @@ const shoppingCartMethods = {
         }
 
         await cartCollection.updateOne({ userId }, { $set: { items: cart.items } });
-        return cart;
+        return await this.getCartByUserId(userId);
     },
 
     // Remove item from cart
@@ -59,7 +75,6 @@ const shoppingCartMethods = {
         if (!cart) throw new Error("Cart not found.");
 
         const updatedItems = cart.items.filter(item => item.productId !== productId);
-
         await cartCollection.updateOne({ userId }, { $set: { items: updatedItems } });
         return await this.getCartByUserId(userId);
     },
@@ -68,6 +83,7 @@ const shoppingCartMethods = {
     async updateItemQuantity(userId, productId, quantity) {
         userId = helpers.checkString(userId, "User ID");
         productId = helpers.checkId(productId, "Product ID");
+        quantity = Number(quantity);
 
         if (typeof quantity !== "number" || quantity <= 0) {
             throw new Error("Quantity must be a positive number.");
