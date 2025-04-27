@@ -31,7 +31,7 @@ export const seedSales = async () => {
             42.74,
             ['https://a.media-amazon.com/images/I/61Ze1sJ7z4L._AC_SL1500_.jpg'],
             'New',
-            'In stock'
+            500
         );
          product2 = await createProduct('Hardware',
             vendor._id.toString(),
@@ -40,7 +40,7 @@ export const seedSales = async () => {
             49.95,
             ['https://a.media-amazon.com/images/I/31zhhOw6cDL._AC_.jpg'],
             'New',
-            'In stock'
+            100
         );
         product3 = await createProduct('Hardware',
             vendor._id.toString(),
@@ -49,7 +49,7 @@ export const seedSales = async () => {
             13.99,
             ['https://a.media-amazon.com/images/I/5181UFuvoBL._AC_SL1500_.jpg'],
             'New',
-            'In stock'
+            50
         );
         product4 = await createProduct('Hardware',
             vendor._id.toString(),
@@ -58,7 +58,7 @@ export const seedSales = async () => {
             60.99,
             ['https://a.media-amazon.com/images/I/61oepG5Y2FL._AC_SL1313_.jpg'],
             'New',
-            'In stock'
+            359
         );
     } catch (error) {
         console.log("Error running seedSales.js: " + error.message);

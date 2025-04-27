@@ -22,7 +22,6 @@ export const createProduct = async (
   description = helpers.checkString(description, "Description");
   condition = helpers.checkString(condition, "Condition");
   photos = helpers.checkString(photos, "Photo URL");
-  // photos = helpers.checkStringArray(photos, "Photo URL");
   photos = helpers.checkValidURL(photos, "Photo URL");
 
   // Other checks if input is provided
