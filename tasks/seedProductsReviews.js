@@ -62,8 +62,8 @@ export async function productReviewSeed() {
         const iBookG4Review2 = await reviews.createReview(
             iBookG4._id.toString(), 
             true,             
-            mariahReview.userName || mariahReview.username || "Ava",  
-            mariahId, 
+            avaReview.userName || avaReview.username || "Ava",  
+            avaId, 
             "Eh :/",                                                     
             3.5,                                                         
             "It's nice for its age. Eh Idk how I feel about it today though :"
