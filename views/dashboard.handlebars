@@ -18,7 +18,13 @@
             <li>Payment Status: {{paymentMethod}}</li>
             <li>Transaction ID: {{transactionId}}</li>
             <li>Purchase Date: {{salesDate}}</li>
-            <li>Products Purchased: {{items}}</li>
+            <li>Products Purchased: 
+                <ul>
+                    {{#each items}}
+                        <li>{{name}} - ${{price}}</li>
+                    {{/each}}
+                </ul>
+            </li>
         </ul>
     {{/each}}
     
