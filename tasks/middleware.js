@@ -96,6 +96,112 @@ export default (app) => {
         }
     });
 
+    app.use('/checkout', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to checkout.');
+            }
+            
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.use('/products/createproduct', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to list products.');
+            }
+            if (req.userType !== 'seller') {
+                return res.status(403).send('Forbidden: only sellers can list products.');
+            }
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.use('/reviews/:productId', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to submit reviews.');
+            }
+            if (req.userType !== 'buyer') {
+                return res.status(403).send('Forbidden: only buyers can submit reviews.');
+            }
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.use('/reviews/:productId/:reviewId/like', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to like a review.');
+            }
+            if (req.userType !== 'buyer') {
+                return res.status(403).send('Forbidden: only buyers can like reviews.');
+            }
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.use('/reviews/:productId/:reviewId/comments', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to comment on a review.');
+            }
+            
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
 
 
 app.engine('handlebars', engine());

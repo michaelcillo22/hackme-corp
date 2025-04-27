@@ -15,7 +15,7 @@ const validateEmail = (str, name) => {
         throw new Error(`${name} must be a valid email address.`);
 
     }
-    return str.trim();
+    return str.trim().toLowerCase();
 
 
 };
@@ -62,7 +62,7 @@ const validateString = (str, name, minLength = 0) => {
     }
     
 
-    return str.trim();
+    return str.trim().toLowerCase();
 };
 
 
