@@ -1,4 +1,3 @@
-//import express and express router as shown in lecture code and worked in previous labs.  Import your data functions from /data/movies.js that you will call in your routes below
 import express from "express";
 const router = express.Router();
 
@@ -21,7 +20,7 @@ router.route('/').get(async (req, res) => {
     let currentUserId = req.session.userId
 
     // Render to home.handlebars
-    res.render("productHome", {
+    res.status(200).render("productHome", {
       title: "Available Products",
       productDescription: "Search our available products today!",
       searchInputId: "searchProductsByName",
@@ -40,8 +39,8 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/searchproducts').post(async (req, res) => {
-  //code here for POST this is where your form will be submitting searchMoviesByName and then call your data function passing in the searchMoviesByName and then rendering the search results of up to 20 Movies.
-
+  
+  // Code here for POST this is where your form will be submitting searchProductsByName
   let productData;
   try {
 
@@ -128,7 +127,7 @@ router
         // Obtain both parent and child categories dynamically
         let getAllCategories = await categories.getAllCategories();
 
-        return res.render("createProduct", {
+        return res.status(200).render("createProduct", {
           title: "List a New Product",
           categories: getAllCategories,
         });
@@ -207,9 +206,32 @@ router
       }
     });
 
+// Vendor specific products page
+router
+  .get('/vendorProducts', async (req, res) => {
+    try {
+        
+      // Ensure ensure user is auth and logged in
+      if (!req.isAuthenticated || req.session.userType !== "seller") {
+        return res.redirect("/auth/login");
+      }
+
+      // Get our logged in vendor username
+      let vendorUserName = req.session.userName;
+      let vendorProducts = await productInfo.getVendorProducts(vendorUserName);
+      res.status(200).render('productVendor', {
+        title: 'My Product Listings',
+        products: vendorProducts
+      });
+    } catch (e) {
+      return res.status(400).render("productError", { errorMsg: e.toString() });
+    }
+});
+
+// For getting a product
 router.route('/:id')
   .get(async (req, res) => {
-    // code here for GET a single product
+
     // try catch for checking product data first
     let productData;
     try {
@@ -221,11 +243,11 @@ router.route('/:id')
         return res.status(400).render("productError", {errorMsg: "There are no fields in the request body."});
     }
     
-    // Check the movie results
+    // Check the product results
     let productResults;
     try {
     
-        // Now call searchMovieById method from movies.js
+        // Now call searchProductById method from products.js
         productResults = await productInfo.searchProductById(productData);
     
         // Check if matches were found, then render
@@ -308,7 +330,7 @@ router
         }));
 
         // let currentCondition = getProduct.condition === "New"
-        return res.render("editProduct", {
+        return res.status(200).render("editProduct", {
           _id: getProduct._id,
           name: getProduct.name,
           description: getProduct.description,
@@ -354,10 +376,6 @@ router
           status,
           stock
         } = req.body;
-
-        // // Ensure to sanitize and get category
-        // let getCategory = await categories.getCategoryById(xss(categoryId));
-        // let categoryName = getCategory.categoryName;
 
         // Keep track of selected category Id
         if (!Array.isArray(category)) {
@@ -406,6 +424,38 @@ router
         return res.status(400).render("productError", { errorMsg: e.toString() });
       }
 });
+
+// To delete a product, only allowed if you are the vendor who listed it
+router
+  .route('/:id/delete')
+    .post(async (req, res) => {
+      try {
+        
+        // Ensure ensure user is auth and a seller
+        if (!req.isAuthenticated || req.session.userType !== "seller") {
+          return res.redirect("/auth/login");
+        }
+
+        // Validate product id
+        let productId = helpers.checkId(req.params.id, "Product ID");
+      
+        // Obtain product
+        let getProduct = await productInfo.getProductById(productId);
+
+        // Check to ensure that the seller is actually the one who listed the product
+        let currentUserName = req.session.userName;
+        if (getProduct.vendor !== currentUserName) {
+          throw "Oh no! You are not the seller who listed this product :(";
+        }
+
+        // Call our handy dandy removeProduct function
+        await productInfo.removeProduct(productId);
+
+        return res.status(200).render("productDeletedMessage");
+      } catch (e) {
+        return res.status(400).render("productError", {errorMsg: e.toString()});
+      }
+    })
 
 //export router
 export default router;

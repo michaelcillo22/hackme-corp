@@ -30,15 +30,6 @@ export const createProduct = async (
     throw "Oh no! The name, price, and/or photo URL is not provided :(";
   }
 
-  // Check if photos is an array and there is at least one photo
-  // if (!Array.isArray(photos)) {
-  //   throw "Oh no! Photos is not an array :(";
-  // }
-
-  // if (photos.length < 1) {
-  //   throw "Oh no! Photos must have at least one URL :(";
-  // }
-
   // Check for valid category, condition, and status values
   // Obtain categories' names dynamically from categories collection
   let categoryCollection = await categories();
@@ -50,20 +41,11 @@ export const createProduct = async (
   );
 
   let validConditions = ["New", "Used"];
-
- // if (!validCategories.includes(category)) {
-  //  throw "Oh no! The category must be valid :(";
- // };
   
   if (!validConditions.includes(condition)) {
     throw "Oh no! The condition must be valid :(";
   };
-
-  // if (!validStatus.includes(status)) {
-  //   throw "Oh no! The status must be valid :(";
-  // };
   
-
   // Check if price is pos and valid
   if (price < 0 || isNaN(price) || typeof price !== "number") {
     throw "Oh no! Price must be a positive number :(";
@@ -204,7 +186,7 @@ export const removeProduct = async (productId) => {
   return `${productDeletionInfo.name} has been successfully deleted!`;
 };
 
-// TO DO: Update product listing
+// Updates product listing
 export const updateProduct = async (
   productId,
   category,
@@ -232,15 +214,6 @@ export const updateProduct = async (
     throw "Oh no! The name, price, and/or photo UR is not provided :(";
   }
 
-  // Check if photos is an array and there is at least one photo
-  // if (!Array.isArray(photos)) {
-  //   throw "Oh no! Photos is not an array :(";
-  // }
-
-  // if (photos.length < 1) {
-  //   throw "Oh no! Photos must have at least one URL :(";
-  // }
-
   // Check for valid category, condition, and status values
   // Obtain categories' names dynamically from categories collection
   let categoryCollection = await categories();
@@ -252,10 +225,6 @@ export const updateProduct = async (
   );
 
   let validConditions = ["New", "Used"];
-
-  if (!validCategories.includes(category)) {
-    throw "Oh no! The category must be valid :(";
-  };
 
   if (!validConditions.includes(condition)) {
     throw "Oh no! The condition must be valid :(";
@@ -337,6 +306,7 @@ export const updateProduct = async (
   return productUpdatedInfo;
 };
 
+// Search a product by its name
 export const searchProductByName = async (name) => {
 
   // Let's do our basic validations, where it will be trimmed too
@@ -375,6 +345,7 @@ export const searchProductByName = async (name) => {
   }
 };
 
+// Search a product by its ID
 export const searchProductById = async (id) => {
   
   // Let's do our basic validations, where it will be trimmed too
@@ -383,7 +354,7 @@ export const searchProductById = async (id) => {
   try {
 
     // Call our getProductById
-    let currentProduct = getProductById(id);
+    let currentProduct = await getProductById(id);
 
     // Throw error if no products were found
     if (!currentProduct) {
@@ -395,6 +366,52 @@ export const searchProductById = async (id) => {
     // Return our movie result
     return currentProduct;
 
+  } catch (e) {
+    if (e.code === 'ENOTFOUND') {
+        throw 'Error: Invalid URL';
+    }
+    else if (e.response) {
+        throw `Error: ${e.response.status}: ${e.response.statusText}`;
+    }
+    else {
+        throw e;
+    }
+  }
+};
+
+// Populate a vendor specific products page
+export const getVendorProducts = async (vendorName) => {
+
+  // Let's do our basic validations, where it will be trimmed too
+  vendorName = helpers.checkString(vendorName, "Vendor Name");
+
+  try {
+
+    // Get our product collection
+    const productCollection = await products();
+
+    // Get our array of products listed by vendor
+    let productResults = await productCollection
+      .find({vendor: vendorName})
+      .toArray();
+
+    // Throw error if no products were found
+    if (!productResults || productResults.length === 0) {
+      let productError = new Error("Oh no! No products were found!");
+      productError.code = "NO_RESULTS";
+      throw productError;
+    }
+
+    let vendorProducts = productResults.map(function (prod) {
+      prod._id = prod._id.toString();
+      return prod;
+    });
+
+    if (!vendorProducts) {
+      throw "Oh no! You have not listed any products yet :(";
+    }
+
+    return vendorProducts;
   } catch (e) {
     if (e.code === 'ENOTFOUND') {
         throw 'Error: Invalid URL';
