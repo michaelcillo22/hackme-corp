@@ -246,20 +246,6 @@ router
             
             // Success, display product with new review
             return res.redirect(`/products/${productId}`);
-            // return res.status(200).render("productById", { 
-            //     category: updatedProduct.category,  
-            //     vendor: updatedProduct.vendor,      
-            //     name: updatedProduct.name,       
-            //     description: updatedProduct.description,
-            //     price: updatedProduct.price,
-            //     photos: updatedProduct.photos,
-            //     condition: updatedProduct.condition,  
-            //     status: updatedProduct.status,  
-            //     stock: updatedProduct.stock, 
-            //     reviews: updatedProduct.reviews,
-            //     overallRating: updatedProduct.overallRating,
-            //     user: userLoggedIn
-            // });
         } catch (e) {
             return res.status(400).render("productError", { errorMsg: e });
         }
