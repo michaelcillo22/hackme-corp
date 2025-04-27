@@ -1,5 +1,6 @@
-import { ordersData } from '../config/mongoCollections.js';
+import { ordersData, products } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
+import {users} from "../config/mongoCollections.js";
 
 export const seedOrders = async () => {
     const ordersCollection = await ordersData();
@@ -9,7 +10,37 @@ export const seedOrders = async () => {
     // await db.dropDatabase();
 
     // Sample orders
+    console.log("Gathering available users!");
+    let availUsers = await users();
+    let listUsers = await availUsers.find({}).toArray();
+
+    // Select users to review for example
+    let [mariahReview, britneyReview, avaReview] = listUsers;
+    let mariahId = mariahReview._id.toString();
+    let britneyId = britneyReview._id.toString();
+    let avaId = avaReview._id.toString();
+
+    console.log("Gathering available products!");
+    let availProducts = await products();
+    let listProducts = await availProducts.find({}).toArray();
+
+    let [product1, product2, product3] = listProducts;
+
     const sampleOrders = [
+        {
+            orderId: "ORD100456",
+            orderStatus: "Shipped",
+            firstName: "John",
+            lastname: "Doe",
+            buyerEmail: "user1@example.com",
+            buyerId: mariahId,
+            shippingAddress: "111 Broadway, New York, New York 10038",
+            contactNumber: "+1-123-456-7890",
+            items: [
+                { productId: product1._id, productName: product1.name, quantity: 2, vendorId: "v0001" }
+            ],
+            purchaseDate: "01012023"
+        },
         {
             orderId: "ORD123456",
             orderStatus: "Shipped",
