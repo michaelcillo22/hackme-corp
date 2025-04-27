@@ -116,6 +116,28 @@ export default (app) => {
         }
     });
 
+    app.use('/sales/userId', async (req, res, next) => {
+        try {
+            req.isAuthenticated = req.session && req.session.userId;
+            req.userType = req.session ? req.session.userType : null;
+
+            if (!req.isAuthenticated) {
+                return res.status(401).send('Unauthorized: please log in to view vendor dashboard.');
+            }
+            if (req.userType !== 'seller') {
+                return res.status(403).send('Forbidden: only sellers can access vendor dashboard.');
+            }
+
+            res.locals.isAuthenticated = req.isAuthenticated;
+            res.locals.userType = req.userType;
+
+            next();
+        } catch (error) {
+            console.error('Error in orders authentication middleware:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
     app.use('/products/createproduct', async (req, res, next) => {
         try {
             req.isAuthenticated = req.session && req.session.userId;
