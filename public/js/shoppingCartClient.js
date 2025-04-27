@@ -1,67 +1,146 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const cartList = document.getElementById("cartList");
-  const cartTotal = document.getElementById("cartTotal");
-  const cartForm = document.getElementById("shoppingCartForm");
-  const errOutput = document.getElementById("err-output");
+document.addEventListener("DOMContentLoaded", async () => {
+    const cartForm = document.getElementById("shoppingCartForm");
+    const cartList = document.getElementById("cartList");
+    const cartTotal = document.getElementById("cartTotal");
+    const errOutput = document.getElementById("err_output");
 
-  let cartItems = []; // Initialize cart items
+    let cartItems = [];  
+    let userId = null;  
 
-  function updateCart() {
-      try {
-          cartList.innerHTML = ""; 
-          let total = 0;
+    // Helper Functions
+    const showError = (message) => {
+        errOutput.innerHTML = `<p>${message}</p>`;
+    };
 
-          cartItems.forEach(({ productId, name, price, quantity }) => {
-              const listItem = document.createElement("li");
-              listItem.dataset.productId = productId;
-              listItem.dataset.price = price;
+    // Fetch the user ID 
+    async function fetchUserId() {
+        try {
+            const response = await fetch('/api/user');
+            if (response.ok) {
+                const data = await response.json();
+                userId = data.userId;  
+                fetchCartData();  // Proceed to fetch the cart data after getting the user ID
+            } else {
+                console.error("User is not authenticated.");
+                showError("Please log in to view your cart.");
+            }
+        } catch (error) {
+            console.error("Error fetching user ID:", error);
+            showError("Error authenticating user.");
+        }
+    }
 
-              listItem.innerHTML = `
-                  ${name} - $${price} x 
-                  <span class="quantity">${quantity}</span>
-                  <button class="update-quantity" data-product-id="${productId}">Update</button>
-                  <button class="remove-item" data-product-id="${productId}">Remove</button>
-              `;
+    // Fetch cart data from the server
+    async function fetchCartData() {
+        if (!userId) {
+            showError("User not authenticated.");
+            return;
+        }
 
-              cartList.appendChild(listItem);
-              total += price * quantity;
-          });
+        try {
+            const response = await fetch(`/cart/${userId}`);
+            if (response.ok) {
+                const cartData = await response.json();
+                cartItems = cartData.items;
+                updateCart();
+            } else {
+                console.error("Error fetching cart data.");
+                showError("Unable to load cart data.");
+            }
+        } catch (error) {
+            console.error("Failed to fetch cart from server:", error);
+            showError("Error fetching cart data.");
+        }
+    }
 
-          cartTotal.innerText = `$${total.toFixed(2)}`;
-      } catch (error) {
-          console.error("Error updating cart:", error);
-          errOutput.innerHTML += `<p>${error.message}</p>`;
-      }
-  }
+    fetchUserId();  
 
-  // Event Listener for Adding Items to Cart
-  cartForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      
-      try {
-          const productId = document.getElementById("product").value;
-          const quantity = Number(document.getElementById("quantity").value);
-          const userId = document.getElementById("user-id").value; // Handlebars variable should be injected correctly
+    // get products for the select dropdown
+    async function fetchProducts() {
+        try {
+            const response = await fetch("/products");
+            if (response.ok) {
+                const products = await response.json();
+                const productSelect = document.getElementById("product");
 
-          const response = await fetch('/cart/add', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userId, productId, quantity }),
-          });
+                if (products.length === 0) {
+                    showError("No products available.");
+                }
 
-          if (!response.ok) {
-              throw new Error("Failed to add item to cart.");
-          }
+                products.forEach(product => {
+                    const option = document.createElement("option");
+                    option.value = product._id;
+                    option.textContent = `${product.name} - $${product.price}`;
+                    productSelect.appendChild(option);
+                });
+            } else {
+                showError("Error fetching product data.");
+            }
+        } catch (error) {
+            showError("Error fetching product data.");
+            console.error("Error fetching products:", error);
+        }
+    }
 
-          alert("Item added successfully!");
-          cartItems.push({ productId, price: 0, quantity }); // Consider fetching actual price
-          updateCart();
-      } catch (error) {
-          console.error("AJAX Error:", error);
-          errOutput.innerHTML += `<p>${error.message}</p>`;
-      }
-  });
+    fetchProducts();
 
-  // Initial cart update on page load
-  updateCart();
+    // Update the cart display on the frontend
+    const updateCart = () => {
+        cartList.innerHTML = "";
+        let total = 0;
+
+        if (cartItems.length === 0) {
+            cartList.innerHTML = "<p>Your cart is empty.</p>";
+        } else {
+            cartItems.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${item.name} - $${item.price} x ${item.quantity}`;
+                cartList.appendChild(listItem);
+                total += item.price * item.quantity;
+            });
+        }
+
+        cartTotal.innerText = `$${total.toFixed(2)}`;
+    };
+
+    // Add item to cart
+    cartForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const productId = document.getElementById("product").value;
+        const quantity = Number(document.getElementById("quantity").value);
+
+        if (!productId || isNaN(quantity) || quantity <= 0) {
+            return showError("Please select a valid product and quantity.");
+        }
+
+        if (!userId) {
+            return showError("User not authenticated.");
+        }
+
+        try {
+            const response = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    productId: productId,
+                    quantity: quantity,
+                }),
+            });
+
+            if (response.ok) {
+                const updatedCartData = await response.json();
+                cartItems = updatedCartData.cartItems;
+                updateCart();
+            } else {
+                showError("Error adding product to cart.");
+            }
+        } catch (error) {
+            showError("Error adding product to cart.");
+            console.error("Error adding product to cart:", error);
+        }
+    });
 });

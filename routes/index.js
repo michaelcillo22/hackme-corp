@@ -35,7 +35,6 @@ const constructorMethod = (app) => {
     app.use('/cart', shoppingCartRoutes);
     app.use('/auth', authRoutes);
     app.use('/sales', salesRoutes);
-    
     app.use(/(.*)/, (req, res) => {
         return res.status(404).json({ error: 'Not found'});
     });
