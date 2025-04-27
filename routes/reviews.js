@@ -85,8 +85,8 @@ router
             let reviewerName = xss(helpers.checkString(userName, "Reviewer Name"));
             let reviewTitle = xss(helpers.checkString(reviewPostData.review_title, "Review Title"));
             let reviewBody = xss(helpers.checkString(reviewPostData.review_body, "Review Body"));
-            let noXSSReviewScore = helpers.checkString(reviewPostData.review_score.toString(), "Review Score");
-            let reviewScore = Number(xss(noXSSReviewScore));
+            // let noXSSReviewScore = helpers.checkString(reviewPostData.review_score.toString(), "Review Score");
+            let reviewScore = Number(xss(reviewPostData.review_score.toString()));
     
             // Other checks if input is provided
             if (!reviewScore) {
@@ -116,7 +116,7 @@ router
                 productId,
                 reviewVerified,
                 reviewerName,
-                reviewerAccount,
+                userLoggedIn,
                 reviewTitle, 
                 reviewScore,
                 reviewBody
@@ -125,20 +125,23 @@ router
             // Obtain the updated product data with reviews
             const updatedProduct = await productInfo.getProductById(productId);
             
+            // // Success, display product with new review
+            // return res.status(200).render("productById", { 
+            //     category: updatedProduct.category,  
+            //     vendor: updatedProduct.vendor,      
+            //     name: updatedProduct.name,       
+            //     description: updatedProduct.description,
+            //     price: updatedProduct.price,
+            //     photos: updatedProduct.photos,
+            //     condition: updatedProduct.condition,  
+            //     status: updatedProduct.status,  
+            //     stock: updatedProduct.stock, 
+            //     reviews: updatedProduct.reviews,
+            //     overallRating: updatedProduct.overallRating,
+            // });
+
             // Success, display product with new review
-            return res.status(200).render("productById", { 
-                category: updatedProduct.category,  
-                vendor: updatedProduct.vendor,      
-                name: updatedProduct.name,       
-                description: updatedProduct.description,
-                price: updatedProduct.price,
-                photos: updatedProduct.photos,
-                condition: updatedProduct.condition,  
-                status: updatedProduct.status,  
-                stock: updatedProduct.stock, 
-                reviews: updatedProduct.reviews,
-                overallRating: updatedProduct.overallRating,
-            });
+            return res.redirect(`/products/${productId}`);
         } catch (e) {
             return res.status(400).render("productError", { errorMsg: e });
         }

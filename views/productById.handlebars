@@ -45,11 +45,11 @@ This page will be rendered to display a single product's page
             {{#each reviews}}
             <li>Name: {{this.reviewer_name}}</li>
             <ul>
-                <li>{{this.review_title}}</li>
+                <li>Title: {{this.review_title}}</li>
                 <li>Date: {{this.review_date}}</li>
                 <li>Rating: {{this.review_score}} ⭐</li>
                 <li>Review: {{this.review_body}}</li>
-                <li>Likes: {{this.review_likes}}</li>
+                <li>Likes: {{this.helpfulness}}</li>
 
                 {{!-- Ensure user is logged in to be able to like and comment --}}
                 {{#if ../isAuthenticated}}

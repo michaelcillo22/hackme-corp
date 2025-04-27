@@ -20,6 +20,7 @@ export const createReview = async (
   reviewer_name = helpers.checkString(reviewer_name, "Reviewer Name");
   review_title = helpers.checkString(review_title, "Review Title");
   review_body = helpers.checkString(review_body, "Review Body");
+  review_score = Number(review_score);
 
   // Other checks if input is provided
   if (!verified_purchase || !review_score) {
@@ -218,7 +219,7 @@ export const likeReview = async (reviewId, userLoggedIn) => {
   // Update likes on review
   const currentProduct = await productCollection.findOneAndUpdate(
     {"reviews._id": new ObjectId(reviewId)},
-    {$inc: {"reviews.$.review_likes": 1}},
+    {$inc: {"reviews.$.helpfulness": 1}},
     {returnDocument: "after"}
   );
 
