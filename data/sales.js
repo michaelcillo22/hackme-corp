@@ -131,7 +131,8 @@ export const getSaleByVendorId = async (vendorId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    let sale = await salesCollection.find({items: {$elemMatch: {vendor: vendorId}}}).toArray();
+    let sale = await salesCollection.find({items: {$elemMatch: {vendor: new ObjectId(vendorId)}}}).toArray();
+    console.log("Sales for Vendor ID:", vendorId, sale);
     if(sale === null) throw 'Could not find a sale with this vendorId';
 
     sale = sale.map((element) => {

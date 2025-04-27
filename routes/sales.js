@@ -47,6 +47,7 @@ router.route('/:userId').get(async (req, res) => {
     let user;
     try {
         user = helpers.stringCheck(req.params.userId);
+        console.log("Vendor ID (userId):", user);
     } catch (error) {
         //redirect to the login page
         return res.redirect('/login');

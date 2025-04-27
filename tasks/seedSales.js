@@ -74,7 +74,10 @@ export const seedSales = async () => {
             "paid",
             new ObjectId().toString(),
             new Date(),
-            [product1, product4]
+            [
+                { ...product1, vendor: vendor._id }, 
+                { ...product4, vendor: vendor._id } 
+            ]
         );
         sale2 = await salesMethods.createSale(new ObjectId().toString(),
             new ObjectId().toString(),
@@ -83,7 +86,7 @@ export const seedSales = async () => {
             "pending",
             new ObjectId().toString(),
             new Date(),
-            [product3]
+            [{ ...product3, vendor: vendor._id }]
         );
         sale3 = await salesMethods.createSale(new ObjectId().toString(),
             new ObjectId().toString(),
@@ -92,7 +95,10 @@ export const seedSales = async () => {
             "refunded",
             new ObjectId().toString(),
             new Date(),
-            [product2, product3]
+            [
+                { ...product2, vendor: vendor._id }, 
+                { ...product3, vendor: vendor._id } 
+            ]
         );
         sale4 = await salesMethods.createSale(new ObjectId().toString(),
             new ObjectId().toString(),
@@ -101,7 +107,10 @@ export const seedSales = async () => {
             "paid",
             new ObjectId().toString(),
             new Date(),
-            [product1, product2]
+            [
+                { ...product1, vendor: vendor._id }, 
+                { ...product2, vendor: vendor._id } 
+            ]
         );
         sale5 = await salesMethods.createSale(new ObjectId().toString(),
             new ObjectId().toString(),
@@ -110,7 +119,7 @@ export const seedSales = async () => {
             "pending",
             new ObjectId().toString(),
             new Date(),
-            [product3]
+            [{ ...product3, vendor: vendor._id }]
         );
     } catch (error) {
         console.log("Error running sales creation seedSales.js: " + error.message);
