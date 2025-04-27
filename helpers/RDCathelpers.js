@@ -1,5 +1,5 @@
-
-
+// Validation file for any validation checks
+import {ObjectId} from "mongodb";
 
 export const validateString = (str, name, minLength = 0) => {
     if (!str || typeof str !== 'string' || str.trim().length === 0) {
