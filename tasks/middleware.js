@@ -118,7 +118,7 @@ export default (app) => {
         }
     });
 
-    app.use('/sales/userId', async (req, res, next) => {
+    app.use('/sales/:userId', async (req, res, next) => {
         try {
             req.isAuthenticated = req.session && req.session.userId;
             req.userType = req.session ? req.session.userType : null;
