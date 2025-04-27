@@ -51,10 +51,10 @@ export const createProduct = async (
   let validConditions = ["New", "Used"];
   let validStatus = ["In stock", "Out of stock"];
 
-  if (!validCategories.includes(category)) {
-    throw "Oh no! The category must be valid :(";
-  };
-
+ // if (!validCategories.includes(category)) {
+  //  throw "Oh no! The category must be valid :(";
+ // };
+  
   if (!validConditions.includes(condition)) {
     throw "Oh no! The condition must be valid :(";
   };

@@ -42,39 +42,41 @@ router.route('/sale').post(async (req, res) => {
 });
 
 //get all sales data for a business with userId
-router.route('/userId').get(async (req, res) => {
+router.route('/:userId').get(async (req, res) => {
     //ensure userId is a valid string input
+    let user;
     try {
-        let user = helpers.stringCheck(req.params.userId);
+        user = helpers.stringCheck(req.params.userId);
     } catch (error) {
         //redirect to the login page
-        res.redirect('/login');
+        return res.redirect('/login');
     }
     try {
         const salesList = await salesData.getSaleByVendorId(user);
         const analytics = await salesData.analytics(user);
-        res.render('dashboard', {title: "Dashboard", sales: salesList, analytics: analytics});
+        return res.render('dashboard', {title: "Dashboard", sales: salesList, analytics: analytics});
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
 });
 
   //get a specific sale with saleId
-router.route('/saleId').get(async (req, res) => {
+router.route('/:id')
+/*.get(async (req, res) => {
     //ensure SaleId is a valid object id
     try {
-        let s = helpers.stringCheck(req.params.saleId);
+        let s = helpers.stringCheck(req.params.id);
         if (!ObjectId.isValid(s)) throw 'invalid object ID'; 
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
     try {
         let sale = await salesData.getSaleById(s);
-        res.render('sale', {sale: sale});
+        return res.render('sale', {sale: sale});
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
-})
+}) */
 .delete(async (req, res) => {
     //ensure SaleId is a valid object id
     try {

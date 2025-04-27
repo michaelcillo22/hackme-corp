@@ -74,8 +74,9 @@ export const getSaleById = async (saleId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.findOne({_id: new ObjectId(saleId)});
+    let sale = await salesCollection.findOne({_id: new ObjectId(saleId)});
     if(sale === null) throw 'Could not find a sale with this id';
+    sale._id = sale._id.toString();
     return sale;
 
 };
@@ -89,8 +90,14 @@ export const getSaleByOrderId = async (orderId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale  = await salesCollection.findOne({orderId: orderId});
+    let sale  = await salesCollection.findOne({orderId: orderId});
     if(sale === null) throw 'Could not find a sale with this orderId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+
     return sale;
 
 };
@@ -104,8 +111,14 @@ export const getSaleByBuyerId = async (buyerId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.find({buyerId: buyerId}).toArray();
+    let sale = await salesCollection.find({buyerId: buyerId}).toArray();
     if(sale === null) throw 'Could not find a sale with this buyerId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+
     return sale;
 
 };
@@ -118,8 +131,13 @@ export const getSaleByVendorId = async (vendorId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.find({items: {$eleMatch: {vendor: vendorId}}}).toArray();
+    let sale = await salesCollection.find({items: {$elemMatch: {vendor: vendorId}}}).toArray();
     if(sale === null) throw 'Could not find a sale with this vendorId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
     return sale;
 };
 
@@ -160,13 +178,15 @@ export const analytics = async (vendorId) => {
         }
     }
     let productsSold = salesArr.length;
+    total = total.toFixed(2);
+
     let popularity = {};
     for(let product of salesArr){
         let name = product.name;
         if(Object.hasOwn(popularity, name)){
-            popularity.name++;
+            popularity[name] = popularity[name] + 1;
         } else {
-            popularity.name = 1;
+            popularity[name] = 1;
         }
     }
     //find most and least popular products
@@ -186,7 +206,7 @@ export const analytics = async (vendorId) => {
     }
 
     const stats = {
-        numOfsales: numOfsales,
+        numOfSales: numOfsales,
         productsSold: productsSold,
         total: total,
         leastPopular: leastPopular,

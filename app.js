@@ -28,36 +28,16 @@ const PORT = process.env.PORT || 5000;
   try {
 
     await userSeed.seedDB();
-    //await categorySeed.seedDB();
-    //await productSeed.productReviewSeed();
-    //await orderSeed.seedOrders();
-   // await saleSeed.seedSales();
+    await categorySeed.seedDB();
+    await productSeed.productReviewSeed();
+    await orderSeed.seedOrders();
+    await saleSeed.seedSales();
     // productSeed.productReviewSeed();
     //await ; use this for seed files
     
   } catch (e) {
     console.error('Errors seeding or server setup:', e);
-} 
-try {
-  await categorySeed.seedDB();
-} catch (error) {
-  console.error('Errors seeding or server setup:', e);
-}
-try {
-  await productSeed.productReviewSeed();
-} catch (error) {
-  console.error('Errors seeding or server setup:', e);
-}
-try {
-  await orderSeed.seedOrders();
-} catch (error) {
-  console.error('Errors seeding or server setup:', e);
-}
-try {
-  await saleSeed.seedSales();
-} catch (error) {
-  console.error('Errors seeding or server setup:', e);
-}
+  }
 })();
 
 // Middleware Configuration

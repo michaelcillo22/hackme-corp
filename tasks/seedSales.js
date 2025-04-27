@@ -23,10 +23,7 @@ export const seedSales = async () => {
     }
     //create products to use for sales data
     let product1, product2, product3, product4;
-console.log(product1);
-console.log(product2);
-console.log(product3);
-console.log(product4);
+
     try {
         product1 = await createProduct("Hardware",
             vendor._id.toString(),
@@ -119,7 +116,6 @@ console.log(product4);
     } catch (error) {
         console.log("Error running seedSales.js: " + error.message);
     }
-    console.log(sale1);
     console.log("Seeding sales done!");
 };
 
