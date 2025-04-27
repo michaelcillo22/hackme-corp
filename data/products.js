@@ -58,9 +58,9 @@ export const createProduct = async (
     throw "Oh no! The condition must be valid :(";
   };
 
-  if (!validStatus.includes(status)) {
-    throw "Oh no! The status must be valid :(";
-  };
+  // if (!validStatus.includes(status)) {
+  //   throw "Oh no! The status must be valid :(";
+  // };
   
 
   // Check if price is pos and valid
