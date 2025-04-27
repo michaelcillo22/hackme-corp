@@ -9,7 +9,7 @@ import * as productSeed from './tasks/seedProductsReviews.js';
 import * as categorySeed from './tasks/RDCatseed.js';
 import * as userSeed from './tasks/RDUsersseed.js';
 import * as orderSeed from './tasks/seedOrders.js';
-import * as salesSeed from './tasks/seedSales.js';
+import * as saleSeed from './tasks/seedSales.js';
 
 // Initialize app with express
 const app = express();
@@ -33,15 +33,16 @@ app.use('/public', express.static('public'));
 
   try {
 
-    userSeed.seedDB();
-    categorySeed.seedDB();
-    productSeed.productReviewSeed();
-    orderSeed.seedOrders();
+    await userSeed.seedDB();
+    await categorySeed.seedDB();
+    await productSeed.productReviewSeed();
+    await orderSeed.seedOrders();
+    await saleSeed.seedSales();
     // productSeed.productReviewSeed();
     //await ; use this for seed files
     
   } catch (e) {
-    console.error('Error seeding sales:', e);
+    console.error('Errors seeding or server setup:', e);
   }
 })();
 

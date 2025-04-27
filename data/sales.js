@@ -2,6 +2,7 @@
 import {ObjectId} from 'mongodb';
 import * as helpers from "../helpers/helpers_kh.js";
 import {sales} from '../config/mongoCollections.js';
+import {products} from '../config/mongoCollections.js';
 
 //uses given params to create new sale with unique object id
 export const createSale = async (
@@ -38,11 +39,8 @@ export const createSale = async (
     //ensure date is valid
     if(isNaN(salesDate.getTime())) throw 'Not a valid date format.';
 
-    //ensure items is an array with all values being strings
+    //ensure items is an array with all values being prduct objects
     if(!Array.isArray(items)) throw 'You must supply an array of items';
-    items.forEach( (x) => {
-        x = helpers.stringCheck(x);
-    });
 
     //create new sale
     let sale = {
@@ -76,8 +74,9 @@ export const getSaleById = async (saleId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.findOne({_id: new ObjectId(saleId)});
+    let sale = await salesCollection.findOne({_id: new ObjectId(saleId)});
     if(sale === null) throw 'Could not find a sale with this id';
+    sale._id = sale._id.toString();
     return sale;
 
 };
@@ -91,8 +90,14 @@ export const getSaleByOrderId = async (orderId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale  = await salesCollection.findOne({orderId: orderId});
+    let sale  = await salesCollection.findOne({orderId: orderId});
     if(sale === null) throw 'Could not find a sale with this orderId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+
     return sale;
 
 };
@@ -106,8 +111,14 @@ export const getSaleByBuyerId = async (buyerId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.find({buyerId: buyerId}).toArray();
+    let sale = await salesCollection.find({buyerId: buyerId}).toArray();
     if(sale === null) throw 'Could not find a sale with this buyerId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
+
     return sale;
 
 };
@@ -120,8 +131,13 @@ export const getSaleByVendorId = async (vendorId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    const sale = await salesCollection.find({items: {$eleMatch: {vendor: vendorId}}}).toArray();
-    if(sale === null) throw 'Could not find a sale with this buyerId';
+    let sale = await salesCollection.find({items: {$elemMatch: {vendor: vendorId}}}).toArray();
+    if(sale === null) throw 'Could not find a sale with this vendorId';
+
+    sale = sale.map((element) => {
+        element._id = element._id.toString();
+        return element;
+      });
     return sale;
 };
 
@@ -140,10 +156,61 @@ export const removeSale = async (saleId) => {
 
 };
 
-// Returns all sales from the collection
-export const getAllSales = async () => {
-    const salesCollection = await sales();
-    const allSales = await salesCollection.find({}).toArray();
-    if (!allSales) throw 'Could not retrieve sales.';
-    return allSales;
+//analytic data for vendor dashboards
+export const analytics = async (vendorId) => {
+    //input validation
+    vendorId = helpers.stringCheck(vendorId);
+    if(!ObjectId.isValid(vendorId)) throw 'Invalid object id';
+
+    let sales = await getSaleByVendorId(vendorId);
+    let numOfsales = sales.length;
+
+    //find and store only those products sold by the vendor
+    let salesArr = [];
+    let total = 0;
+    for(let sale of sales){
+        let products = sale.items;
+        for(let product of products){
+            if(product.vendor === vendorId){
+                salesArr.push(product);
+                total += product.price;
+            }
+        }
+    }
+    let productsSold = salesArr.length;
+    total = total.toFixed(2);
+
+    let popularity = {};
+    for(let product of salesArr){
+        let name = product.name;
+        if(Object.hasOwn(popularity, name)){
+            popularity[name] = popularity[name] + 1;
+        } else {
+            popularity[name] = 1;
+        }
+    }
+    //find most and least popular products
+    let most = -1;
+    let least = Number.MAX_VALUE;
+    let mostPopular;
+    let leastPopular;
+    for(let [product, pop] of Object.entries(popularity)){
+        if(pop > most){
+            most = pop;
+            mostPopular = product;
+        }
+        if(pop < least){
+            least = pop;
+            leastPopular = product;
+        }
+    }
+
+    const stats = {
+        numOfSales: numOfsales,
+        productsSold: productsSold,
+        total: total,
+        leastPopular: leastPopular,
+        mostPopular: mostPopular
+    }
+    return stats;
 };

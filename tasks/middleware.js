@@ -29,18 +29,20 @@ export default (app) => {
     app.get('/', (req, res) => {
         const isAuthenticated = req.session && req.session.userId;
         const userName = req.session && req.session.userName;
+        const userId = req.session.userId;
         console.log('Root route accessed');
         res.render('home', {
             title: 'Home',
             isAuthenticated,
             userName,
+            userId
         });
     });
 
-    app.use('/auth', async (req, res, next) => {
+   // app.use('/auth', async (req, res, next) => {
 
         
-        try {
+ /*       try {
             const timestamp = new Date().toUTCString();
             req.isAuthenticated = req.session && req.session.userId;
             req.userType = null;
@@ -72,7 +74,7 @@ export default (app) => {
         res.status(500).send('Internal Server Error');
     }     
     });
-    
+ */   
 
     app.use('/orders', async (req, res, next) => {
         try {

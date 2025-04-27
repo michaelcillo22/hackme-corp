@@ -4,4 +4,7 @@
     <header>
         <h2>{{title}}</h2>
     </header>
+    {{#if isAuthenticated}}
+        <a href="/sales/{{userId}}">Vendor Dashboard</a>
+        {{/if}}
 </article>
