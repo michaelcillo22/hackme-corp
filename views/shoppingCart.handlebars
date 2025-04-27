@@ -1,13 +1,12 @@
 <h1>Shopping Cart</h1>
 
-
 <form id="shoppingCartForm">
     <label for="product">Product:</label>
     <select id="product" name="product" required>
-      <option value="">-- Choose a Product --</option>
-      {{#each product}}
-        <option value="{{this._id}}">{{this.name}} - ${{this.price}}</option>
-      {{/each}}
+        <option value="">-- Choose a Product --</option>
+        {{#each cartItems}}
+            <option value="{{this._id}}">{{this.name}} - ${{this.price}}</option>
+        {{/each}}
     </select><br>
 
     <label for="quantity">Quantity:</label>
@@ -16,17 +15,27 @@
     <button type="submit">Add to Cart</button>
 </form>
 
-{{!-- Display cart contents --}}
+<!-- Display cart contents -->
 <div id="cartContents">
     <h2>Cart Contents</h2>
-    <ul id="cartList"></ul>
-    <p><strong>Total:</strong> <span id="cartTotal">${{price}}</span></p>
-    <button id="checkoutButton">Proceed to Checkout</button>
+    <ul id="cartList">
+        {{#each cartItems}}
+            <li>
+                {{this.name}} - ${{this.price}} x {{this.quantity}}
+                <input type="number" value="{{this.quantity}}" onchange="updateItemQuantity('{{this._id}}', this.value)" />
+            </li>
+        {{/each}}
+    </ul>
+    <p><strong>Total:</strong> <span id="cartTotal">{{cartTotal}}</span></p>
+    <a href="/checkout/confirm">Proceed to Checkout</a>
 </div>
 
-{{!-- If there is an error --}}
+<!-- Error Output -->
 <div id="err_output"></div>
 
-{{!--External JS Files --}}
+<!-- External JS Files -->
+<script>
+    const userId = "{{userId}}";  // inject userId from server
+</script>
 <script type="module" src="/js/shoppingCartClient.js"></script>
 <script type="module" src="/js/productClient.js"></script>

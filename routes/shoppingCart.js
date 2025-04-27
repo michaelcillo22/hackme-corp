@@ -1,12 +1,24 @@
-import helpers from "../helpers/helpers_CD.js";
 import {products} from "../config/mongoCollections.js";
-import { productInfo } from "../data/index.js";
-import {carts} from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import {Router} from "express";
 import {shoppingCart} from "../data/index.js";
 
 const router = Router();
+
+// get the users cart
+router.get('/cart/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId; 
+        const cart = await shoppingCart.getCartByUserId(userId);
+
+        const productCollection = await products();
+        const allProducts = await productCollection.find({}).toArray();
+        res.json(cart);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: error.message });
+    }
+});
 
 // add item to cart
 router.post('/cart/add', async (req, res) => {
@@ -17,28 +29,15 @@ router.post('/cart/add', async (req, res) => {
             throw new Error("Missing required fields: userId, productId, quantity.");
         }
 
-        const product = await productInfo.getProductById(productId);
+        const productCollection = await products();
+        const product = await productCollection.findOne({_id: new ObjectId(productId)});
         if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
-
         await shoppingCart.addItemToCart(userId, productId, quantity);
-
-        
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('shoppingCart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// get the users cart
-router.get('/cart/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId; 
-        const cart = await shoppingCart.getCartByUserId(userId);
-        res.render('shoppingCart', { cartItems: cart.items, cartTotal: cart.total }); // render shoppingCart.handlebars
+        let totalPrice = updatedCart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        res.json(updatedCart); 
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
@@ -56,33 +55,7 @@ router.put('/cart/update', async (req, res) => {
 
         await shoppingCart.updateItemQuantity(userId, productId, quantity);
         const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('shoppingCart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// remove item from cart
-router.delete('/cart/remove/:userId/:productId', async (req, res) => {
-    try {
-        const { userId, productId } = req.params;
-        await shoppingCart.removeItemFromCart(userId, productId);
-        const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('shoppingCart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// remove cart entirely
-router.delete('/cart/clear/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId;
-        await shoppingCart.clearCart(userId);
-        const updatedCart = await shoppingCart.getCartByUserId(userId);
-        res.render('shoppingCart', { cartItems: updatedCart.items, cartTotal: updatedCart.total }); // render shoppingCart.handlebars
+        res.json(updatedCart);
     } catch (error) {
         console.error(error);
         res.status(400).json({ error: error.message });
