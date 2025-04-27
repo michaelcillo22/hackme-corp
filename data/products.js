@@ -6,7 +6,6 @@ import {ObjectId} from "mongodb";
 
 // Listing a product
 export const createProduct = async (
-export const createProduct = async (
   category,     // String
   vendor,       // String
   name,         // Allow string and num
@@ -63,6 +62,7 @@ export const createProduct = async (
     throw "Oh no! The status must be valid :(";
   };
   
+
   // Check if price is pos and valid
   if (price < 0 || isNaN(price) || typeof price !== "number") {
     throw "Oh no! Price must be a positive number :(";
