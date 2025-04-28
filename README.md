@@ -1,5 +1,7 @@
 # Hackme Corp
 
+Disclaimer: the branch new-main-now is our final branch. 
+
 ## Introduction
 
 - Hackme Corp is a seller-centered marketplace designed to help businesses sell and promote their products efficiently. With a focus on cost-effective selling, robust analytics, and an expanded customer base, our platform empowers vendors to thrive in the competitive gaming and electronics market.
@@ -95,6 +97,8 @@ Run the Application
 `npm start`
 
 The server will start on http://localhost:5000.
+
+Note: Database seeding functions are called automatically after npm start.
 
 Contributing
 
