@@ -172,7 +172,9 @@ export const analytics = async (vendorId) => {
     for(let sale of sales){
         let products = sale.items;
         for(let product of products){
-            if(product.vendor === vendorId){
+            console.log("Product Vendor:", product.vendor, "Type:", typeof product.vendor);
+            console.log("Vendor ID:", vendorId, "Type:", typeof vendorId);
+            if(product.vendor.toString() === vendorId){
                 salesArr.push(product);
                 total += product.price;
             }

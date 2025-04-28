@@ -25,7 +25,7 @@ export const seedSales = async () => {
 
     try {
         product1 = await createProduct("Hardware",
-            vendor.userID,
+            vendor._id.toString(),
             'AULA 99 Key Keyboard',
             'A bluetooth gaming keyboard',
             42.74,
@@ -34,7 +34,7 @@ export const seedSales = async () => {
             3
         );
          product2 = await createProduct('Hardware',
-            vendor.userID,
+            vendor.toString(),
             'JBL Tune 510BT',
             'Bluetooth headphones with a 40 hour battery life',
             49.95,
@@ -43,7 +43,7 @@ export const seedSales = async () => {
             4
         );
         product3 = await createProduct('Hardware',
-            vendor.userID,
+            vendor._id.toString(),
             'Logitech M185 Wireless Mouse',
             'A wireless USB computer mouse',
             13.99,
@@ -52,7 +52,7 @@ export const seedSales = async () => {
             8
         );
         product4 = await createProduct('Hardware',
-            vendor.userID,
+            vendor._id.toString(),
             'Sceptre 20 1600x900 75Hz Ultra Thin LED Monitor',
             'LED computer monitor',
             60.99,
