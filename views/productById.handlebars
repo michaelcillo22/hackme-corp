@@ -5,7 +5,13 @@ This page will be rendered to display a single product's page
     <section>
         <br><a href="/products">Search for Another Product</a>
     </section>
+        {{!-- Will only show if user is logged in as a seller and is the who listed the product --}}
+        {{#if currentUserIsProductLister}}
+            <a href="/products/{{_id}}/edit">Edit Product</a>
+        {{/if}}
+    <section>
 
+    </section>
     <h1>{{name}}</h1>
     <img class="searchResultImage" alt="{{name}} Poster" src="{{photos}}">
 
@@ -39,11 +45,11 @@ This page will be rendered to display a single product's page
             {{#each reviews}}
             <li>Name: {{this.reviewer_name}}</li>
             <ul>
-                <li>{{this.review_title}}</li>
+                <li>Title: {{this.review_title}}</li>
                 <li>Date: {{this.review_date}}</li>
                 <li>Rating: {{this.review_score}} ⭐</li>
                 <li>Review: {{this.review_body}}</li>
-                <li>Likes: {{this.review_likes}}</li>
+                <li>Likes: {{this.helpfulness}}</li>
 
                 {{!-- Ensure user is logged in to be able to like and comment --}}
                 {{#if ../isAuthenticated}}
@@ -87,10 +93,13 @@ This page will be rendered to display a single product's page
                 <!-- Make this hidden so route can double‑check the productId -->
                 <input type = "hidden" name = "productId" value = "{{_id}}">
 
-                <label for = "review_score">Rating 1-5</label>
+                <label for = "review_title">Review Title:</label>
+                <input type = "text" id = "review_title" name = "review_title" required><br><br>
+
+                <label for = "review_score">Rating 1-5:</label>
                 <input type = "number" id = "review_score" name = "review_score" min = "1" max = "5" step = "0.1" required><br><br>
 
-                <label for = "review_body">Write Your Review</label><br>
+                <label for = "review_body">Write Your Review:</label><br>
                 <textarea id = "review_body" name = "review_body" required></textarea><br>
 
                 <button type="submit">Submit Review</button>

@@ -1,0 +1,32 @@
+<h1 class = "h1Color">{{title}}</h1>
+<a href="/products">Return to Products</a><br><br>
+
+{{!-- Get our vendor's listed products --}}
+{{#if products.length}}
+    <ul>
+    {{#each products}}
+        <li>
+
+        {{!-- List our vendor's products --}}
+        <img class="searchResultImage img-thumbnail" alt="{{this.name}} Poster" src="{{this.photos}}"><br>
+        <a href="/products/{{this._id}}">{{this.name}}</a>
+            <br>Category: {{this.category}}
+            <br>Price: ${{this.price}}
+            <br>Stock Quantity: {{this.stock}} 
+            <br>Average Rating: {{this.overallRating}} ⭐ 
+        <form action = "/products/{{this._id}}/edit" method = "GET">
+            <button type = "submit">Edit Product</button>
+        </form>
+        <form action = "/products/{{this._id}}/delete" method = "POST">
+            <button type = "submit">Delete Product</button>
+        </form>
+        </li><br>
+    {{/each}}
+    </ul>
+    
+    {{!-- Ensure that vendors only see the “List Product” --}}
+    <h3 class = "h3Color">Start listing today!</h3>
+    <a href="/products/createproduct">List Product</a><br><br>
+{{else}}
+    <h3>Oh no! You have not listed any productd yet.</h3>
+{{/if}}

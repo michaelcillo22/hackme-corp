@@ -30,7 +30,7 @@ export async function productReviewSeed() {
             "iBook G4",        
             "iBook G4 runs Apple's PowerPC G4 processor.", 
             120.99,       
-            ["https://usedmac.com/wp-content/uploads/2007/04/ibook_g4_mid_2005.jpg"],  
+            "https://usedmac.com/wp-content/uploads/2007/04/ibook_g4_mid_2005.jpg",  
             "Used",    
             2,    
         )
@@ -42,7 +42,7 @@ export async function productReviewSeed() {
             "PowerBook G4",        
             "PowerBook G4 runs Apple's PowerPC G4 processor.", 
             210.99,       
-            ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqFc3P--o6t8WfBTBBv3L6t0jFGXSgAFwM3Q&s"],  
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqFc3P--o6t8WfBTBBv3L6t0jFGXSgAFwM3Q&s",  
             "Used",    
             0,    
         )  
@@ -62,8 +62,8 @@ export async function productReviewSeed() {
         const iBookG4Review2 = await reviews.createReview(
             iBookG4._id.toString(), 
             true,             
-            mariahReview.userName || mariahReview.username || "Ava",  
-            mariahId, 
+            avaReview.userName || avaReview.username || "Ava",  
+            avaId, 
             "Eh :/",                                                     
             3.5,                                                         
             "It's nice for its age. Eh Idk how I feel about it today though :"

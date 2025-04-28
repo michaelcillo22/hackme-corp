@@ -131,7 +131,8 @@ export const getSaleByVendorId = async (vendorId) => {
 
     //search collection for the sale
     const salesCollection = await sales();
-    let sale = await salesCollection.find({items: {$elemMatch: {vendor: vendorId}}}).toArray();
+    let sale = await salesCollection.find({items: {$elemMatch: {vendor: new ObjectId(vendorId)}}}).toArray();
+    console.log("Sales for Vendor ID:", vendorId, sale);
     if(sale === null) throw 'Could not find a sale with this vendorId';
 
     sale = sale.map((element) => {
@@ -171,7 +172,9 @@ export const analytics = async (vendorId) => {
     for(let sale of sales){
         let products = sale.items;
         for(let product of products){
-            if(product.vendor === vendorId){
+            console.log("Product Vendor:", product.vendor, "Type:", typeof product.vendor);
+            console.log("Vendor ID:", vendorId, "Type:", typeof vendorId);
+            if(product.vendor.toString() === vendorId){
                 salesArr.push(product);
                 total += product.price;
             }
